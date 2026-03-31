@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tutor Dashboard | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    [id^="sec-"] { display: none; }
+    #sec-overview { display: block; }
+    .module-builder { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg); padding: 20px; margin-bottom: 16px; }
+    .module-builder-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .module-num-badge { background: var(--blue); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .remove-module-btn { background: #fde8e8; color: var(--red); border: none; padding: 5px 12px; border-radius: var(--r-md); font-size: 12px; cursor: pointer; font-weight: 600; }
+    .upload-zone { border: 2px dashed var(--gray-300); border-radius: var(--r-lg); padding: 20px; text-align: center; cursor: pointer; transition: var(--ease); background: var(--gray-50); }
+    .upload-zone:hover { border-color: var(--blue); background: var(--blue-pale); }
+    .course-thumb-preview { width: 100%; height: 140px; object-fit: cover; border-radius: var(--r-lg); display: none; margin-bottom:8px; }
+    .tab-sel { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap:wrap; }
+    .tab-sel button { padding: 5px 12px; border: 1px solid var(--gray-300); background: #fff; border-radius: var(--r-md); font-size: 11px; cursor: pointer; font-weight: 600; color: var(--text-mid); }
+    .tab-sel button.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .other-cat-input { display: none; }
+    .course-editor-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg); padding: 16px; margin-bottom: 12px; }
+    .dash-tutor-badge { font-size: 12px; font-weight: 700; background: var(--gold-pale); color: #856404; padding: 2px 10px; border-radius: 20px; display: inline-block; margin-top: 4px; }
+    .emoji-opt { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--r-md); padding: 6px 8px; font-size: 20px; cursor: pointer; }
+    .emoji-opt:hover, .emoji-opt.selected { background: var(--blue-pale); border-color: var(--blue); }
+    .tutor-notice { border-radius: var(--r-lg); padding: 20px; margin-bottom: 24px; font-size: 15px; line-height: 1.6; }
+    .tutor-notice-pending { background: #FFF3CD; border: 1px solid #FFDD57; color: #5a4000; }
+    .tutor-notice-approved { background: var(--green-pale); border: 1px solid var(--green); color: #0a4a1a; }
+    body.dark-mode .tutor-notice-pending { background: #2a1f00; border-color: #7a6000; color: #FFD97A; }
+    body.dark-mode .tutor-notice-approved { background: #0a2a1a; border-color: #059669; color: #6EE7B7; }
+  </style>
+</head>
+<body class="dash-body">
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <div style="flex:1;"></div>
+    <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:var(--r-full);padding:4px 14px;font-size:12px;font-weight:700;color:#856404;margin-right:12px;">👩‍🏫 Tutor Portal</div>
+    <div class="nav-cta">
+      <a href="index.html" class="btn btn-ghost btn-sm">View Site</a>
+      <a href="index.html" class="btn btn-blue btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.clear()">Sign Out</a>
+    </div>
+  </div>
+</nav>
+
+<div class="dash-wrap">
+  <aside class="sidebar" id="dashSidebar">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sidebarInitial" style="background:linear-gradient(135deg,#856404,var(--gold));">T</div>
+      <div class="sb-name" id="sidebarName">Loading…</div>
+      <div class="sb-role" id="tutorRoleLabel">Tutor (Pending Approval)</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Tutor</div>
+      <button class="sb-link active" id="nav-overview" onclick="showSection('overview')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="sb-link" id="nav-myCourses" onclick="showSection('myCourses')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        My Courses
+      </button>
+      <button class="sb-link" id="nav-addCourse" onclick="showSection('addCourse')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Course
+      </button>
+      <button class="sb-link" id="nav-students" onclick="showSection('students')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        My Students
+      </button>
+      <button class="sb-link" id="nav-analytics" onclick="showSection('analytics')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Analytics
+      </button>
+      <div class="sb-section">Preview Courses</div>
+      <a href="course-mechanic.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+        Auto Mechanics
+      </a>
+      <a href="course-baking.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/></svg>
+        Baking &amp; Cooking
+      </a>
+      <a href="course-etiquette.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+        Business Etiquette
+      </a>
+      <a href="course-entrepreneurship.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Entrepreneurship
+      </a>
+      <a href="course-soft-skills.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Soft Skills
+      </a>
+      <a href="course-digital-skills.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Digital Skills
+      </a>
+      <a href="course-finance.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Finance
+      </a>
+      <a href="course-coding.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Coding
+      </a>
+      <a href="course-health.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Health &amp; Body
+      </a>
+      <a href="course-sewing.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+        Sewing &amp; Fashion
+      </a>
+      <a href="course-english.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        English Language
+      </a>
+      <div class="sb-section">Account</div>
+      <button class="sb-link" id="nav-profile" onclick="showSection('profile')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Profile
+      </button>
+      <button class="sb-link" id="nav-referrals" onclick="showSection('referrals')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Refer Friends
+      </button>
+
+      <a href="index.html" class="sb-link danger" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.clear()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+
+    <!-- OVERVIEW -->
+    <div id="sec-overview">
+      <div class="dash-greeting">
+        <h1>Welcome, <span id="greetName">Tutor</span>! 👩‍🏫</h1>
+        <p>Manage your courses, track student progress, and add new course materials.</p>
+      </div>
+      <div id="pendingNotice" class="tutor-notice tutor-notice-pending" style="display:none;">
+        <strong>⏳ Your application is pending review.</strong> An admin will review your application and approve your tutor account. You'll receive a notification once approved.
+      </div>
+      <div id="approvedNotice" class="tutor-notice tutor-notice-approved" style="display:none;">
+        ✅ <strong>Your tutor account is approved!</strong> You can now add and edit course materials. All new content is subject to admin review before going live.
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="tStatCourses">0</div><div class="stat-lbl">My Courses</div></div>
+        <div class="stat-card"><div class="stat-icon">👩‍🎓</div><div class="stat-num">0</div><div class="stat-lbl">Total Students</div></div>
+        <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num">0</div><div class="stat-lbl">Avg. Rating</div></div>
+        <div class="stat-card"><div class="stat-icon" id="approvalIcon">⏳</div><div class="stat-num" id="approvalStatus">Pending</div><div class="stat-lbl">Account Status</div></div>
+      </div>
+      <div class="dash-section-title">Quick Actions</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;">
+        <button onclick="showSection('addCourse')" class="btn btn-blue">+ Add New Course</button>
+        <button onclick="showSection('myCourses')" class="btn btn-outline">View My Courses</button>
+        <a href="course-baking.html" target="_blank" class="btn btn-ghost">Preview Courses</a>
+      </div>
+      <div class="dash-section-title">Platform Courses</div>
+      <div id="platformCourses"></div>
+
+      <!-- SEARCH BAR -->
+      <div style="margin-top:40px;">
+        <div class="dash-section-title">Search All Courses</div>
+        <div class="eaw-search-bar" style="max-width:680px;margin-bottom:14px;">
+          <span class="eaw-search-bar-icon">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input class="eaw-search-input" id="dashSearchInput" type="text" placeholder="e.g. Baking, Coding, Finance…"
+            oninput="eawSearch(this.value,'dashSearchResults')"
+            onkeydown="if(event.key==='Enter')eawSearch(this.value,'dashSearchResults')">
+          <button class="eaw-search-btn" onclick="eawSearchFromInput('dashSearchInput','dashSearchResults')" aria-label="Search">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+        <div class="eaw-pills" style="justify-content:flex-start;">
+          <button class="eaw-pill active" onclick="eawPillSearch('',this)">All</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Auto Mechanics',this)">Auto Mechanics</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Business',this)">Business</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Technology',this)">Tech & Coding</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Finance',this)">Finance</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Health',this)">Health</button>
+        </div>
+        <div id="dashSearchResults"></div>
+      </div>
+    </div>
+
+    <!-- MY COURSES -->
+    <div id="sec-myCourses">
+      <div class="dash-greeting"><h1>My Courses</h1><p>Courses you have submitted. All content is subject to admin approval before going live.</p></div>
+      <button onclick="showSection('addCourse')" class="btn btn-blue btn-sm" style="margin-bottom:20px;">+ Add New Course</button>
+      <div id="myCoursesContainer"><div class="empty-state"><div class="empty-icon">📝</div><h3>No courses submitted yet</h3><p>Click the button above to submit your first course for admin review.</p></div></div>
+    </div>
+
+    <!-- ADD COURSE -->
+    <div id="sec-addCourse">
+      <div class="dash-greeting"><h1>Add New Course</h1><p>Submit a new course for admin review. An admin will review before publishing.</p></div>
+      <div style="background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-xl);padding:32px;max-width:720px;">
+        <div class="notice-box show" style="margin-bottom:20px;">ℹ️ <strong>All submissions require admin approval</strong> before they appear to students.</div>
+
+        <!-- THUMBNAIL -->
+        <div class="form-group">
+          <label class="form-label">Course Display Image / Icon *</label>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">Upload a banner image or pick an emoji icon that represents your course</p>
+          <img id="thumbPreview" class="course-thumb-preview" alt="Preview">
+          <div class="upload-zone" id="thumbZone" onclick="document.getElementById('thumbFile').click()">
+            <div style="font-size:32px;margin-bottom:6px;">🖼️</div>
+            <div style="font-weight:600;color:var(--blue);font-size:13px;">Click to upload course image</div>
+            <div style="font-size:11px;color:var(--text-light);">PNG, JPG · Recommended: 1280×720px</div>
+            <input type="file" id="thumbFile" accept="image/*" style="display:none;" onchange="previewThumb(this)">
+          </div>
+          <div style="text-align:center;margin-top:8px;font-size:12px;color:var(--text-light);">or choose an emoji icon</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;" id="emojiPicker">
+            <button type="button" class="emoji-opt" onclick="selectEmoji('📚')">📚</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('💻')">💻</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🎨')">🎨</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🌿')">🌿</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🏥')">🏥</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('💼')">💼</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🍳')">🍳</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🔧')">🔧</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🌸')">🌸</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('✂️')">✂️</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🎭')">🎭</button>
+            <button type="button" class="emoji-opt" onclick="selectEmoji('🔬')">🔬</button>
+          </div>
+          <div id="selectedEmojiDisplay" style="display:none;text-align:center;margin-top:10px;font-size:48px;"></div>
+          <button type="button" id="clearThumbBtn" style="display:none;margin-top:8px;" class="btn btn-ghost btn-sm" onclick="clearThumb()">✕ Remove image / Change</button>
+        </div>
+
+        <!-- TITLE -->
+        <div class="form-group">
+          <label class="form-label">Course Title *</label>
+          <input type="text" id="newCourseTitle" class="form-input" placeholder="e.g. Digital Marketing for Small Businesses">
+        </div>
+
+        <!-- CATEGORY + PRICE -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select id="newCourseCat" class="form-input" onchange="handleCatChange(this)">
+              <option value="Auto Mechanics">Auto Mechanics</option>
+              <option value="Culinary Skills">Culinary Skills</option>
+              <option value="Business Skills">Business Skills</option>
+              <option value="Digital Skills">Digital Skills</option>
+              <option value="Health &amp; Wellness">Health &amp; Wellness</option>
+              <option value="Fashion &amp; Design">Fashion &amp; Design</option>
+              <option value="Other">Other (specify below) ↓</option>
+            </select>
+            <div class="other-cat-input" id="otherCatWrap">
+              <input type="text" id="otherCatInput" class="form-input" placeholder="Type your category name…" style="margin-top:8px;">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pricing</label>
+            <select id="newCoursePrice" class="form-input">
+              <option>Free</option>
+              <option>₦2,500</option>
+              <option>₦5,000</option>
+              <option>₦10,000</option>
+              <option>₦15,000</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-group">
+          <label class="form-label">Course Description *</label>
+          <textarea id="newCourseDesc" class="form-input" style="min-height:100px;" placeholder="Describe what students will learn and why this course is important…"></textarea>
+        </div>
+
+        <!-- MODULES -->
+        <div style="border-top:1px solid var(--gray-200);margin:24px 0 20px;"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <h3 style="font-family:'Source Serif 4',serif;font-size:18px;font-weight:700;margin:0;">Course Modules</h3>
+          <button type="button" onclick="addModule()" class="btn btn-blue btn-sm">+ Add Another Module</button>
+        </div>
+        <div id="modulesContainer"></div>
+
+        <div id="addCourseMsg" style="display:none;margin-bottom:12px;"></div>
+        <button onclick="submitNewCourse()" class="btn-auth" style="background:var(--gold);color:var(--gray-900);margin-top:8px;">Submit for Admin Review →</button>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div id="sec-students">
+      <div class="dash-greeting"><h1>My Students</h1></div>
+      <div class="empty-state"><div class="empty-icon">👩‍🎓</div><h3>No students yet</h3><p>Once your course is approved and students enrol, you'll see their progress here.</p></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="sec-analytics">
+      <div class="dash-greeting"><h1>Analytics</h1></div>
+      <div class="empty-state"><div class="empty-icon">📊</div><h3>Analytics available after publishing</h3><button onclick="showSection('addCourse')" class="btn btn-blue">Add Your First Course</button></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="sec-profile">
+      <div class="dash-greeting"><h1>Tutor Profile</h1></div>
+      <div style="background:#fff;border-radius:var(--r-lg);border:1px solid var(--gray-200);padding:32px;max-width:560px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+          <div id="profileAvatar" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#856404,var(--gold));color:#fff;font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;">T</div>
+          <div><div id="profileName" style="font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;"></div><div id="tutorBadge" class="dash-tutor-badge">Tutor, Pending Approval</div></div>
+        </div>
+        <div id="profileDetails"></div>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gray-100);"><a href="index.html" class="btn btn-danger btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.clear()">Sign Out</a></div>
+      </div>
+    </div>
+
+    <div id="sec-referrals">
+      <h2 class="section-title" style="margin-bottom:6px;">Refer Friends &amp; Grow Together</h2>
+      <p style="color:var(--text-mid);margin-bottom:28px;">Share your unique referral link with friends. Every woman you invite joins the EAW community!</p>
+      <div id="referralContent">
+        <div style="text-align:center;padding:40px;color:var(--text-light);">Loading your referral link…</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── XSS ESCAPE — applied to all user data before innerHTML ──
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function toggleSidebar() { document.getElementById('dashSidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open'); }
+function closeSidebar() { document.getElementById('dashSidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
+
+function showSection(section) {
+  document.querySelectorAll('[id^="sec-"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.sb-link').forEach(el => el.classList.remove('active'));
+  document.getElementById('sec-' + section).style.display = 'block';
+  const navBtn = document.getElementById('nav-' + section);
+  if (navBtn) navBtn.classList.add('active');
+  closeSidebar();
+  if (section === 'addCourse' && document.getElementById('modulesContainer').children.length === 0) initModules();
+  if (section === 'referrals') loadReferrals();
+}
+
+function handleCatChange(sel) {
+  document.getElementById('otherCatWrap').style.display = sel.value === 'Other' ? 'block' : 'none';
+}
+
+let thumbData = null, selectedEmoji = null;
+
+function previewThumb(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    thumbData = e.target.result; selectedEmoji = null;
+    const p = document.getElementById('thumbPreview'); p.src = thumbData; p.style.display = 'block';
+    document.getElementById('thumbZone').style.display = 'none';
+    document.getElementById('emojiPicker').style.display = 'none';
+    document.getElementById('selectedEmojiDisplay').style.display = 'none';
+    document.getElementById('clearThumbBtn').style.display = 'inline-block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectEmoji(emoji) {
+  selectedEmoji = emoji; thumbData = null;
+  document.getElementById('thumbPreview').style.display = 'none';
+  document.getElementById('thumbZone').style.display = 'none';
+  const d = document.getElementById('selectedEmojiDisplay'); d.textContent = emoji; d.style.display = 'block';
+  document.querySelectorAll('.emoji-opt').forEach(b => b.classList.toggle('selected', b.textContent.trim() === emoji));
+  document.getElementById('clearThumbBtn').style.display = 'inline-block';
+}
+
+function clearThumb() {
+  thumbData = null; selectedEmoji = null;
+  document.getElementById('thumbPreview').style.display = 'none';
+  document.getElementById('thumbFile').value = '';
+  document.getElementById('thumbZone').style.display = 'block';
+  document.getElementById('emojiPicker').style.display = 'flex';
+  document.getElementById('selectedEmojiDisplay').style.display = 'none';
+  document.getElementById('clearThumbBtn').style.display = 'none';
+  document.querySelectorAll('.emoji-opt').forEach(b => b.classList.remove('selected'));
+}
+
+// ── MODULE BUILDER ──
+let moduleCount = 0;
+const moduleData = {};
+
+function initModules() { moduleCount = 0; document.getElementById('modulesContainer').innerHTML = ''; addModule(); }
+
+function addModule() {
+  moduleCount++;
+  const n = moduleCount;
+  const container = document.getElementById('modulesContainer');
+  const div = document.createElement('div');
+  div.className = 'module-builder';
+  div.id = 'module-block-' + n;
+  div.innerHTML = `
+    <div class="module-builder-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="module-num-badge">${n}</div>
+        <span style="font-weight:700;font-size:15px;">Module ${n}</span>
+      </div>
+      ${n > 1 ? `<button type="button" class="remove-module-btn" onclick="removeModule(${n})">✕ Remove</button>` : ''}
+    </div>
+    <div class="form-group">
+      <label class="form-label">Module ${n} Title</label>
+      <input type="text" id="mod${n}Title" class="form-input" placeholder="e.g. Introduction / Getting Started">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Module ${n} Content</label>
+      <textarea id="mod${n}Content" class="form-input" style="min-height:80px;" placeholder="Describe what this module covers…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Module ${n} Media (optional)</label>
+      <div class="tab-sel">
+        <button type="button" class="active" onclick="setMediaTab(${n},'youtube',this)">▶️ YouTube</button>
+        <button type="button" onclick="setMediaTab(${n},'upload-video',this)">📹 Video</button>
+        <button type="button" onclick="setMediaTab(${n},'upload-image',this)">🖼️ Image</button>
+        <button type="button" onclick="setMediaTab(${n},'upload-pdf',this)">📄 PDF</button>
+        <button type="button" onclick="setMediaTab(${n},'gslides',this)">📊 Google Slides</button>
+        <button type="button" onclick="setMediaTab(${n},'none',this)">None</button>
+      </div>
+      <div id="mod${n}YoutubeWrap">
+        <input type="url" id="mod${n}YoutubeUrl" class="form-input" placeholder="https://youtube.com/watch?v=...">
+      </div>
+      <div id="mod${n}UploadVideoWrap" style="display:none;">
+        <div class="upload-zone" onclick="document.getElementById('mod${n}VideoFile').click()" style="margin-top:4px;">
+          <div style="font-size:24px;margin-bottom:4px;">📹</div>
+          <div style="font-weight:600;color:var(--blue);font-size:12px;">Click to upload a video file</div>
+          <div style="font-size:11px;color:var(--text-light);">MP4, MOV · Max 100MB recommended</div>
+          <input type="file" id="mod${n}VideoFile" accept="video/*" style="display:none;" onchange="handleMediaUpload(${n},'video',this)">
+        </div>
+        <div id="mod${n}VideoName" style="font-size:12px;color:var(--green);margin-top:4px;"></div>
+      </div>
+      <div id="mod${n}UploadImageWrap" style="display:none;">
+        <div class="upload-zone" onclick="document.getElementById('mod${n}ImageFile').click()" style="margin-top:4px;">
+          <div style="font-size:24px;margin-bottom:4px;">🖼️</div>
+          <div style="font-weight:600;color:var(--blue);font-size:12px;">Click to upload an image</div>
+          <div style="font-size:11px;color:var(--text-light);">PNG, JPG, GIF</div>
+          <input type="file" id="mod${n}ImageFile" accept="image/*" style="display:none;" onchange="handleMediaUpload(${n},'image',this)">
+        </div>
+        <img id="mod${n}ImagePreview" style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:var(--r-md);margin-top:8px;" alt="Preview">
+      </div>
+      <div id="mod${n}UploadPdfWrap" style="display:none;">
+        <div class="upload-zone" onclick="document.getElementById('mod${n}PdfFile').click()" style="margin-top:4px;">
+          <div style="font-size:24px;margin-bottom:4px;">📄</div>
+          <div style="font-weight:600;color:var(--blue);font-size:12px;">Click to upload a PDF document</div>
+          <div style="font-size:11px;color:var(--text-light);">PDF files · Lecture notes, worksheets, handouts</div>
+          <input type="file" id="mod${n}PdfFile" accept=".pdf,application/pdf" style="display:none;" onchange="handleMediaUpload(${n},'pdf',this)">
+        </div>
+        <div id="mod${n}PdfName" style="font-size:12px;color:var(--green);margin-top:4px;"></div>
+      </div>
+      <div id="mod${n}GSlidesWrap" style="display:none;margin-top:4px;">
+        <label class="form-label" style="font-size:12px;">Google Slides Share Link</label>
+        <input type="url" id="mod${n}GSlidesUrl" class="form-input" placeholder="https://docs.google.com/presentation/d/...">
+        <div style="font-size:11px;color:var(--text-light);margin-top:4px;">In Google Slides: File → Share → Publish to web → Copy link. Paste here.</div>
+      </div>
+    </div>`;
+  container.appendChild(div);
+  moduleData[n] = { mediaType: 'youtube' };
+}
+
+function removeModule(n) { const el = document.getElementById('module-block-' + n); if (el) el.remove(); }
+
+function setMediaTab(n, type, btn) {
+  btn.closest('.tab-sel').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (!moduleData[n]) moduleData[n] = {};
+  moduleData[n].mediaType = type;
+  const show = id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; };
+  const hide = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
+  ['YoutubeWrap','UploadVideoWrap','UploadImageWrap','UploadPdfWrap','GSlidesWrap'].forEach(s => hide('mod'+n+s));
+  if (type === 'youtube') show('mod'+n+'YoutubeWrap');
+  else if (type === 'upload-video') show('mod'+n+'UploadVideoWrap');
+  else if (type === 'upload-image') show('mod'+n+'UploadImageWrap');
+  else if (type === 'upload-pdf') show('mod'+n+'UploadPdfWrap');
+  else if (type === 'gslides') show('mod'+n+'GSlidesWrap');
+}
+
+function handleMediaUpload(n, type, input) {
+  const file = input.files[0]; if (!file) return;
+  if (type === 'video') {
+    document.getElementById('mod'+n+'VideoName').textContent = '✅ ' + file.name + ' (' + (file.size/1024/1024).toFixed(1) + ' MB)';
+  }
+  if (type === 'image') {
+    const reader = new FileReader();
+    reader.onload = e => { const p = document.getElementById('mod'+n+'ImagePreview'); if (p) { p.src = e.target.result; p.style.display = 'block'; } };
+    reader.readAsDataURL(file);
+  }
+  if (type === 'pdf') {
+    const nameEl = document.getElementById('mod'+n+'PdfName');
+    if (nameEl) nameEl.textContent = '✅ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB), PDF uploaded';
+    if (!moduleData[n]) moduleData[n] = {};
+    moduleData[n].pdfFile = file.name;
+  }
+}
+
+// ── PLATFORM COURSES ──
+const PLATFORM_COURSES = [
+  { id: 'mechanic', title: 'Female Mechanic Incubator', cat: 'Auto Mechanics', icon: '🔧', link: 'course-mechanic.html' },
+  { id: 'baking', title: 'Baking & Cooking Essentials', cat: 'Culinary Skills', icon: '🎂', link: 'course-baking.html' },
+  { id: 'etiquette', title: 'Social & Business Etiquette', cat: 'Business Skills', icon: '💼', link: 'course-etiquette.html' },
+  { id: 'entrepreneurship', title: 'Entrepreneurship & Business', cat: 'Business Skills', icon: '🚀', link: 'course-entrepreneurship.html' },
+  { id: 'soft-skills', title: 'Professional Soft Skills', cat: 'Professional Development', icon: '🤝', link: 'course-soft-skills.html' },
+  { id: 'digital-skills', title: 'Digital Skills & Productivity', cat: 'Tech & Digital', icon: '💻', link: 'course-digital-skills.html' },
+  { id: 'finance', title: 'Financial Literacy & Planning', cat: 'Finance', icon: '💰', link: 'course-finance.html' },
+  { id: 'coding', title: 'Intro to Coding & Web Dev', cat: 'Tech & Digital', icon: '👩‍💻', link: 'course-coding.html' },
+  { id: 'health', title: 'Health & Body Awareness', cat: 'Health & Wellness', icon: '💚', link: 'course-health.html' },
+  { id: 'sewing', title: 'Sewing & Fashion Design', cat: 'Creative Skills', icon: '🧵', link: 'course-sewing.html' },
+  { id: 'english', title: 'English Language & Communication', cat: 'Language', icon: '📖', link: 'course-english.html' },
+];
+
+function renderPlatformCourses() {
+  document.getElementById('platformCourses').innerHTML = PLATFORM_COURSES.map(cd => `
+    <div class="course-editor-card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="font-size:28px;">${cd.icon}</div>
+        <div style="flex:1;"><div style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;">${cd.title}</div><div style="font-size:13px;color:var(--text-light);">${cd.cat}</div></div>
+        <span class="approved-badge">✅ Live</span>
+        <a href="${cd.link}" target="_blank" class="btn btn-ghost btn-sm">Preview</a>
+        <button onclick="alert('To propose an edit, use Add New Course and reference the ${cd.id} course.')" class="btn btn-outline btn-sm">Propose Edit</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── SUBMIT ──
+function submitNewCourse() {
+  const title = document.getElementById('newCourseTitle').value.trim();
+  const catSel = document.getElementById('newCourseCat').value;
+  const desc = document.getElementById('newCourseDesc').value.trim();
+  let finalCat = catSel === 'Other' ? document.getElementById('otherCatInput').value.trim() : catSel;
+  if (catSel === 'Other' && !finalCat) { showMsg('error','Please enter a category name.'); return; }
+  if (!title || !desc) { showMsg('error','Please fill in the course title and description.'); return; }
+  if (!thumbData && !selectedEmoji) { showMsg('error','Please upload a course image or select an emoji icon.'); return; }
+
+  const modules = [];
+  for (let i = 1; i <= moduleCount; i++) {
+    if (!document.getElementById('module-block-' + i)) continue;
+    modules.push({ num: i, title: (document.getElementById('mod'+i+'Title')||{}).value||'', content: (document.getElementById('mod'+i+'Content')||{}).value||'' });
+  }
+
+  showMsg('success', `✅ Course submitted! "<em>${title}</em>" sent to admin for review.`);
+
+  const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
+  if (!user.submittedCourses) user.submittedCourses = [];
+  user.submittedCourses.push({ title, category: finalCat, description: desc, pricing: document.getElementById('newCoursePrice').value, modules: modules.length, status: 'pending', submittedAt: new Date().toISOString() });
+  localStorage.setItem('eaw_user', JSON.stringify(user));
+
+  // Push to admin queue
+  const ad = JSON.parse(localStorage.getItem('eaw_admin_data') || '{"tutorApplications":[],"courseSubmissions":[],"payments":[],"students":[]}');
+  ad.courseSubmissions.push({ id:'cs-'+Date.now(), tutorName: user.firstName+' '+(user.lastName||''), tutorEmail: user.email, title, category: finalCat, pricing: document.getElementById('newCoursePrice').value, description: desc, modules: modules.length, status: 'pending', submittedAt: new Date().toISOString() });
+  localStorage.setItem('eaw_admin_data', JSON.stringify(ad));
+
+  // Reset
+  document.getElementById('newCourseTitle').value = ''; document.getElementById('newCourseDesc').value = '';
+  clearThumb(); document.getElementById('modulesContainer').innerHTML = ''; moduleCount = 0; initModules();
+}
+
+function showMsg(type, html) {
+  const el = document.getElementById('addCourseMsg');
+  el.style.cssText = type === 'error' ? 'display:block;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:13px;' : 'display:block;background:var(--green-pale);border:1px solid var(--green);border-radius:var(--r-lg);padding:16px;font-size:14px;text-align:center;';
+  type === 'error' ? el.textContent = html : el.innerHTML = html;
+  el.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
+  if (!user.firstName) { window.location.href = 'login.html'; return; }
+  if (user.role === 'student') { window.location.href = 'student-dashboard.html'; return; }
+  if (user.role === 'admin') { window.location.href = 'admin-dashboard.html'; return; }
+
+  const fullName = user.firstName + (user.lastName ? ' ' + user.lastName : '');
+  const initial = user.firstName.charAt(0).toUpperCase();
+  document.getElementById('greetName').textContent = user.firstName;
+  document.getElementById('sidebarInitial').textContent = initial;
+  document.getElementById('sidebarName').textContent = fullName;
+  document.getElementById('profileAvatar').textContent = initial;
+  document.getElementById('profileName').textContent = fullName;
+
+  function applyApprovalUI(approved) {
+    document.getElementById('tutorRoleLabel').textContent = approved ? 'Tutor (Approved)' : 'Tutor (Pending Approval)';
+    document.getElementById('approvalStatus').textContent = approved ? 'Approved' : 'Pending';
+    document.getElementById('approvalIcon').textContent = approved ? '✅' : '⏳';
+    document.getElementById('tutorBadge').textContent = approved ? '✅ Approved Tutor' : 'Tutor, Pending Approval';
+    document.getElementById('pendingNotice').style.display = approved ? 'none' : 'block';
+    document.getElementById('approvedNotice').style.display = approved ? 'block' : 'none';
+  }
+
+  const isApproved = user.approved === true || user.role === 'tutor';
+  applyApprovalUI(isApproved);
+
+  // Sync with server, picks up admin approval without requiring re-login
+  fetch('api/user.php', { credentials: 'include' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.user && data.user.role === 'tutor') {
+        const stored = JSON.parse(localStorage.getItem('eaw_user') || '{}');
+        stored.role = 'tutor';
+        stored.approved = true;
+        localStorage.setItem('eaw_user', JSON.stringify(stored));
+        applyApprovalUI(true);
+      }
+    })
+    .catch(function() {});
+  document.getElementById('tStatCourses').textContent = (user.submittedCourses || []).length;
+  document.getElementById('profileDetails').innerHTML = `
+    <div style="display:flex;gap:12px;margin-bottom:10px;"><span style="font-size:11px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Name</span><span>${esc(fullName)}</span></div>
+    <div style="display:flex;gap:12px;margin-bottom:10px;"><span style="font-size:11px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Email</span><span>${esc(user.email)||'N/A'}</span></div>
+    <div style="display:flex;gap:12px;margin-bottom:10px;"><span style="font-size:11px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Expertise</span><span>${esc(user.expertise)||'N/A'}</span></div>`;
+
+  renderPlatformCourses();
+});
+
+// ── REFERRALS ──
+function _genRefCode(email) {
+  let h = 0;
+  for (let i = 0; i < email.length; i++) h = Math.imul(31, h) + email.charCodeAt(i) | 0;
+  return Math.abs(h).toString(36).toUpperCase().padStart(8,'0').slice(0,8);
+}
+
+function _renderReferralUI(code, count, referred) {
+  const el = document.getElementById('referralContent');
+  if (!el) return;
+  const link = `${location.origin}/signup.html?ref=${code}`;
+  el.innerHTML = `
+    <div style="background:linear-gradient(135deg,#1D4ED8,#0F766E);border-radius:var(--r-xl);padding:28px;color:#fff;margin-bottom:24px;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-bottom:8px;">Your Referral Link</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-size:13px;word-break:break-all;min-width:0;">${esc(link)}</div>
+        <button onclick="navigator.clipboard.writeText('${esc(link)}').then(()=>{this.textContent='✓ Copied!';setTimeout(()=>this.textContent='Copy Link',2000)})" style="background:#fff;color:#1D4ED8;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Copy Link</button>
+      </div>
+      <div style="margin-top:16px;font-size:13px;opacity:.8;">Your code: <strong>${esc(code)}</strong></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;">
+      <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--blue);">${count}</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Friends Invited</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--green);">🌍</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Growing Africa Together</div>
+      </div>
+    </div>
+    ${referred.length ? `
+      <h3 style="font-size:16px;margin-bottom:14px;">People You've Invited (${referred.length})</h3>
+      <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);overflow:hidden;">
+        ${referred.map(u => `<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--gray-100);">
+          <div style="width:38px;height:38px;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);font-size:15px;">${esc((u.first_name||u.firstName||'?')[0])}${esc((u.last_name||u.lastName||'?')[0])}</div>
+          <div><div style="font-weight:600;">${esc(u.first_name||u.firstName)} ${esc(u.last_name||u.lastName)}</div><div style="font-size:12px;color:var(--text-light);">Joined ${new Date(u.created_at||u.joinedAt||Date.now()).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div></div>
+        </div>`).join('')}
+      </div>` : `<div style="background:var(--gray-50);border:1.5px dashed var(--gray-300);border-radius:var(--r-lg);padding:32px;text-align:center;color:var(--text-mid);">
+        <div style="font-size:36px;margin-bottom:12px;">💌</div>
+        <div style="font-weight:600;margin-bottom:6px;">No referrals yet</div>
+        <div style="font-size:14px;">Share your link above to invite friends and grow the EAW community!</div>
+      </div>`}`;
+}
+
+async function loadReferrals() {
+  const el = document.getElementById('referralContent');
+  if (!el) return;
+
+  // Try server first
+  try {
+    const res = await fetch('api/referral.php', { credentials: 'include' });
+    const data = await res.json();
+    if (data.success) {
+      _renderReferralUI(data.referral_code, data.referred_count, data.referred);
+      return;
+    }
+  } catch(e) {}
+
+  // Fallback: localStorage-based referral
+  const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
+  if (!user.email) {
+    el.innerHTML = '<p style="color:var(--text-mid);padding:20px;">Please sign in to view your referral link.</p>';
+    return;
+  }
+  const key = 'eaw_ref_' + user.email;
+  let refData = JSON.parse(localStorage.getItem(key) || '{}');
+  if (!refData.code) {
+    refData = { code: _genRefCode(user.email), referred: [] };
+    localStorage.setItem(key, JSON.stringify(refData));
+  }
+  _renderReferralUI(refData.code, (refData.referred||[]).length, refData.referred||[]);
+}
+</script>
+<script src="eaw-common.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof eawSearch === 'function') eawSearch('', 'dashSearchResults');
+  });
+</script>
+</body>
+</html>

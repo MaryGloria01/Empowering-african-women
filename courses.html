@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Courses | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="stories.html">Stories</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div style="padding-top:72px;background:linear-gradient(145deg,var(--navy),var(--blue-dark));color:#fff;padding-bottom:60px;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 80% 50%,rgba(37,99,235,.3) 0%,transparent 65%);pointer-events:none;"></div>
+  <div style="max-width:1280px;margin:0 auto;padding:56px 24px 0;position:relative;z-index:1;">
+    <div style="font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.65);margin-bottom:12px;">EAW Course Library</div>
+    <h1 style="font-family:'Source Serif 4',serif;font-size:clamp(34px,4.2vw,56px);font-weight:900;margin-bottom:16px;color:#fff;line-height:1.1;">All Courses, All Free</h1>
+    <p style="font-size:19px;color:rgba(255,255,255,.85);max-width:640px;line-height:1.7;">Practical skills for real impact. All EAW courses are taught by expert practitioners and come with official certificates upon completion, at no cost.</p>
+    <div style="display:flex;gap:20px;margin-top:28px;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px 22px;text-align:center;">
+        <div style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:900;color:#FCD34D;">11</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Courses</div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px 22px;text-align:center;">
+        <div style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:900;color:#FCD34D;">500+</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Women Trained</div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px 22px;text-align:center;">
+        <div style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:900;color:#34D399;">100%</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Free</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="filter-row" id="filterRow">
+    <button class="filter-btn active" onclick="filterCourses('all',this)">All Courses</button>
+    <button class="filter-btn" onclick="filterCourses('mechanics',this)">Auto Mechanics</button>
+    <button class="filter-btn" onclick="filterCourses('culinary',this)">Culinary Skills</button>
+    <button class="filter-btn" onclick="filterCourses('business',this)">Business</button>
+    <button class="filter-btn" onclick="filterCourses('free',this)">Free</button>
+    <button class="filter-btn" onclick="filterCourses('skills',this)">Soft Skills</button>
+    <button class="filter-btn" onclick="filterCourses('tech',this)">Tech &amp; Coding</button>
+    <button class="filter-btn" onclick="filterCourses('finance',this)">Finance</button>
+    <button class="filter-btn" onclick="filterCourses('health',this)">Health</button>
+    <button class="filter-btn" onclick="filterCourses('creative',this)">Creative</button>
+    <button class="filter-btn" onclick="filterCourses('language',this)">Language</button>
+  </div>
+
+  <div class="courses-grid" id="coursesGrid">
+
+    <a href="course-mechanic.html" class="course-card" data-cat="mechanics" data-tier="free" data-course="mechanic">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+        <img src="Pictures/Female_Mechanic_Incubator.jpg" alt="Female Mechanic Incubator">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🤝</span> DT Autocafe Ltd, Lagos</div>
+        <div class="cc-title">Empowering Women in Africa, Female Mechanic Incubator</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.9</span> · 4 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">The flagship EAW course. Follow Florence's journey from unemployment to running her own workshop. Includes oil changes, tyre maintenance, brake inspection and more.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+<!--
+    <a href="course-mechanic.html" class="course-card" data-cat="mechanics" data-tier="free">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#0d1b2a,#1b2838);">
+        <span style="font-size:48px;">🚗</span>
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🤝</span> DT Autocafe Ltd, Lagos</div>
+        <div class="cc-title">AutoCare 101 with Iria Florence</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.8</span> · 3 Modules · Certificate</div>
+        <p style="margin-top:8px;">Practical car maintenance fundamentals. Learn to check oil levels, coolant, tyres, and brakes, skills every woman should have.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+	-->
+<!--
+    <a href="course-mechanic.html" class="course-card" data-cat="mechanics" data-tier="free">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#b22222,#8b0000);">
+        <span style="font-size:48px;">🔥</span>
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🤝</span> DT Autocafe Ltd, Lagos</div>
+        <div class="cc-title">3 Ways to Prevent Car Fires</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.7</span> · 2 Modules · Certificate</div>
+        <p style="margin-top:8px;">Learn the causes of car fires, 3 proven prevention methods, emergency response techniques, and essential safety equipment.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    -->
+	</a>
+
+    <a href="course-baking.html" class="course-card" data-cat="culinary" data-tier="free" data-course="baking">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#7c3f00,#b45309);">
+        <img src="Pictures/Baking_&_Cooking_Essentials.jpg" alt="Baking & Cooking Essentials">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><img src="ebere.jpg" alt="Ebere" style="width:18px;height:18px;border-radius:50%;object-fit:cover;"> Ebere Irrechukwu</div>
+        <div class="cc-title">Baking & Cooking Essentials</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.9</span> · 5 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">9 complete cake recipes (Carrot, Red Velvet, Coconut, Chocolate & more), healthy juices, Nigerian rice meals, and healthier baking tips.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-etiquette.html" class="course-card" data-cat="business" data-tier="free" data-course="etiquette">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#0F172A,#1D4ED8);">
+        <img src="Pictures/Social_&_Business_Etiquette.jpg" alt="Social & Business Etiquette">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>👩‍💼</span> Oluchi Arinze</div>
+        <div class="cc-title">Social & Business Etiquette for Professionals</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.9</span> · 10 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">Taught by an image consultant and Managing Director. Covers boardroom etiquette, dining skills, cross-cultural communication, digital professionalism, and building your personal brand.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-entrepreneurship.html" class="course-card" data-cat="business" data-tier="free" data-course="entrepreneurship">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#1e3a8a,#2563EB);">
+        <img src="Pictures/Business_&_Entrepreneurship.jpg" alt="Business & Entrepreneurship">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> Crash Course by Complexly</div>
+        <div class="cc-title">Business &amp; Entrepreneurship</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.8</span> · 6 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">From idea to income, 17 Crash Course video lessons on business models, competition, customer development, sales, and scaling your business.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-soft-skills.html" class="course-card" data-cat="skills" data-tier="free" data-course="soft-skills">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#0F766E,#14B8A6);">
+        <img src="Pictures/Professional_Soft_Skills.jpg" alt="Professional Soft Skills">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> Crash Course by Complexly</div>
+        <div class="cc-title">Professional Soft Skills</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.9</span> · 5 Modules · Certificate · All Levels</div>
+        <p style="margin-top:8px;">CV writing, job interviews, salary negotiation, leadership and conflict resolution, 17 video lessons covering every soft skill you need.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-digital-skills.html" class="course-card" data-cat="tech" data-tier="free" data-course="digital-skills">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#1e1b4b,#4338ca);">
+        <img src="Pictures/Computer_Science_&_Digital_Skills.jpg" alt="Computer Science & Digital Skills">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> Crash Course by Complexly</div>
+        <div class="cc-title">Computer Science &amp; Digital Skills</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.8</span> · 5 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">How computers work, the internet, cybersecurity and AI, 15 Crash Course Computer Science lessons for the digital age.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-finance.html" class="course-card" data-cat="finance" data-tier="free" data-course="finance">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#14532d,#16a34a);">
+        <img src="Pictures/Financial_Literacy.jpg" alt="Financial Literacy">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> Crash Course by Complexly</div>
+        <div class="cc-title">Financial Literacy &amp; Economics</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.8</span> · 5 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">Supply &amp; demand, inflation, banking, income inequality and global trade, 15 Crash Course Economics lessons for financial empowerment.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-coding.html" class="course-card" data-cat="tech" data-tier="free" data-course="coding">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#0c1445,#1D4ED8);">
+        <img src="Pictures/Coding_&_Web_Development.jpg" alt="Coding & Web Development">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> freeCodeCamp.org</div>
+        <div class="cc-title">Coding &amp; Web Development</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.9</span> · 4 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">Build real websites from scratch. Three full-length freeCodeCamp courses covering HTML, CSS and 20+ hours of web development training.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-health.html" class="course-card" data-cat="health" data-tier="free" data-course="health">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#064e3b,#059669);">
+        <img src="Pictures/Health _&_Body_Awareness.jpg" alt="Health & Body Awareness">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> Crash Course by Complexly</div>
+        <div class="cc-title">Health &amp; Body Awareness</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.8</span> · 5 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">Understand your own body, skin, nervous system, immune system, nutrition and metabolism through 13 Crash Course Anatomy &amp; Physiology lessons.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-sewing.html" class="course-card" data-cat="creative" data-tier="free" data-course="sewing">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#4a044e,#7e22ce);">
+        <img src="Pictures/Sewing_&_Fashion_Design.jpg" alt="Sewing & Fashion Design">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> Professor Pincushion &amp; Sew Very Easy</div>
+        <div class="cc-title">Sewing &amp; Fashion Design</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.7</span> · 4 Modules · Certificate · Beginner</div>
+        <p style="margin-top:8px;">Learn to sew from scratch, from threading a needle to building your first garment, guided by YouTube's most popular sewing instructors.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+    <a href="course-english.html" class="course-card" data-cat="language" data-tier="free" data-course="english">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);">
+        <img src="Pictures/English_Language_&_Communication.jpg" alt="English Language & Communication">
+        <span class="cc-badge badge-free">Free</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-org"><span>🎓</span> BBC Learning English &amp; mmmEnglish</div>
+        <div class="cc-title">English Language &amp; Communication</div>
+        <div class="cc-meta"><span class="cc-rating">★ 4.8</span> · 4 Modules · Certificate · All Levels</div>
+        <p style="margin-top:8px;">Build your English speaking, writing and professional communication skills with curated lessons from BBC Learning English, mmmEnglish and more.</p>
+      </div>
+      <div class="cc-footer"><span style="font-weight:700;color:var(--green);">Free</span><span class="btn btn-blue btn-sm">Enrol Now</span></div>
+    </a>
+
+  </div>
+
+  <div id="noResults" style="display:none;text-align:center;padding:48px;">
+    <div style="font-size:48px;margin-bottom:16px;">🔍</div>
+    <h3 style="font-family:'Source Serif 4',serif;margin-bottom:8px;">No courses in this category yet</h3>
+    <p style="color:var(--text-mid);">Check back soon, new courses are added regularly!</p>
+  </div>
+</section>
+
+<section style="background:var(--blue);color:#fff;padding:56px 24px;text-align:center;">
+  <div style="max-width:600px;margin:0 auto;">
+    <h2 style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:700;margin-bottom:14px;color:#fff;">Are you an expert in your field?</h2>
+    <p style="font-size:16px;color:rgba(255,255,255,.88);margin-bottom:24px;">Join EAW as a tutor and share your knowledge with young African women. All tutors are subject to admin approval.</p>
+    <a href="tutor-apply.html" class="btn btn-white btn-lg">Apply to Teach →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="display:inline-flex;">
+        <img src="eaw_icon.png" alt="EAW" style="height:40px;filter:brightness(0) invert(1);">
+        <span class="logo-text" style="color:#fff;">Empowering<br>African Women</span>
+      </div>
+      <p>A digital platform empowering young African women through vocational training, business education, and community mentorship. Registered as DBTWTEi, Nigeria.</p>
+      <div class="footer-socials">
+        <a href="https://youtube.com/@empoweringafricanwomen9947" target="_blank" class="footer-social-link">📺 YouTube</a>
+        <a href="https://twitter.com/Digitaltutelage" target="_blank" class="footer-social-link">🐦 Twitter</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Courses</h4>
+      <a href="courses.html">All Courses →</a>
+      <a href="course-mechanic.html">Female Mechanic Incubator</a>
+      <a href="course-baking.html">Baking & Cooking</a>
+      <a href="course-etiquette.html">Business Etiquette</a>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="about.html">About EAW</a>
+      <a href="stories.html">Student Stories</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="tutor-apply.html">Become a Tutor</a>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="login.html">Sign In</a>
+      <a href="signup.html">Join for Free</a>
+      <a href="student-dashboard.html">Student Dashboard</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <span>Km 22 LEKKI Epe Expressway, Ajah, Lagos</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('hamburger')?.addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+
+function filterCourses(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let visible = 0;
+  document.querySelectorAll('.course-card').forEach(card => {
+    const show = filter === 'all' || card.dataset.cat === filter || card.dataset.tier === filter;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+
+// URL param filter
+const cat = new URLSearchParams(window.location.search).get('cat');
+if (cat) {
+  const btns = document.querySelectorAll('.filter-btn');
+  btns.forEach(b => { if (b.textContent.toLowerCase().includes(cat.replace('mechanics','auto').replace('culinary','culinary').toLowerCase())) filterCourses(cat, b); });
+}
+
+// ── ENROLLMENT CONFIRMATION MODAL ──
+const modalHTML = `
+<div id="enrollModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9999;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;max-width:440px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.22);overflow:hidden;animation:modalIn .22s ease;">
+    <div style="background:linear-gradient(135deg,#0F172A,#1E3A8A);padding:28px 28px 24px;text-align:center;">
+      <div style="font-size:42px;margin-bottom:10px;">🎓</div>
+      <h3 id="modalTitle" style="font-family:'Source Serif 4',serif;color:#fff;font-size:20px;font-weight:800;margin-bottom:6px;"></h3>
+      <p style="color:rgba(255,255,255,.75);font-size:13px;">Free course · Certificate on completion</p>
+    </div>
+    <div style="padding:24px 28px 28px;">
+      <p style="color:#475569;font-size:14px;line-height:1.7;margin-bottom:20px;">You're about to enroll in this course for <strong style="color:#059669;">free</strong>. Once enrolled, you can start learning immediately and track your progress from your dashboard.</p>
+      <div style="display:flex;gap:10px;flex-direction:column;">
+        <button id="modalConfirm" style="width:100%;padding:14px;background:linear-gradient(135deg,#1D4ED8,#2563EB);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">✓ Yes, Enrol Me, It's Free!</button>
+        <button id="modalCancel" style="width:100%;padding:13px;background:#F1F5F9;color:#475569;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">← Back to Courses</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="removeModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9999;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;max-width:440px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.22);overflow:hidden;animation:modalIn .22s ease;">
+    <div style="background:linear-gradient(135deg,#7F1D1D,#DC2626);padding:28px 28px 24px;text-align:center;">
+      <div style="font-size:42px;margin-bottom:10px;">🗑️</div>
+      <h3 id="removeModalTitle" style="font-family:'Source Serif 4',serif;color:#fff;font-size:20px;font-weight:800;margin-bottom:6px;"></h3>
+      <p style="color:rgba(255,255,255,.75);font-size:13px;">This action can be undone by re-enrolling</p>
+    </div>
+    <div style="padding:24px 28px 28px;">
+      <p style="color:#475569;font-size:14px;line-height:1.7;margin-bottom:20px;">Are you sure you want to remove this course from your list? Your progress will be lost, but you can always enrol again for free.</p>
+      <div style="display:flex;gap:10px;flex-direction:column;">
+        <button id="removeConfirm" style="width:100%;padding:14px;background:linear-gradient(135deg,#DC2626,#EF4444);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Yes, Remove Course</button>
+        <button id="removeCancel" style="width:100%;padding:13px;background:#F1F5F9;color:#475569;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">← Keep Course</button>
+      </div>
+    </div>
+  </div>
+</div>
+<style>@keyframes modalIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}</style>`;
+document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+const enrollModal = document.getElementById('enrollModal');
+const modalConfirm = document.getElementById('modalConfirm');
+const modalCancel = document.getElementById('modalCancel');
+const removeModal = document.getElementById('removeModal');
+const removeConfirm = document.getElementById('removeConfirm');
+const removeCancelBtn = document.getElementById('removeCancel');
+let _pendingCourseId = null, _pendingCourseUrl = null, _pendingCard = null;
+let _removePendingId = null, _removePendingCard = null, _removePendingBtn = null, _removePendingRemoveBtn = null;
+
+// ── Remove modal logic ──
+function showRemoveModal(courseId, title, card, btn, removeBtn) {
+  _removePendingId = courseId; _removePendingCard = card; _removePendingBtn = btn; _removePendingRemoveBtn = removeBtn;
+  document.getElementById('removeModalTitle').textContent = title;
+  removeModal.style.display = 'flex';
+}
+removeModal.addEventListener('click', e => { if (e.target === removeModal) removeModal.style.display = 'none'; });
+removeCancelBtn.addEventListener('click', () => { removeModal.style.display = 'none'; });
+removeConfirm.addEventListener('click', () => {
+  removeModal.style.display = 'none';
+  const user = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+  if (user && user.enrollments) {
+    user.enrollments = user.enrollments.filter(en => en.courseId !== _removePendingId);
+    localStorage.setItem('eaw_user', JSON.stringify(user));
+    const _users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+    const _idx = _users.findIndex(x => x.email === user.email);
+    if (_idx >= 0) { _users[_idx].enrollments = user.enrollments; localStorage.setItem('eaw_users', JSON.stringify(_users)); }
+  }
+  _enrolledSlugs = _enrolledSlugs.filter(s => s !== _removePendingId);
+  try { fetch('api/enroll.php', {method:'DELETE',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:_removePendingId})}).catch(function(){}); } catch(e) {}
+  if (_removePendingBtn) {
+    _removePendingBtn.textContent = 'Enrol Now';
+    _removePendingBtn.className = 'btn btn-blue btn-sm';
+    _removePendingBtn.style.background = '';
+    _removePendingBtn.style.backgroundImage = '';
+    _removePendingBtn.style.color = '';
+  }
+  if (_removePendingRemoveBtn) _removePendingRemoveBtn.remove();
+});
+
+function showEnrollModal(courseId, courseUrl, title, card) {
+  _pendingCourseId = courseId; _pendingCourseUrl = courseUrl; _pendingCard = card;
+  document.getElementById('modalTitle').textContent = title;
+  enrollModal.style.display = 'flex';
+}
+enrollModal.addEventListener('click', e => { if (e.target === enrollModal) enrollModal.style.display = 'none'; });
+modalCancel.addEventListener('click', () => { enrollModal.style.display = 'none'; });
+// Enrolled slugs loaded from server
+let _enrolledSlugs = [];
+
+modalConfirm.addEventListener('click', async () => {
+  enrollModal.style.display = 'none';
+  const user = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+  if (!user) { window.location.href = 'signup.html?redirect=' + encodeURIComponent(_pendingCourseUrl); return; }
+  // Save enrollment to localStorage immediately
+  if (!user.enrollments) user.enrollments = [];
+  if (!user.enrollments.find(en => en.courseId === _pendingCourseId)) {
+    user.enrollments.push({ courseId: _pendingCourseId, enrolledAt: new Date().toISOString() });
+    localStorage.setItem('eaw_user', JSON.stringify(user));
+    const _users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+    const _idx = _users.findIndex(x => x.email === user.email);
+    if (_idx >= 0) { _users[_idx].enrollments = user.enrollments; localStorage.setItem('eaw_users', JSON.stringify(_users)); }
+  }
+  _enrolledSlugs.push(_pendingCourseId);
+  refreshEnrolButtons();
+  try {
+    await fetch('api/enroll.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ course: _pendingCourseId })
+    });
+  } catch (err) { /* proceed anyway */ }
+
+  window.location.href = _pendingCourseUrl;
+});
+
+// ── Intercept ALL card clicks (entire card, not just the button) ──
+document.querySelectorAll('.course-card').forEach(card => {
+  card.addEventListener('click', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    const courseId = card.dataset.course;
+    const courseUrl = card.getAttribute('href');
+    const user = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+    // Already enrolled → go straight to course
+    if (_enrolledSlugs.includes(courseId)) { window.location.href = courseUrl; return; }
+    // Not logged in → signup
+    if (!user) { window.location.href = 'signup.html?redirect=' + encodeURIComponent(courseUrl); return; }
+    // Show confirmation modal
+    const title = card.querySelector('.cc-title')?.textContent || 'This Course';
+    showEnrollModal(courseId, courseUrl, title, card);
+  });
+});
+
+// ── Load enrolled courses and update buttons ──
+function getEnrolledFromLocal() {
+  const user = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+  if (!user || !user.enrollments) return [];
+  return user.enrollments.map(e => e.courseId);
+}
+
+let _completedSlugs = new Set();
+
+function loadCompletedFromLocal() {
+  const user = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+  if (!user) return;
+  (user.certificates || []).forEach(c => _completedSlugs.add(c.id));
+  (user.enrollments || []).forEach(e => { if (e.quizPassed || e.progress >= 100) _completedSlugs.add(e.courseId); });
+}
+
+function refreshEnrolButtons() {
+  document.querySelectorAll('.course-card').forEach(card => {
+    const btn = card.querySelector('.cc-footer .btn');
+    if (!btn) return;
+    const courseId = card.dataset.course;
+    const footer = card.querySelector('.cc-footer');
+    const existingRemove = footer?.querySelector('.remove-btn');
+    // Always strip Remove from completed courses first
+    if (_completedSlugs.has(courseId)) {
+      btn.className = 'btn btn-sm';
+      btn.style.background = '#059669'; btn.style.backgroundImage = 'none'; btn.style.color = '#fff';
+      btn.textContent = '✓ Completed';
+      footer?.querySelectorAll('.remove-btn').forEach(b => b.remove());
+    } else if (_enrolledSlugs.includes(courseId)) {
+      btn.className = 'btn btn-sm';
+      btn.textContent = 'Continue →'; btn.style.background = '#1D4ED8'; btn.style.backgroundImage = 'none'; btn.style.color = '#fff';
+      if (footer && !existingRemove) {
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.style.cssText = 'background:#FEE2E2;color:#DC2626;border:1px solid #FECACA;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-weight:600;margin-left:4px;';
+        removeBtn.textContent = '× Remove';
+        removeBtn.onclick = function(e) {
+          e.stopPropagation(); e.preventDefault();
+          const title = card.querySelector('.cc-title')?.textContent || 'This Course';
+          showRemoveModal(courseId, title, card, btn, removeBtn);
+        };
+        footer.appendChild(removeBtn);
+      }
+    } else {
+      btn.className = 'btn btn-blue btn-sm';
+      btn.textContent = 'Enrol Now'; btn.style.background = ''; btn.style.backgroundImage = ''; btn.style.color = '';
+      if (existingRemove) existingRemove.remove();
+    }
+  });
+}
+
+// Show localStorage immediately for fast render
+_enrolledSlugs = getEnrolledFromLocal();
+loadCompletedFromLocal();
+refreshEnrolButtons();
+// Fetch server data — server is authoritative for cross-device sync
+(async function() {
+  try {
+    const [enrollRes, certRes] = await Promise.all([
+      fetch('api/enroll.php',     { credentials: 'include' }),
+      fetch('api/certificate.php',{ credentials: 'include' })
+    ]);
+    const enrollData = await enrollRes.json();
+    const certData   = await certRes.json();
+    // Server enrollment list overrides localStorage (handles enroll/unenroll on other devices)
+    if (enrollData.enrollments) _enrolledSlugs = enrollData.enrollments;
+    if (certData.certificates)  certData.certificates.forEach(c => _completedSlugs.add(c.id));
+    refreshEnrolButtons();
+  } catch(e) {} // offline — keep localStorage state
+})();
+</script>
+
+<script>
+// ── Persistent session nav update ──
+(function() {
+  try {
+    const user = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+    if (user && user.firstName) {
+      document.addEventListener('DOMContentLoaded', function() {
+        const navCta = document.querySelector('.nav-cta');
+        if (navCta) {
+          const dashLink = user.role === 'tutor' || user.role === 'tutor-pending'
+            ? 'tutor-dashboard.html'
+            : 'student-dashboard.html';
+          navCta.innerHTML = `<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a>
+            <a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;
+        }
+      });
+    }
+  } catch(e) {}
+})();
+</script>
+<script src="eaw-common.js"></script>
+</body>
+</html>

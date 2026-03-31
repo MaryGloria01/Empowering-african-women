@@ -1,0 +1,165 @@
+Options -Indexes
+
+# ── Force HTTPS ───────────────────────────────────────────────────────────────
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── Security Headers ──────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always unset X-Powered-By
+  Header always unset Server
+  # Content-Security-Policy — restrict where scripts/styles/media can load from
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.emailjs.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self'; connect-src 'self' https://api.emailjs.com https://eaw-otp-worker.empoweringafricanwomen.workers.dev; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
+</IfModule>
+
+# ── Protect sensitive files from direct access ────────────────────────────────
+<FilesMatch "\.(env|sql|log|sh|bak|git)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+RedirectMatch 403 /\.git
+RedirectMatch 403 /\.env
+
+# ── Custom error pages ────────────────────────────────────────────────────────
+ErrorDocument 404 /404.html
+# 414 (Request-URI Too Large) → redirect to homepage so users don't see a blank screen
+ErrorDocument 414 /home
+
+# ── PHP Session hardening (Apache mod_php) ────────────────────────────────────
+# Prevents PHP from appending ?PHPSESSID=... to URLs on slow/cookie-less connections
+<IfModule mod_php.c>
+  php_flag session.use_trans_sid   Off
+  php_flag session.use_only_cookies On
+</IfModule>
+
+# ── Homepage: / → /home ──────────────────────────────────────────────────────
+# Direct rule matching is more reliable than THE_REQUEST on LiteSpeed
+RewriteRule ^$ /home [R=301,L]
+
+# /index or /index.html → /home
+RewriteRule ^index(\.html)?$ /home [R=301,L]
+
+# Internally serve index.html when /home is requested (must come before generic rules)
+RewriteRule ^home$ index.html [L]
+
+# ── Remove .html extension from all other URLs ────────────────────────────────
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# If the request is not a real file or directory, try adding .html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^.]+)$ $1.html [L]
+
+# Handle trailing slashes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [R=301,L]
+
+# ── GZIP Compression ─────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font
+  AddOutputFilterByType DEFLATE application/x-font-opentype
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-truetype
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  Header append Vary User-Agent
+</IfModule>
+
+# ── Browser Caching ───────────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+
+  # HTML — short cache so updates are picked up quickly
+  ExpiresByType text/html "access plus 1 hour"
+
+  # CSS and JS — 1 year (use versioning for updates)
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+
+  # Images — 1 year
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType image/ico "access plus 1 year"
+
+  # Fonts — 1 year
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff "access plus 1 year"
+  ExpiresByType application/font-woff2 "access plus 1 year"
+
+  # API/data — no cache
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType application/xml "access plus 0 seconds"
+</IfModule>
+
+# ── Cache-Control Headers ─────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|svg|js|css|woff|woff2|ttf|otf)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
+  </FilesMatch>
+
+  <FilesMatch "\.(php)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+
+  Header unset ETag
+</IfModule>
+
+# Disable ETags
+FileETag None
+
+# ── LiteSpeed Cache (Hostinger) ───────────────────────────────────────────────
+<IfModule LiteSpeed>
+  CacheEnable public /
+  CacheLookup on
+</IfModule>
+
+# ── Prevent Hotlinking ────────────────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTP_REFERER} !^$
+  RewriteCond %{HTTP_REFERER} !^https?://(www\.)?empoweringafricanwomen\.com [NC]
+  RewriteCond %{HTTP_REFERER} !^https?://(www\.)?google\. [NC]
+  RewriteCond %{HTTP_REFERER} !^https?://(www\.)?facebook\. [NC]
+  RewriteCond %{HTTP_REFERER} !^https?://(www\.)?instagram\. [NC]
+  RewriteRule \.(jpg|jpeg|png|gif|webp)$ - [F,NC,L]
+</IfModule>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Final Assessment, Social & Business Etiquette for Professionals | EAW</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    /* ── Quiz-specific styles ── */
+    .quiz-wrap { max-width: 780px; margin: 0 auto; padding: 40px 24px 60px; }
+    .quiz-hero { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: #fff; padding: 48px 24px 36px; text-align: center; }
+    .quiz-hero h1 { color: #fff; font-size: clamp(22px,3vw,32px); margin-bottom: 10px; }
+    .quiz-hero p { color: rgba(255,255,255,.88); font-size: 16px; max-width: 560px; margin: 0 auto 20px; }
+    .quiz-meta { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,.8); }
+    .quiz-meta span { background: rgba(255,255,255,.15); padding: 6px 14px; border-radius: 99px; }
+
+    /* Progress */
+    .quiz-progress-bar { background: var(--gray-200); height: 8px; border-radius: 99px; margin-bottom: 32px; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: var(--blue); border-radius: 99px; transition: width .4s ease; }
+    .quiz-progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-mid); margin-bottom: 6px; }
+
+    /* Question card */
+    .question-card { background: #fff; border: 1.5px solid var(--gray-200); border-radius: 20px; padding: 32px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.06); display: none; }
+    .question-card.active { display: block; }
+    .question-num { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--blue); margin-bottom: 8px; }
+    .question-text { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 24px; line-height: 1.4; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option-btn { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border: 2px solid var(--gray-200); border-radius: 14px; background: #fff; cursor: pointer; font-size: 15px; font-family: 'Source Sans 3', sans-serif; color: var(--text); text-align: left; transition: all .2s; }
+    .option-btn:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-pale); }
+    .option-btn .opt-letter { width: 32px; height: 32px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; color: var(--gray-700); }
+    .option-btn.selected { border-color: var(--blue); background: var(--blue-light); }
+    .option-btn.selected .opt-letter { background: var(--blue); color: #fff; }
+    .option-btn.correct { border-color: var(--green); background: var(--green-pale); }
+    .option-btn.correct .opt-letter { background: var(--green); color: #fff; }
+    .option-btn.wrong { border-color: var(--red); background: #fdf2f2; }
+    .option-btn.wrong .opt-letter { background: var(--red); color: #fff; }
+    .option-btn:disabled { cursor: default; }
+
+    /* Feedback */
+    .feedback { display: none; margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
+    .feedback.show { display: block; }
+    .feedback.correct-fb { background: var(--green-pale); border: 1px solid var(--green); color: #0a6644; }
+    .feedback.wrong-fb { background: #fdf2f2; border: 1px solid var(--red); color: #7a1c1c; }
+
+    /* Navigation */
+    .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+    .quiz-nav-dots { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .q-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-300); transition: background .2s; cursor: pointer; }
+    .q-dot.answered-correct { background: var(--green); }
+    .q-dot.answered-wrong { background: var(--red); }
+    .q-dot.current { background: var(--blue); transform: scale(1.3); }
+
+    /* Results screen */
+    #resultsScreen { display: none; }
+    .result-circle { width: 160px; height: 160px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 24px; border: 8px solid; }
+    .result-circle.pass { border-color: var(--green); background: var(--green-pale); }
+    .result-circle.fail { border-color: var(--red); background: #fdf2f2; }
+    .result-score { font-family: 'Source Serif 4', serif; font-size: 48px; font-weight: 700; line-height: 1; }
+    .result-circle.pass .result-score { color: var(--green); }
+    .result-circle.fail .result-score { color: var(--red); }
+    .result-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .result-circle.pass .result-label { color: var(--green); }
+    .result-circle.fail .result-label { color: var(--red); }
+
+    /* Review */
+    .review-item { background: #fff; border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 20px 24px; margin-bottom: 14px; }
+    .review-item.r-correct { border-color: var(--green); }
+    .review-item.r-wrong { border-color: var(--red); }
+    .review-q { font-weight: 700; font-size: 15px; margin-bottom: 8px; color: var(--gray-900); }
+    .review-your { font-size: 13px; color: var(--red); }
+    .review-correct-ans { font-size: 13px; color: var(--green); font-weight: 700; }
+    .review-explain { font-size: 13px; color: var(--text-mid); margin-top: 6px; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="course-etiquette.html">← Back to Course</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- QUIZ HERO -->
+<div class="quiz-hero">
+  <div class="breadcrumb"><a href="course-etiquette.html">Social & Business Etiquette</a> › Final Assessment</div>
+  <h1>📝 Final Assessment</h1>
+  <p>Test your knowledge from all 4 modules. Score 7/10 (70%) or above to earn your official EAW Certificate.</p>
+  <div class="quiz-meta">
+    <span>🔟 10 Questions</span>
+    <span>⏱ ~10 minutes</span>
+    <span>🎯 Pass mark: 70%</span>
+    <span>♻️ Unlimited retakes</span>
+  </div>
+</div>
+
+<!-- QUIZ BODY -->
+<div class="quiz-wrap">
+
+  <!-- START SCREEN -->
+  <div id="startScreen" style="text-align:center;padding:40px 0;">
+    <div style="font-size:72px;margin-bottom:20px;">💼</div>
+    <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
+    <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers professional dressing, communication, boardroom conduct, dining etiquette, and personal branding from all 10 modules.</p>
+    <div style="background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;">
+      <div style="font-weight:700;margin-bottom:10px;color:var(--blue);">Before you start:</div>
+      <div style="font-size:14px;color:var(--text-mid);line-height:2;">
+        ✅ Answer all 10 questions<br>
+        ✅ Each question has one correct answer<br>
+        ✅ You'll see explanations after each answer<br>
+        ✅ Score 7+ to unlock your certificate<br>
+        ✅ You can retake as many times as needed
+      </div>
+    </div>
+    <button onclick="startQuiz()" class="btn btn-blue btn-lg">Start Assessment →</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" style="display:none;">
+    <div class="quiz-progress-label">
+      <span id="progressLabel">Question 1 of 10</span>
+      <span id="scoreLabel">Score: 0</span>
+    </div>
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div class="quiz-nav">
+      <div class="quiz-nav-dots" id="navDots"></div>
+      <button id="nextBtn" onclick="nextQuestion()" class="btn btn-blue" style="display:none;">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="resultsScreen">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="result-circle" id="resultCircle">
+        <div class="result-score" id="resultScore">0/10</div>
+        <div class="result-label" id="resultLabel">Score</div>
+      </div>
+      <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:8px;" id="resultHeading">Assessment Complete</h2>
+      <p style="color:var(--text-mid);font-size:16px;max-width:500px;margin:0 auto;" id="resultMessage"></p>
+
+      <div id="certBtnWrap" style="display:none;margin-top:28px;">
+        <div style="background:linear-gradient(135deg,#0F172A,#1E3A8A);border-radius:20px;padding:28px 32px;max-width:480px;margin:0 auto 20px;text-align:center;border:2px solid #D97706;box-shadow:0 8px 32px rgba(15,23,42,.35);">
+          <div style="font-size:40px;margin-bottom:8px;">🎓</div>
+          <div style="font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:#ffffff;margin-bottom:6px;">Certificate Unlocked!</div>
+          <div style="font-size:14px;color:#ffffff;margin-bottom:16px;">Congratulations, you've earned your EAW Certificate of Completion!</div>
+          <button onclick="issueCertificate()" class="btn btn-blue btn-lg" style="background:#0d3f9a;">🎓 Claim Your Certificate →</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+        <button onclick="retakeQuiz()" class="btn btn-outline">↩ Retake Quiz</button>
+        <a href="course-mechanic.html" class="btn btn-ghost">← Back to Course</a>
+      </div>
+    </div>
+
+    <!-- Review section -->
+    <div style="border-top:2px solid var(--gray-200);padding-top:32px;">
+      <h3 style="font-family:'Source Serif 4',serif;font-size:22px;font-weight:700;margin-bottom:20px;">📋 Review Your Answers</h3>
+      <div id="reviewContainer"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="cert-modal-overlay" id="certModal">
+  <div class="cert-modal">
+    <div class="cert-frame">
+      <div class="cert-title">Empowering African Women · EAW</div>
+      <div class="cert-of">Certificate of Completion</div>
+      <div class="cert-awarded">This is to certify that</div>
+      <div class="cert-student-name" id="certName">Student Name</div>
+      <div class="cert-awarded">has successfully completed</div>
+      <div class="cert-course-name">Social & Business Etiquette for Professionals</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate"></span></div>
+      <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px;" id="certScoreDisplay"></div>
+      <div class="cert-sigs">
+        <div class="cert-sig-line">EAW Administration<br>EAW Founder & Director</div>
+        <div class="cert-sig-line">Course Instructor</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
+      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer style="background:var(--navy);color:#fff;padding:28px 24px;border-top:1px solid rgba(255,255,255,.07);">
+  <div style="max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:13px;color:rgba(255,255,255,.4);">© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <a href="courses.html" style="font-size:13px;color:rgba(255,255,255,.5);transition:color .2s;" onmouseover="this.style.color='#F59E0B'" onmouseout="this.style.color='rgba(255,255,255,.5)'">← Back to Courses</a>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// QUIZ DATA, 10 questions covering all 4 modules
+// ══════════════════════════════════════════════════════════════
+const QUIZ = {
+  courseId: 'etiquette',
+  courseTitle: 'Social & Business Etiquette for Professionals',
+  instructor: 'Oluchi Arinze',
+  passMark: 0.7,
+  questions: [
+    {
+      module: 1,
+      text: "According to Module 1, why does business etiquette matter for your career advancement?",
+      options: ["It only matters for senior executives, not entry-level professionals","It creates a professional image, builds trust, and opens doors that skills alone cannot","It is mainly about memorising rules at formal dinners","It is only relevant in Western business contexts"],
+      correct: 1,
+      explanation: "Business etiquette builds your professional image and credibility. Research consistently shows that people are promoted not just on technical skills but on how they are perceived, their confidence, communication style, and how they make others feel. Etiquette opens doors."
+    },
+    {
+      module: 2,
+      text: "When dressing for a formal business meeting, which principle does Oluchi Arinze recommend?",
+      options: ["Wear the most fashionable and trendy clothes regardless of context","Dress one level above the expected dress code to signal ambition and respect","Always wear bright colours to stand out and be memorable","Wear whatever is most comfortable regardless of the occasion"],
+      correct: 1,
+      explanation: "Dressing one level above the expected dress code demonstrates respect for the occasion and signals professionalism. It shows you take the meeting seriously. This does not mean overdressing, it means being polished and intentional within the appropriate register."
+    },
+    {
+      module: 2,
+      text: "What does Oluchi teach about building your professional visual brand?",
+      options: ["Your visual brand should change completely depending on your mood each day","A consistent, polished appearance creates a reliable professional impression others come to associate with you","Only the clothes matter, hair, shoes, and accessories are irrelevant","Visual branding only applies to people in creative industries"],
+      correct: 1,
+      explanation: "Your professional visual brand is your consistent visual identity, the way you dress, carry yourself, and present in professional settings. Consistency builds recognition and trust. When people see you, they should know what to expect: polished, prepared, and professional."
+    },
+    {
+      module: 3,
+      text: "During a business phone call, what is the recommended way to end the conversation professionally?",
+      options: ["Hang up immediately once business is concluded to save time","Summarise key points or next actions, thank the person, and say a clear farewell","Leave the line open in case they need to say anything else","End with casual language like "bye-bye" regardless of context"],
+      correct: 1,
+      explanation: "A professional phone ending includes: briefly summarising what was agreed or the next steps, thanking the person for their time, and saying a clear, warm farewell. This leaves a positive final impression and ensures no miscommunication about outcomes."
+    },
+    {
+      module: 3,
+      text: "When receiving an important business call but you are in a meeting, what should you do?",
+      options: ["Answer and speak loudly so the caller can hear you clearly","Let it ring without any action","Excuse yourself politely, step out, decline or briefly handle the call, and return","Text back "busy" mid-meeting without telling anyone"],
+      correct: 2,
+      explanation: "Proper phone etiquette in meetings: if a call is important, excuse yourself quietly from the meeting, step outside the room, handle the call briefly, and return. This respects both the meeting participants and the caller. Silencing your phone during meetings is even better etiquette."
+    },
+    {
+      module: 4,
+      text: "In a boardroom or formal meeting, when is it appropriate to interrupt a speaker?",
+      options: ["Whenever you have a point to make, since your contribution is equally important","Rarely, only in genuine emergencies, otherwise use raised hand or wait for a natural pause","Frequently, to show that you are engaged and paying attention","Whenever you disagree with what is being said"],
+      correct: 1,
+      explanation: "Interrupting is one of the most disruptive professional behaviours. In boardroom settings, wait for a natural pause or raise your hand to signal you wish to speak. If something urgent must be addressed, a brief 'I apologise for interrupting, but...' with genuine urgency is acceptable."
+    },
+    {
+      module: 4,
+      text: "After a meeting, why is following up with minutes or a summary email important?",
+      options: ["It is only necessary for external client meetings, not internal ones","It confirms decisions made, assigns accountability, and creates a professional paper trail","It is mainly a way to show off your writing skills","Following up is considered excessive and intrusive in most business cultures"],
+      correct: 1,
+      explanation: "Post-meeting follow-up (minutes or summary emails) confirms what was discussed, who is responsible for what, and the timeline. This prevents misunderstandings, demonstrates professionalism, and creates accountability. It is considered essential practice in corporate and entrepreneurial environments."
+    },
+    {
+      module: 5,
+      text: "At a formal business dinner, when should you start eating your meal?",
+      options: ["As soon as your food arrives, while it is hot","After saying grace, regardless of whether others are served","After the host begins eating or signals that everyone may begin","Only after you have finished all your drinks"],
+      correct: 2,
+      explanation: "Wait for the host to begin eating or to signal that guests may start. This is a fundamental rule of formal dining etiquette. Beginning before the host is considered disrespectful. If the group is large and food arrives at different times, a gracious host will usually invite seated guests to begin."
+    },
+    {
+      module: 5,
+      text: "According to Oluchi, what is the correct way to handle a networking cocktail party professionally?",
+      options: ["Stay in one spot all evening talking only to people you already know","Approach conversations with genuine curiosity, introduce yourself clearly, listen actively, and exchange contacts thoughtfully","Collect as many business cards as possible without engaging in real conversation","Only approach the most senior people in the room and ignore others"],
+      correct: 1,
+      explanation: "Effective networking is about quality, not quantity. Approach conversations with genuine curiosity about the other person. Give a clear, confident introduction. Listen more than you speak. When the time feels right, exchange contacts naturally. Follow up within 24 hours to solidify the connection."
+    },
+    {
+      module: 10,
+      text: "What is the most powerful personal brand statement a professional woman can build, according to Oluchi Arinze's final module?",
+      options: ["The number of qualifications and certificates on her CV","How consistently her appearance, communication, and behaviour align with her professional values","Only her title and the company she works for","Her social media follower count"],
+      correct: 1,
+      explanation: "True personal brand is built through consistency. When your appearance, how you communicate, how you treat people, your reliability, and your values are all aligned, people develop deep trust in you. This holistic, consistent professional identity is far more powerful than any single achievement or credential."
+    }
+  ]
+};
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let currentQ = 0;
+let answers = [];   // { selected, correct }
+let answered = [];  // bool per question
+
+function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || 'null'); }
+function saveUser(u) { localStorage.setItem('eaw_user', JSON.stringify(u)); }
+
+// ══════════════════════════════════════════════════════════════
+// BUILD QUIZ UI
+// ══════════════════════════════════════════════════════════════
+function startQuiz() {
+  currentQ = 0;
+  answers = new Array(QUIZ.questions.length).fill(null);
+  answered = new Array(QUIZ.questions.length).fill(false);
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  buildQuestions();
+  buildDots();
+  showQuestion(0);
+}
+
+function buildQuestions() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = '';
+  QUIZ.questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `q-${i}`;
+    const letters = ['A','B','C','D'];
+    card.innerHTML = `
+      <div class="question-num">Question ${i+1} of ${QUIZ.questions.length} · Module ${q.module}</div>
+      <div class="question-text">${q.text}</div>
+      <div class="options" id="opts-${i}">
+        ${q.options.map((opt, j) => `
+          <button class="option-btn" id="opt-${i}-${j}" onclick="selectAnswer(${i},${j})">
+            <span class="opt-letter">${letters[j]}</span>
+            <span>${opt}</span>
+          </button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback-${i}"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function buildDots() {
+  const dotsEl = document.getElementById('navDots');
+  dotsEl.innerHTML = '';
+  QUIZ.questions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'q-dot' + (i === 0 ? ' current' : '');
+    dot.id = `dot-${i}`;
+    dot.title = `Question ${i+1}`;
+    dotsEl.appendChild(dot);
+  });
+}
+
+function showQuestion(idx) {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(`q-${idx}`)?.classList.add('active');
+  document.querySelectorAll('.q-dot').forEach((d, i) => {
+    d.classList.remove('current');
+    if (i === idx) d.classList.add('current');
+  });
+  const pct = ((idx + 1) / QUIZ.questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Question ${idx+1} of ${QUIZ.questions.length}`;
+  const correct = answers.filter(a => a !== null && a.isCorrect).length;
+  document.getElementById('scoreLabel').textContent = `Score: ${correct}`;
+  document.getElementById('nextBtn').style.display = answered[idx] ? 'inline-flex' : 'none';
+  currentQ = idx;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ANSWER HANDLING
+// ══════════════════════════════════════════════════════════════
+function selectAnswer(qIdx, optIdx) {
+  if (answered[qIdx]) return;
+  answered[qIdx] = true;
+  const q = QUIZ.questions[qIdx];
+  const isCorrect = optIdx === q.correct;
+  answers[qIdx] = { selected: optIdx, isCorrect };
+
+  // Style all options
+  const optBtns = document.querySelectorAll(`#opts-${qIdx} .option-btn`);
+  optBtns.forEach((btn, j) => {
+    btn.disabled = true;
+    if (j === q.correct) btn.classList.add('correct');
+    else if (j === optIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Feedback
+  const fb = document.getElementById(`feedback-${qIdx}`);
+  if (isCorrect) {
+    fb.className = 'feedback show correct-fb';
+    fb.innerHTML = `✅ <strong>Correct!</strong> ${q.explanation}`;
+  } else {
+    const letters = ['A','B','C','D'];
+    fb.className = 'feedback show wrong-fb';
+    fb.innerHTML = `❌ <strong>Not quite.</strong> The correct answer is <strong>${letters[q.correct]}</strong>. ${q.explanation}`;
+  }
+
+  // Update dot
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+  }
+
+  // Show next button
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+  const correct = answers.filter(a => a !== null && a.isCorrect).length;
+  document.getElementById('scoreLabel').textContent = `Score: ${correct}`;
+}
+
+function nextQuestion() {
+  if (currentQ < QUIZ.questions.length - 1) {
+    showQuestion(currentQ + 1);
+  } else {
+    showResults();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════════════════════════
+function showResults() {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const correctCount = answers.filter(a => a && a.isCorrect).length;
+  const total = QUIZ.questions.length;
+  const pct = correctCount / total;
+  const passed = pct >= QUIZ.passMark;
+
+  // Circle
+  const circle = document.getElementById('resultCircle');
+  circle.className = 'result-circle ' + (passed ? 'pass' : 'fail');
+  document.getElementById('resultScore').textContent = `${correctCount}/${total}`;
+  document.getElementById('resultLabel').textContent = passed ? '✅ PASSED' : '❌ TRY AGAIN';
+
+  document.getElementById('resultHeading').textContent = passed
+    ? '🎉 Congratulations, You Passed!'
+    : '📚 Keep Studying, You Can Do It!';
+
+  document.getElementById('resultMessage').textContent = passed
+    ? `Excellent work! You scored ${correctCount} out of ${total} (${Math.round(pct*100)}%). Your certificate is ready.`
+    : `You scored ${correctCount} out of ${total} (${Math.round(pct*100)}%). You need 7/10 to pass. Review the course and try again, there's no limit on retakes!`;
+
+  document.getElementById('certBtnWrap').style.display = passed ? 'block' : 'none';
+
+  // Build review
+  const rev = document.getElementById('reviewContainer');
+  rev.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  QUIZ.questions.forEach((q, i) => {
+    const a = answers[i];
+    const isC = a && a.isCorrect;
+    rev.innerHTML += `
+      <div class="review-item ${isC ? 'r-correct' : 'r-wrong'}">
+        <div class="question-num">Question ${i+1} · Module ${q.module}</div>
+        <div class="review-q">${q.text}</div>
+        ${a ? `<div class="review-your">${isC ? '✅' : '❌'} Your answer: ${letters[a.selected]}. ${q.options[a.selected]}</div>` : '<div class="review-your">⚪ Not answered</div>'}
+        ${!isC ? `<div class="review-correct-ans">✅ Correct answer: ${letters[q.correct]}. ${q.options[q.correct]}</div>` : ''}
+        <div class="review-explain">💡 ${q.explanation}</div>
+      </div>`;
+  });
+
+  // Save quiz attempt to localStorage
+  const user = getUser();
+  if (user) {
+    if (!user.quizAttempts) user.quizAttempts = {};
+    if (!user.quizAttempts[QUIZ.courseId]) user.quizAttempts[QUIZ.courseId] = [];
+    user.quizAttempts[QUIZ.courseId].push({
+      score: correctCount,
+      total,
+      passed,
+      date: new Date().toISOString()
+    });
+    if (passed) {
+      if (!user.enrollments) user.enrollments = [];
+      let enrol = user.enrollments.find(e => e.courseId === QUIZ.courseId);
+      if (!enrol) {
+        enrol = { courseId: QUIZ.courseId, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() };
+        user.enrollments.push(enrol);
+      }
+      enrol.progress = 100;
+      enrol.quizPassed = true;
+      enrol.quizScore = correctCount;
+    }
+    saveUser(user);
+  }
+}
+
+function retakeQuiz() {
+  document.getElementById('resultsScreen').style.display = 'none';
+  startQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════════════════════
+// CERTIFICATE
+// ══════════════════════════════════════════════════════════════
+function issueCertificate() {
+  const user = getUser();
+  if (!user) { window.location.href = 'login.html'; return; }
+
+  const correctCount = answers.filter(a => a && a.isCorrect).length;
+
+  if (!user.certificates) user.certificates = [];
+  // Preserve original issue date, never overwrite with a new date
+  let cert = user.certificates.find(c => c.id === QUIZ.courseId);
+  if (!cert) {
+    cert = {
+      id: QUIZ.courseId,
+      title: QUIZ.courseTitle,
+      date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }),
+      score: `${correctCount}/${QUIZ.questions.length}`,
+      issuedAt: new Date().toISOString()
+    };
+    user.certificates.push(cert);
+    saveUser(user);
+    // Sync certificate to server (non-blocking)
+    fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(function(){});
+  }
+
+  document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || '');
+  document.getElementById('certDate').textContent = cert.date;
+  document.getElementById('certScoreDisplay').textContent = `Final Assessment Score: ${correctCount}/${QUIZ.questions.length} (${Math.round(correctCount/QUIZ.questions.length*100)}%)`;
+  document.getElementById('certModal').classList.add('open');
+}
+
+// ── Init ──
+document.getElementById('hamburger')?.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+});
+
+// Update nav if logged in
+const user = getUser();
+if (user) {
+  const navCta = document.querySelector('.nav-cta');
+  if (navCta) navCta.innerHTML = `<a href="student-dashboard.html" class="btn btn-blue btn-sm">My Dashboard →</a>`;
+}
+</script>
+</body>
+</html>

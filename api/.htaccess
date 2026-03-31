@@ -1,0 +1,14 @@
+# Block direct browser access to config and db files
+<FilesMatch "^(config|db)\.php$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# Prevent directory listing
+Options -Indexes
+
+# Only allow PHP files to be executed, block everything else
+<FilesMatch "^(?!.*\.php$).*$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>

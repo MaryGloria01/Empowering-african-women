@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .pw-wrap { position: relative; }
+    .pw-wrap .form-input { padding-right: 44px; }
+    .pw-eye { position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);padding:4px;display:flex;align-items:center;justify-content:center; }
+    .pw-eye:hover { color:var(--blue); }
+    .pw-eye svg { display:block;pointer-events:none; }
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear { display:none; }
+    .forgot-link { display:block;text-align:right;font-size:13px;color:var(--blue);margin-top:6px;margin-bottom:14px; }
+    /* Auth page, no navbar spacing needed */
+    body { padding-top: 0 !important; }
+  </style>
+</head>
+<body>
+<!-- Mobile header (shown when sidebar panel hidden) -->
+<div class="auth-mobile-header">
+  <img src="eaw_icon.png" alt="EAW">
+  <h2>Welcome back to EAW</h2>
+  <p>Continue your learning journey</p>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-left">
+    <img src="eaw_icon.png" alt="EAW" class="auth-left-logo">
+    <h2>Welcome back to EAW</h2>
+    <p>Continue your learning journey. Access your courses, track your progress, and download your certificates.</p>
+    <div class="auth-img-wrap">
+      <img src="Pictures/20190821_144554.jpg" alt="EAW Training">
+    </div>
+    <div class="auth-testimonial">
+      <p>"EAW didn't just teach me to fix cars, it gave me the confidence to believe in myself."</p>
+      <cite>Florence Iria, EAW Graduate, Lagos, Nigeria</cite>
+    </div>
+    <div class="auth-trust-points">
+      <div class="auth-trust-item"><span>✓</span><span>Free courses, no fees, ever</span></div>
+      <div class="auth-trust-item"><span>✓</span><span>Official certificates on completion</span></div>
+      <div class="auth-trust-item"><span>✓</span><span>No credit card required</span></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <a href="index.html"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
+    <h1>Sign In to EAW</h1>
+    <p class="auth-right-subtitle-small">Your learning dashboard awaits.</p>
+    <p class="auth-subtitle">New to EAW? <a href="signup.html" style="color:#60A5FA;font-weight:600;">Create a free account →</a></p>
+
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" maxlength="254">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="loginPw" class="form-input" placeholder="Your password" maxlength="128">
+        <button type="button" class="pw-eye" onclick="togglePw('loginPw',this)" title="Show/hide password"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <a href="reset-password.html" class="forgot-link" style="color:#60A5FA;">Forgot password?</a>
+    </div>
+
+    <div id="loginError" style="display:none;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:13px;margin-bottom:12px;"></div>
+    <button onclick="doLogin()" class="btn-auth">Sign In →</button>
+
+    <div class="divider">or</div>
+
+    <p style="text-align:center;font-size:13px;color:var(--text-light);">Are you a tutor applicant? <a href="tutor-apply.html" style="color:#60A5FA;font-weight:600;">Apply here</a></p>
+  </div>
+</div>
+
+<script>
+const EYE_ON  = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+function togglePw(fieldId, btn) {
+  const f = document.getElementById(fieldId);
+  if (f.type === 'password') { f.type = 'text'; btn.innerHTML = EYE_OFF; }
+  else { f.type = 'password'; btn.innerHTML = EYE_ON; }
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pw    = document.getElementById('loginPw').value;
+
+  if (!email || !pw) { showLoginErr('Please enter your email and password.'); return; }
+
+  // Rate limiting
+  const _rl = JSON.parse(sessionStorage.getItem('eaw_login_rl') || '{"attempts":0,"lockUntil":0}');
+  if (Date.now() < _rl.lockUntil) {
+    const secs = Math.ceil((_rl.lockUntil - Date.now()) / 1000);
+    showLoginErr('Too many failed attempts. Please wait ' + secs + ' seconds before trying again.');
+    return;
+  }
+
+  const btn = document.querySelector('.btn-auth');
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+
+  try {
+    const res  = await fetch('api/login.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password: pw })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      const _rlFail = JSON.parse(sessionStorage.getItem('eaw_login_rl') || '{"attempts":0,"lockUntil":0}');
+      _rlFail.attempts = (_rlFail.attempts || 0) + 1;
+      if (_rlFail.attempts >= 5) { _rlFail.lockUntil = Date.now() + 5 * 60 * 1000; }
+      sessionStorage.setItem('eaw_login_rl', JSON.stringify(_rlFail));
+      showLoginErr(data.error || 'Login failed. Please try again.');
+      btn.textContent = 'Sign In →';
+      btn.disabled = false;
+      return;
+    }
+
+    // Clear rate limit on success
+    sessionStorage.removeItem('eaw_login_rl');
+
+    // Merge locally saved progress/certificates into server user object
+    const sessionUser = data.user;
+    try {
+      const users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+      const saved = users.find(u => u.email && u.email.toLowerCase() === sessionUser.email.toLowerCase());
+      if (saved) {
+        if (saved.enrollments && saved.enrollments.length) sessionUser.enrollments = saved.enrollments;
+        if (saved.certificates && saved.certificates.length) sessionUser.certificates = saved.certificates;
+      }
+    } catch(e) {}
+    // Cache user in localStorage for frontend state (no password stored)
+    localStorage.setItem('eaw_user', JSON.stringify(sessionUser));
+
+    const role = data.user.role;
+    if (role === 'admin') {
+      window.location.href = 'admin-dashboard.html';
+    } else if (role === 'tutor' || role === 'tutor-pending') {
+      window.location.href = 'tutor-dashboard.html';
+    } else {
+      window.location.href = 'student-dashboard.html';
+    }
+  } catch (err) {
+    showLoginErr('Connection error. Please try again.');
+    btn.textContent = 'Sign In →';
+    btn.disabled = false;
+  }
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+document.getElementById('loginPw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+<script src="eaw-common.js"></script>
+</body>
+</html>

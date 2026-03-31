@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    [id^="sec-"] { display: none; }
+    #sec-overview { display: block; }
+    .admin-badge { background: linear-gradient(135deg, #C0392B, #922B21); color: #fff; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+    .approval-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg); padding: 20px; margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start; transition: box-shadow .2s ease; }
+    .approval-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .approval-card.pending { border-left: 4px solid var(--gold); background: linear-gradient(to right, #fffdf0, #fff); }
+    .approval-card.approved { border-left: 4px solid var(--green); background: linear-gradient(to right, #f0fdf4, #fff); }
+    .approval-card.rejected { border-left: 4px solid var(--red); background: linear-gradient(to right, #fff5f5, #fff); }
+    .av-info { flex: 1; min-width: 0; }
+    .av-name { font-family: 'Source Serif 4', serif; font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+    .av-meta { font-size: 12px; color: var(--text-light); margin-bottom: 6px; }
+    .av-desc { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+    .av-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .btn-approve { background: linear-gradient(135deg, #059669, #10B981); color: #fff; border: none; padding: 8px 18px; border-radius: 100px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; box-shadow: 0 2px 8px rgba(5,150,105,.3); }
+    .btn-approve:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(5,150,105,.4); }
+    .btn-reject { background: linear-gradient(135deg, #DC2626, #EF4444); color: #fff; border: none; padding: 8px 18px; border-radius: 100px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; box-shadow: 0 2px 8px rgba(220,38,38,.3); }
+    .btn-reject:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(220,38,38,.4); }
+    .btn-view { background: var(--blue-pale); color: var(--blue); border: 1.5px solid var(--blue-light); padding: 8px 18px; border-radius: 100px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; }
+    .btn-view:hover { background: var(--blue-light); }
+    .status-badge { padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .status-pending { background: #FFF3CD; color: #856404; }
+    .status-approved { background: var(--green-pale); color: var(--green); }
+    .status-rejected { background: #fde8e8; color: var(--red); }
+    .detail-row { display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+    .detail-label { font-weight: 700; color: var(--gray-500); width: 100px; flex-shrink: 0; font-size: 11px; text-transform: uppercase; }
+    .section-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--gray-200); }
+    .tab-btn { background: none; border: none; padding: 10px 18px; font-size: 14px; font-weight: 600; color: var(--text-mid); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .empty-admin { text-align: center; padding: 48px; color: var(--text-light); }
+    .empty-admin .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .notification-dot { width: 8px; height: 8px; background: var(--red); border-radius: 50%; display: inline-block; margin-left: 6px; vertical-align: middle; }
+    .admin-stat { background: #fff; border-radius: var(--r-lg); padding: 22px; border: 1px solid var(--gray-200); text-align: center; transition: all .25s ease; position: relative; overflow: hidden; }
+    .admin-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #1D4ED8, #2563EB); border-radius: var(--r-lg) var(--r-lg) 0 0; }
+    .admin-stat:hover { box-shadow: 0 8px 28px rgba(29,78,216,.12); transform: translateY(-2px); border-color: #DBEAFE; }
+    .admin-stat-num { font-family: 'Source Serif 4', serif; font-size: 38px; font-weight: 800; line-height: 1.1; margin-top: 4px; }
+    .admin-stat-lbl { font-size: 12px; color: var(--text-light); margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box { background: #fff; border-radius: var(--r-xl); padding: 32px; max-width: 560px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .confirm-box { background: #fff8e1; border: 1px solid var(--gold); border-radius: var(--r-lg); padding: 16px; margin-top: 16px; font-size: 13px; }
+  </style>
+  <style>
+    body { font-size: 18px; }
+    .btn { font-size: 16px !important; }
+    td, th { font-size: 15px; }
+    label, input, select, textarea { font-size: 15px; }
+  </style>
+</head>
+<body class="dash-body">
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <div style="flex:1;"></div>
+    <div style="background:#fde8e8;border:1px solid var(--red);border-radius:var(--r-full);padding:4px 14px;font-size:12px;font-weight:700;color:#922B21;margin-right:12px;">🛡️ Admin Portal</div>
+    <div class="nav-cta">
+      <a href="index.html" class="btn btn-ghost btn-sm">View Site</a>
+      <a href="index.html" class="btn btn-blue btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.removeItem('eaw_admin_token')">Sign Out</a>
+    </div>
+  </div>
+</nav>
+
+<div class="dash-wrap">
+  <aside class="sidebar" id="dashSidebar">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sidebarInitial" style="background:linear-gradient(135deg,#922B21,#C0392B);">A</div>
+      <div class="sb-name" id="sidebarName">Admin</div>
+      <div class="sb-role">Administrator</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Admin</div>
+
+      <button class="sb-link active" id="nav-overview" onclick="showSection('overview')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </button>
+
+      <button class="sb-link" id="nav-tutors" onclick="showSection('tutors')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Tutor Applications
+        <span class="badge-count" id="tutorBadge" style="background:var(--red);">0</span>
+      </button>
+
+      <button class="sb-link" id="nav-courses" onclick="showSection('courses')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Course Submissions
+        <span class="badge-count" id="courseBadge" style="background:var(--red);">0</span>
+      </button>
+
+      <button class="sb-link" id="nav-students" onclick="showSection('students')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        All Students
+      </button>
+
+      <button class="sb-link" id="nav-payments" onclick="showSection('payments')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Payments
+      </button>
+
+      <div class="sb-section">Site Management</div>
+
+      <a href="courses.html" class="sb-link" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Live Site
+      </a>
+
+      <div class="sb-section">Account</div>
+
+      <button class="sb-link" id="nav-settings" onclick="showSection('settings')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+
+      <a href="index.html" class="sb-link danger" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.removeItem('eaw_admin_token')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+
+    <!-- ── OVERVIEW ── -->
+    <div id="sec-overview">
+      <div style="background:linear-gradient(135deg,#1E3A8A 0%,#1D4ED8 100%);border-radius:16px;padding:24px 28px;margin-bottom:24px;color:#fff;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 90% 50%,rgba(96,165,250,.3) 0%,transparent 60%);pointer-events:none;"></div>
+        <div style="position:relative;z-index:1;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px;">Admin Portal</div>
+          <h1 style="font-family:'Source Serif 4',serif;font-size:26px;font-weight:800;color:#fff;margin-bottom:6px;">Admin Dashboard</h1>
+          <p style="font-size:14px;color:rgba(255,255,255,.78);margin:0;">Manage tutors, courses, students, and payments. You have full control over the EAW platform.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin-bottom:32px;" id="overviewStats"></div>
+      <div class="dash-section-title">Pending Actions</div>
+      <div id="pendingActions"></div>
+
+      <div class="dash-section-title" style="margin-top:32px;">Recent Payment Records</div>
+      <div id="recentPayments"></div>
+    </div>
+
+    <!-- ── TUTOR APPLICATIONS ── -->
+    <div id="sec-tutors">
+      <div class="dash-greeting">
+        <h1>Tutor Applications</h1>
+        <p>Review and approve or reject tutor account applications. Approved tutors can submit course content.</p>
+      </div>
+      <div class="section-tabs">
+        <button class="tab-btn active" onclick="switchTab('tutors','pending',this)">⏳ Pending</button>
+        <button class="tab-btn" onclick="switchTab('tutors','approved',this)">✅ Approved</button>
+        <button class="tab-btn" onclick="switchTab('tutors','rejected',this)">❌ Rejected</button>
+        <button class="tab-btn" onclick="switchTab('tutors','all',this)">All</button>
+      </div>
+      <div id="tutorsContainer"></div>
+    </div>
+
+    <!-- ── COURSE SUBMISSIONS ── -->
+    <div id="sec-courses">
+      <div class="dash-greeting">
+        <h1>Course Submissions</h1>
+        <p>Review tutor-submitted courses. Approved courses appear on the EAW Courses page immediately.</p>
+      </div>
+      <div class="section-tabs">
+        <button class="tab-btn active" onclick="switchTab('courses','pending',this)">⏳ Pending</button>
+        <button class="tab-btn" onclick="switchTab('courses','approved',this)">✅ Approved</button>
+        <button class="tab-btn" onclick="switchTab('courses','rejected',this)">❌ Rejected</button>
+      </div>
+      <div id="coursesContainer"></div>
+    </div>
+
+    <!-- ── STUDENTS ── -->
+    <div id="sec-students">
+      <div class="dash-greeting">
+        <h1>All Students</h1>
+        <p>View and manage all registered student accounts.</p>
+      </div>
+      <div id="studentsContainer"></div>
+    </div>
+
+    <!-- ── PAYMENTS ── -->
+    <div id="sec-payments">
+      <div class="dash-greeting">
+        <h1>Payment Management</h1>
+        <p>Confirm manual payments and manage student course access. When you confirm a payment, the student immediately gains access to the course.</p>
+      </div>
+      <div style="background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--r-lg);padding:16px;margin-bottom:24px;font-size:14px;">
+        <strong>💡 How payments work:</strong> Students submit payment proof via bank transfer. Payments appear here as "pending". You confirm or reject each one. On confirmation, the student's account is automatically unlocked for that course.
+      </div>
+
+      <!-- MANUAL PAYMENT ENTRY CARD -->
+      <div style="background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-xl);padding:24px;margin-bottom:24px;">
+        <div style="font-family:'Source Serif 4',serif;font-size:17px;font-weight:700;margin-bottom:16px;">📋 Manually Confirm a Payment</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Student Email *</label>
+            <input type="email" id="payStudentEmail" class="form-input" placeholder="student@example.com">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Course *</label>
+            <select id="payCourseId" class="form-input">
+              <option value="etiquette">Social & Business Etiquette, Free</option>
+              <option value="mechanic">Female Mechanic Incubator, Free</option>
+              <option value="baking">Baking & Cooking Essentials, Free</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Depositor's Name *</label>
+            <input type="text" id="payDepositorName" class="form-input" placeholder="Name on bank transfer">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Payment Reference / Receipt No.</label>
+            <input type="text" id="payRef" class="form-input" placeholder="e.g. TXN-2024-001">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Payment Date *</label>
+            <input type="date" id="payDate" class="form-input">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Payment Time</label>
+            <input type="time" id="payTime" class="form-input">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label">Amount Paid</label>
+          <input type="text" id="payAmount" class="form-input" placeholder="e.g. ₦5,000">
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Upload Payment Receipt (Image or PDF)</label>
+          <div class="upload-zone" id="receiptZone" onclick="document.getElementById('receiptFile').click()" style="border:2px dashed var(--gray-300);border-radius:var(--r-lg);padding:16px;text-align:center;cursor:pointer;background:var(--gray-50);">
+            <div style="font-size:24px;margin-bottom:4px;">📎</div>
+            <div style="font-weight:600;color:var(--blue);font-size:13px;">Click to upload receipt</div>
+            <div style="font-size:11px;color:var(--text-light);">JPG, PNG, PDF accepted</div>
+            <input type="file" id="receiptFile" accept="image/*,.pdf" style="display:none;" onchange="handleReceiptUpload(this)">
+          </div>
+          <div id="receiptFileName" style="font-size:12px;color:var(--green);margin-top:6px;"></div>
+        </div>
+        <button onclick="addManualPayment()" class="btn btn-blue">✅ Confirm Payment & Grant Course Access →</button>
+      </div>
+      <div class="section-tabs">
+        <button class="tab-btn active" onclick="switchTab('payments','pending',this)">⏳ Pending</button>
+        <button class="tab-btn" onclick="switchTab('payments','confirmed',this)">✅ Confirmed</button>
+        <button class="tab-btn" onclick="switchTab('payments','all',this)">All</button>
+      </div>
+      <div id="paymentsContainer"></div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div id="sec-settings">
+      <div class="dash-greeting"><h1>Admin Settings</h1></div>
+      <div style="background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:28px;max-width:560px;">
+        <h3 style="font-family:'Source Serif 4',serif;margin-bottom:16px;">Platform Settings</h3>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;"><input type="checkbox" checked style="width:auto;"> Email notifications for new applications</label>
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;"><input type="checkbox" checked style="width:auto;"> Email notifications for new payments</label>
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;"><input type="checkbox" checked style="width:auto;"> Auto-send approval emails to tutors</label>
+        </div>
+        <div style="border-top:1px solid var(--gray-200);padding-top:16px;">
+          <h3 style="font-family:'Source Serif 4',serif;margin-bottom:12px;">Admin Account</h3>
+          <div style="font-size:14px;color:var(--text-mid);margin-bottom:12px;">Logged in as: <strong id="adminEmailDisplay">Loading...</strong></div>
+          <a href="index.html" class="btn btn-danger btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.removeItem('eaw_admin_token')">Sign Out</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div id="modalContent"></div>
+    <div style="display:flex;gap:10px;margin-top:20px;" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+// ── SIDEBAR ──
+function toggleSidebar() {
+  document.getElementById('dashSidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('dashSidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// ── SECTION NAV ──
+function showSection(section) {
+  document.querySelectorAll('[id^="sec-"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.sb-link').forEach(el => el.classList.remove('active'));
+  document.getElementById('sec-' + section).style.display = 'block';
+  const navBtn = document.getElementById('nav-' + section);
+  if (navBtn) navBtn.classList.add('active');
+  closeSidebar();
+  refreshSection(section);
+}
+
+function switchTab(section, filter, btn) {
+  btn.closest('.section-tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSection(section, filter);
+}
+
+// ── DATA STORE (localStorage-based admin store) ──
+// In production, this would be a real database API
+function getAdminData() {
+  try {
+    const raw = localStorage.getItem('eaw_admin_data');
+    if (!raw) return { tutorApplications: [], courseSubmissions: [], payments: [], students: [] };
+    const d = JSON.parse(raw);
+    // Validate structure — prevent tampered/corrupted data from breaking the UI
+    if (!Array.isArray(d.tutorApplications)) d.tutorApplications = [];
+    if (!Array.isArray(d.courseSubmissions))  d.courseSubmissions  = [];
+    if (!Array.isArray(d.payments))           d.payments           = [];
+    if (!Array.isArray(d.students))           d.students           = [];
+    return d;
+  } catch(e) {
+    // Corrupted data — return clean state
+    return { tutorApplications: [], courseSubmissions: [], payments: [], students: [] };
+  }
+}
+function saveAdminData(d) {
+  // Stamp with save time for auditing; validate arrays before storing
+  d._saved = Date.now();
+  if (!Array.isArray(d.tutorApplications)) d.tutorApplications = [];
+  if (!Array.isArray(d.courseSubmissions))  d.courseSubmissions  = [];
+  if (!Array.isArray(d.payments))           d.payments           = [];
+  if (!Array.isArray(d.students))           d.students           = [];
+  localStorage.setItem('eaw_admin_data', JSON.stringify(d));
+}
+
+// No demo data, starts clean. Data populates as real applications come in.
+function seedDemoData() {
+  // Intentionally empty, admin starts with a clean dashboard
+}
+
+// ── CSRF token (fetched once on init, attached to all admin POSTs) ──
+let _csrfToken = '';
+
+// ── ACTIONS ──
+async function approveTutor(id) {
+  try {
+    const res = await fetch('api/admin.php?action=approve-tutor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrfToken },
+      credentials: 'include',
+      body: JSON.stringify({ id })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    showToast('✅ Tutor application approved!');
+    renderTutors('pending');
+  } catch (e) { showToast('❌ Error: ' + e.message); }
+}
+
+async function rejectTutor(id) {
+  try {
+    const res = await fetch('api/admin.php?action=reject-tutor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrfToken },
+      credentials: 'include',
+      body: JSON.stringify({ id })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    showToast('❌ Application rejected.');
+    renderTutors('pending');
+  } catch (e) { showToast('❌ Error: ' + e.message); }
+}
+
+function approveCourse(id) {
+  const d = getAdminData();
+  const cs = d.courseSubmissions.find(c => c.id === id);
+  if (!cs) return;
+  cs.status = 'approved';
+  cs.reviewedAt = new Date().toISOString();
+  saveAdminData(d);
+  renderSection('courses', 'pending');
+  refreshBadges();
+  showToast('✅ Course "' + cs.title + '" approved and is now live!');
+}
+
+function rejectCourse(id) {
+  const d = getAdminData();
+  const cs = d.courseSubmissions.find(c => c.id === id);
+  if (!cs) return;
+  cs.status = 'rejected';
+  cs.reviewedAt = new Date().toISOString();
+  saveAdminData(d);
+  renderSection('courses', 'pending');
+  refreshBadges();
+  showToast('❌ Course "' + cs.title + '" rejected.');
+}
+
+function confirmPayment(id) {
+  const d = getAdminData();
+  const pay = d.payments.find(p => p.id === id);
+  if (!pay) return;
+  pay.status = 'confirmed';
+  pay.confirmedAt = new Date().toISOString();
+  saveAdminData(d);
+
+  // Grant course access: store in a shared payments list keyed by email+courseId
+  const key = 'eaw_paid_' + pay.courseId;
+  const paid = JSON.parse(localStorage.getItem(key) || '[]');
+  if (!paid.includes(pay.studentEmail)) { paid.push(pay.studentEmail); localStorage.setItem(key, JSON.stringify(paid)); }
+
+  renderSection('payments', 'pending');
+  refreshBadges();
+  showToast('✅ Payment confirmed! ' + pay.studentName + ' now has access to ' + pay.courseTitle + '.');
+}
+
+function rejectPayment(id) {
+  const d = getAdminData();
+  const pay = d.payments.find(p => p.id === id);
+  if (!pay) return;
+  pay.status = 'rejected';
+  saveAdminData(d);
+  renderSection('payments', 'pending');
+  showToast('❌ Payment rejected.');
+}
+
+let receiptDataUrl = null;
+
+function handleReceiptUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  document.getElementById('receiptFileName').textContent = '✅ ' + file.name;
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = e => { receiptDataUrl = e.target.result; };
+    reader.readAsDataURL(file);
+  } else {
+    receiptDataUrl = '[PDF receipt: ' + file.name + ']';
+  }
+  document.getElementById('receiptZone').style.borderColor = 'var(--green)';
+}
+
+function addManualPayment() {
+  const email = document.getElementById('payStudentEmail').value.trim();
+  const courseId = document.getElementById('payCourseId').value;
+  const depositorName = document.getElementById('payDepositorName').value.trim();
+  const ref = document.getElementById('payRef').value.trim();
+  const payDate = document.getElementById('payDate').value;
+  const payTime = document.getElementById('payTime').value;
+  const amountInput = document.getElementById('payAmount').value.trim();
+
+  if (!email || !depositorName || !payDate) {
+    showToast('⚠️ Please fill in Student Email, Depositor Name, and Payment Date.');
+    return;
+  }
+
+  const d = getAdminData();
+  const courseTitles = { etiquette: 'Social & Business Etiquette', mechanic: 'Female Mechanic Incubator', baking: 'Baking & Cooking Essentials' };
+  const defaultAmount = 'Free';
+  const pay = {
+    id: 'pay-' + Date.now(),
+    studentEmail: email,
+    studentName: email,
+    courseId,
+    courseTitle: courseTitles[courseId] || courseId,
+    amount: amountInput || defaultAmount,
+    depositorName,
+    ref: ref || 'Manual',
+    payDate,
+    payTime: payTime || 'N/A',
+    receiptData: receiptDataUrl,
+    status: 'confirmed',
+    confirmedAt: new Date().toISOString(),
+    submittedAt: new Date().toISOString()
+  };
+  d.payments.push(pay);
+  saveAdminData(d);
+
+  // Grant access immediately
+  const key = 'eaw_paid_' + courseId;
+  const paid = JSON.parse(localStorage.getItem(key) || '[]');
+  if (!paid.includes(email)) { paid.push(email); localStorage.setItem(key, JSON.stringify(paid)); }
+
+  // Reset form
+  ['payStudentEmail','payDepositorName','payRef','payDate','payTime','payAmount'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('receiptFileName').textContent = '';
+  document.getElementById('receiptFile').value = '';
+  document.getElementById('receiptZone').style.borderColor = '';
+  receiptDataUrl = null;
+
+  showToast('✅ Payment confirmed! ' + email + ' now has access to ' + courseTitles[courseId] + '.');
+  renderSection('payments', 'confirmed');
+}
+
+// ── RENDER FUNCTIONS ──
+function renderSection(section, filter = 'pending') {
+  if (section === 'tutors') renderTutors(filter);
+  if (section === 'courses') renderCourses(filter);
+  if (section === 'payments') renderPayments(filter);
+  if (section === 'students') renderStudents();
+}
+
+function refreshSection(section) {
+  if (section === 'tutors') renderTutors('pending');
+  if (section === 'courses') renderCourses('pending');
+  if (section === 'payments') renderPayments('pending');
+  if (section === 'students') renderStudents();
+  if (section === 'overview') renderOverview();
+}
+
+function fmtDate(iso) {
+  if (!iso) return 'N/A';
+  return new Date(iso).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// HTML escape — applied to ALL user-generated data before innerHTML insertion
+function esc(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+async function renderTutors(filter) {
+  const c = document.getElementById('tutorsContainer');
+  c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-light);">Loading…</div>';
+  try {
+    const url = filter && filter !== 'all'
+      ? `api/admin.php?action=tutor-applications&status=${filter}`
+      : 'api/admin.php?action=tutor-applications';
+    const res  = await fetch(url, { credentials: 'include' });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    const apps = data.applications || [];
+    // Update badge
+    const pendingCount = apps.filter(a => a.status === 'pending').length;
+    const badge = document.getElementById('tutorBadge');
+    if (badge) badge.textContent = pendingCount;
+    if (!apps.length) { c.innerHTML = `<div class="empty-admin"><div class="empty-icon">👩‍🏫</div><p>No ${filter||'pending'} tutor applications</p></div>`; return; }
+    c.innerHTML = apps.map(app => `
+      <div class="approval-card ${esc(app.status)}">
+        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${esc((app.first_name||'?').charAt(0))}</div>
+        <div class="av-info">
+          <div class="av-name">${esc(app.first_name)} ${esc(app.last_name)} <span class="status-badge status-${esc(app.status)}">${esc(app.status)}</span></div>
+          <div class="av-meta">📧 ${esc(app.email)} · 📱 ${esc(app.phone||'N/A')} · 🗓️ ${fmtDate(app.submitted_at)}</div>
+          <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px;"><strong>Expertise:</strong> ${esc(app.expertise||'N/A')}</div>
+          <div class="av-desc">${esc(app.bio||'N/A')}</div>
+          ${app.status === 'pending' ? `<div class="av-actions">
+            <button class="btn-approve" onclick="approveTutor(${parseInt(app.id,10)})">✅ Approve Tutor</button>
+            <button class="btn-reject" onclick="rejectTutor(${app.id})">❌ Reject</button>
+          </div>` : `<div style="margin-top:10px;font-size:12px;color:var(--text-light);">Reviewed: ${fmtDate(app.submitted_at)}</div>`}
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    c.innerHTML = `<div class="empty-admin"><div class="empty-icon">⚠️</div><p>Could not load applications: ${e.message}</p></div>`;
+  }
+}
+
+function renderCourses(filter) {
+  const d = getAdminData();
+  let cs = d.courseSubmissions;
+  if (filter !== 'all') cs = cs.filter(c => c.status === filter);
+  const el = document.getElementById('coursesContainer');
+  if (!cs.length) { el.innerHTML = `<div class="empty-admin"><div class="empty-icon">📚</div><p>No ${filter} course submissions</p></div>`; return; }
+  el.innerHTML = cs.map(c => `
+    <div class="approval-card ${esc(c.status)}">
+      <div style="width:48px;height:48px;border-radius:var(--r-md);background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📚</div>
+      <div class="av-info">
+        <div class="av-name">${esc(c.title)} <span class="status-badge status-${esc(c.status)}">${esc(c.status)}</span></div>
+        <div class="av-meta">👩‍🏫 ${esc(c.tutorName)} · ${esc(c.tutorEmail)} · 🗓️ ${fmtDate(c.submittedAt)}</div>
+        <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px;"><strong>Category:</strong> ${esc(c.category)} · <strong>Pricing:</strong> ${esc(c.pricing)} · <strong>Modules:</strong> ${esc(c.modules)}</div>
+        <div class="av-desc">${esc(c.description)}</div>
+        ${c.status === 'pending' ? `<div class="av-actions">
+          <button class="btn-approve" onclick="approveCourse('${esc(c.id)}')">✅ Approve & Publish</button>
+          <button class="btn-reject" onclick="rejectCourse('${esc(c.id)}')">❌ Reject</button>
+        </div>` : `<div style="margin-top:10px;font-size:12px;color:var(--text-light);">Reviewed: ${fmtDate(c.reviewedAt)}</div>`}
+      </div>
+    </div>`).join('');
+}
+
+function renderPayments(filter) {
+  const d = getAdminData();
+  let pays = d.payments;
+  if (filter !== 'all') pays = pays.filter(p => p.status === filter);
+  pays = pays.slice().reverse(); // newest first
+  const c = document.getElementById('paymentsContainer');
+  if (!pays.length) { c.innerHTML = `<div class="empty-admin"><div class="empty-icon">💳</div><p>No ${filter} payments yet.</p></div>`; return; }
+  c.innerHTML = pays.map(pay => `
+    <div class="approval-card ${pay.status === 'confirmed' ? 'approved' : pay.status === 'rejected' ? 'rejected' : 'pending'}">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffd700);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💳</div>
+      <div class="av-info">
+        <div class="av-name">${esc(pay.studentName)} <span class="status-badge status-${pay.status === 'confirmed' ? 'approved' : esc(pay.status)}">${esc(pay.status)}</span></div>
+        <div class="av-meta">📧 ${esc(pay.studentEmail)} · 🗓️ Submitted: ${fmtDate(pay.submittedAt)}</div>
+        <div style="font-size:13px;color:var(--text-mid);margin-top:4px;line-height:1.8;">
+          <strong>Course:</strong> ${esc(pay.courseTitle)}<br>
+          <strong>Amount:</strong> ${esc(pay.amount)}${pay.depositorName ? ' · <strong>Depositor:</strong> ' + esc(pay.depositorName) : ''}${pay.payDate ? ' · <strong>Date:</strong> ' + esc(pay.payDate) + (pay.payTime && pay.payTime !== 'N/A' ? ' ' + esc(pay.payTime) : '') : ''}${pay.ref ? ' · <strong>Ref:</strong> ' + esc(pay.ref) : ''}
+        </div>
+        ${pay.receiptData && !pay.receiptData.startsWith('[PDF') ? `<div style="margin-top:10px;"><img src="${esc(pay.receiptData)}" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--gray-200);cursor:pointer;" onclick="window.open(this.src)" title="Click to view full receipt"><div style="font-size:11px;color:var(--text-light);margin-top:3px;">Payment receipt</div></div>` : pay.receiptData ? `<div style="margin-top:8px;font-size:12px;color:var(--blue);">📎 ${esc(pay.receiptData)}</div>` : ''}
+        ${pay.status === 'pending' ? `<div class="av-actions">
+          <button class="btn-approve" onclick="confirmPayment('${esc(pay.id)}')">✅ Confirm Payment & Grant Access</button>
+          <button class="btn-reject" onclick="rejectPayment('${esc(pay.id)}')">❌ Reject</button>
+        </div>` : `<div style="margin-top:8px;font-size:12px;color:var(--text-light);">Processed: ${fmtDate(pay.confirmedAt)}</div>`}
+      </div>
+    </div>`).join('');
+}
+
+async function renderStudents() {
+  const c = document.getElementById('studentsContainer');
+  c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-light);">Loading…</div>';
+  try {
+    const res = await fetch('api/admin.php?action=users', { credentials: 'include' });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    const students = (data.users || []).filter(u => u.role === 'student');
+    if (!students.length) {
+      c.innerHTML = `<div class="empty-admin"><div class="empty-icon">👩‍🎓</div><p>No student accounts yet.</p></div>`;
+      return;
+    }
+    c.innerHTML = students.map(s => `
+      <div class="approval-card approved">
+        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${esc((s.first_name||'S').charAt(0))}</div>
+        <div class="av-info">
+          <div class="av-name">${esc(s.first_name)} ${esc(s.last_name||'')}</div>
+          <div class="av-meta">📧 ${esc(s.email)} · Joined ${new Date(s.created_at).toLocaleDateString('en-NG')}</div>
+          <div style="font-size:13px;color:var(--text-mid);">Phone: ${esc(s.phone||'N/A')}</div>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    c.innerHTML = `<div class="empty-admin"><div class="empty-icon">⚠️</div><p>Could not load students: ${e.message}</p></div>`;
+  }
+}
+
+async function renderOverview() {
+  const d = getAdminData();
+  const pendingCourses = d.courseSubmissions.filter(c => c.status === 'pending').length;
+  const pendingPayments = d.payments.filter(p => p.status === 'pending').length;
+  const confirmedPayments = d.payments.filter(p => p.status === 'confirmed').length;
+
+  // Fetch live stats from DB
+  let dbStats = { students: '…', tutors: '…', pending: '…' };
+  try {
+    const r = await fetch('api/admin.php?action=stats', { credentials: 'include' });
+    const sd = await r.json();
+    if (sd.success) dbStats = sd.stats;
+  } catch(e) {}
+
+  document.getElementById('overviewStats').innerHTML = `
+    <div class="admin-stat"><div class="admin-stat-num" style="color:var(--red);">${dbStats.pending}</div><div class="admin-stat-lbl">Pending Tutors</div></div>
+    <div class="admin-stat"><div class="admin-stat-num" style="color:var(--blue);">${dbStats.students}</div><div class="admin-stat-lbl">All Students</div></div>
+    <div class="admin-stat"><div class="admin-stat-num" style="color:var(--green);">${dbStats.tutors}</div><div class="admin-stat-lbl">Approved Tutors</div></div>
+    <div class="admin-stat"><div class="admin-stat-num" style="color:var(--gold);">${pendingCourses}</div><div class="admin-stat-lbl">Pending Courses</div></div>
+    <div class="admin-stat"><div class="admin-stat-num" style="color:var(--gold);">${pendingPayments}</div><div class="admin-stat-lbl">Pending Payments</div></div>
+    <div class="admin-stat"><div class="admin-stat-num" style="color:var(--green);">${confirmedPayments}</div><div class="admin-stat-lbl">Payments Confirmed</div></div>
+  `;
+
+  const pending = [
+    ...d.courseSubmissions.filter(c => c.status === 'pending').map(c => ({ type: 'course', label: `Course submission: "${c.title}" by ${c.tutorName}`, date: c.submittedAt, section: 'courses' })),
+    ...d.payments.filter(p => p.status === 'pending').map(p => ({ type: 'payment', label: `Payment from ${p.studentName} for ${p.courseTitle}`, date: p.submittedAt, section: 'payments' })),
+  ].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  const pEl = document.getElementById('pendingActions');
+  if (!pending.length) {
+    pEl.innerHTML = `<div style="background:var(--green-pale);border:1px solid var(--green);border-radius:var(--r-lg);padding:20px;text-align:center;color:var(--green);font-weight:700;">✅ All caught up! No pending actions.</div>`;
+    return;
+  }
+  const icons = { tutor:'👩‍🏫', course:'📚', payment:'💳' };
+  pEl.innerHTML = pending.map(p => `
+    <div style="background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:8px;cursor:pointer;" onclick="showSection('${p.section}')">
+      <span style="font-size:22px;">${icons[p.type]}</span>
+      <div style="flex:1;font-size:14px;">${p.label}</div>
+      <div style="font-size:12px;color:var(--text-light);">${fmtDate(p.date)}</div>
+      <span style="color:var(--blue);font-size:12px;font-weight:700;">Review →</span>
+    </div>`).join('');
+
+  // Recent payments
+  const rp = document.getElementById('recentPayments');
+  const recPays = d.payments.slice(-5).reverse();
+  if (!recPays.length) { rp.innerHTML = '<p style="color:var(--text-light);font-size:14px;">No payment records yet.</p>'; return; }
+  rp.innerHTML = recPays.map(p => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px;background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-lg);margin-bottom:8px;">
+      <span style="font-size:18px;">💳</span>
+      <div style="flex:1;font-size:13px;"><strong>${p.studentName}</strong>, ${p.courseTitle}, ${p.amount}</div>
+      <span class="status-badge status-${p.status === 'confirmed' ? 'approved' : p.status}">${p.status}</span>
+    </div>`).join('');
+}
+
+function refreshBadges() {
+  const d = getAdminData();
+  document.getElementById('tutorBadge').textContent = d.tutorApplications.filter(a => a.status === 'pending').length;
+  document.getElementById('courseBadge').textContent = d.courseSubmissions.filter(c => c.status === 'pending').length;
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--gray-900);color:#fff;padding:14px 20px;border-radius:var(--r-lg);font-size:14px;z-index:9999;box-shadow:var(--sh-lg);max-width:320px;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function closeModal() { document.getElementById('detailModal').classList.remove('open'); }
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
+  const tok = sessionStorage.getItem('eaw_admin_token');
+  if (!user.firstName) { window.location.href = 'login.html'; return; }
+  if (user.role !== 'admin' || !tok) { window.location.href = user.role === 'tutor' || user.role === 'tutor-pending' ? 'tutor-dashboard.html' : 'student-dashboard.html'; return; }
+
+  // Fetch CSRF token from server for use in all state-changing POST requests
+  try {
+    const r = await fetch('api/admin.php?action=stats', { credentials: 'include' });
+    _csrfToken = r.headers.get('X-CSRF-Token') || '';
+  } catch(e) { /* non-fatal — CSRF validation will catch missing token */ }
+
+  document.getElementById('sidebarName').textContent = user.firstName + ' ' + (user.lastName || '');
+  document.getElementById('sidebarInitial').textContent = (user.firstName || 'A').charAt(0).toUpperCase();
+  document.getElementById('adminEmailDisplay').textContent = user.email || 'N/A';
+
+  // Clean start: wipe any demo/old data so admin starts at zero
+  // Remove this block after going live (keep real data)
+  const existingData = getAdminData();
+  const hasRealData = existingData.tutorApplications.some(a => !a.id.startsWith('ta-')) ||
+                      existingData.courseSubmissions.some(c => !c.id.startsWith('cs-')) ||
+                      existingData.payments.some(p => !p.id.startsWith('pay-1') && !p.id.startsWith('pay-2') && !p.id.startsWith('pay-3'));
+  
+  // If only demo data exists, wipe it clean  
+  const isDemoOnly = existingData.tutorApplications.every(a => ['ta-1','ta-2','ta-3'].includes(a.id)) &&
+                     existingData.courseSubmissions.every(c => ['cs-1','cs-2'].includes(c.id)) &&
+                     existingData.payments.every(p => ['pay-1','pay-2','pay-3'].includes(p.id));
+  
+  if (isDemoOnly || (existingData.tutorApplications.length === 0 && existingData.courseSubmissions.length === 0)) {
+    const freshData = { tutorApplications: [], courseSubmissions: [], payments: [], students: [] };
+    saveAdminData(freshData);
+  }
+
+  seedDemoData();
+  renderOverview();
+  refreshBadges();
+});
+
+if (window.location.hash) {
+  const s = window.location.hash.replace('#','');
+  if (document.getElementById('sec-'+s)) setTimeout(() => showSection(s), 100);
+}
+</script>
+<script src="eaw-common.js"></script>
+</body>
+</html>

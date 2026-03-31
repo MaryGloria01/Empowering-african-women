@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Baking & Cooking Essentials | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .module-ppt-link { display: inline-flex; align-items: center; gap: 8px; background: var(--blue-pale); border: 1px solid var(--blue-light); border-radius: var(--r-md); padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--blue); text-decoration: none; margin-top: 12px; transition: var(--ease); }
+    .module-ppt-link:hover { background: var(--blue); color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="stories.html">Stories</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<style>
+/* ─── EAW COURSE GATE SYSTEM ──────────────────────────── */
+
+/* Video watch bar that sits above each "Mark Complete" button */
+.vcb-wrap {
+  background: linear-gradient(135deg, #0d1b2a, #1b3a5c);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 12px 0 8px;
+  display: flex; align-items: center; gap: 14px;
+  border: 1px solid rgba(249,171,0,.2);
+}
+.vcb-icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(249,171,0,.12);
+  border: 1.5px solid rgba(249,171,0,.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  animation: eaw-pulse 2.2s ease-in-out infinite;
+}
+@keyframes eaw-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(249,171,0,.3); }
+  50%      { box-shadow: 0 0 0 8px rgba(249,171,0,.0); }
+}
+.vcb-body { flex: 1; }
+.vcb-title { font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 2px; }
+.vcb-sub   { font-size: 11px; color: rgba(255,255,255,.5); }
+.vcb-pill {
+  font-size: 11px; font-weight: 800; color: #F9AB00;
+  background: rgba(249,171,0,.12);
+  border: 1px solid rgba(249,171,0,.3);
+  border-radius: 20px; padding: 4px 12px;
+  flex-shrink: 0; white-space: nowrap; transition: all .3s;
+}
+.vcb-confirm-btn {
+  background: linear-gradient(135deg, #F9AB00, #e09600);
+  color: #1a0a00; border: none; border-radius: 8px;
+  padding: 8px 16px; font-size: 12px; font-weight: 800;
+  cursor: pointer; flex-shrink: 0;
+  display: none; white-space: nowrap;
+  transition: transform .15s, opacity .2s;
+}
+.vcb-confirm-btn:hover { transform: translateY(-1px); opacity: .9; }
+.vcb-confirm-btn.ready { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Mark Complete button locked state */
+.module-complete-btn.eaw-locked {
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ─── QUIZ GATE BLOCK ──────────────────────────────────── */
+.eaw-quiz-gate {
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 4px;
+  border: 1px solid #e5e7eb;
+}
+.eqg-header {
+  background: linear-gradient(135deg, #0d1b2a, #1e3a5f);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.eqg-icon {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: rgba(249,171,0,.12);
+  border: 1.5px solid rgba(249,171,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+.eqg-text { flex: 1; }
+.eqg-title { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 3px; }
+.eqg-sub   { font-size: 12px; color: rgba(255,255,255,.5); }
+.eqg-bar-track {
+  height: 6px; border-radius: 99px;
+  background: rgba(255,255,255,.1);
+  margin-top: 10px; overflow: hidden;
+}
+.eqg-bar-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #F9AB00, #ffd54f);
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.eqg-body {
+  background: #f9fafb;
+  padding: 16px 20px 20px;
+}
+.eqg-checklist { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.eqg-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 14px; border-radius: 10px;
+  border: 1px solid #e5e7eb; background: #fff;
+  font-size: 13px; font-weight: 600;
+  transition: background .25s, border-color .25s;
+}
+.eqg-item.done   { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+.eqg-item.pending{ color: #6b7280; }
+.eqg-dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; flex-shrink: 0; transition: all .25s;
+}
+.eqg-item.done .eqg-dot { background: #22c55e; border-color: #22c55e; color: #fff; }
+.eqg-name   { flex: 1; }
+.eqg-status { font-size: 11px; font-weight: 500; }
+.eqg-item.done     .eqg-status { color: #16a34a; }
+.eqg-item.pending .eqg-status { color: #9ca3af; }
+
+/* The unlockable quiz button */
+.eqg-btn {
+  width: 100%; padding: 15px 20px; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all .3s; letter-spacing: .2px;
+}
+.eqg-btn.locked   { background: linear-gradient(135deg, #d1d5db, #9ca3af); color: #6b7280; cursor: not-allowed; }
+.eqg-btn.unlocked { background: linear-gradient(135deg, #F9AB00, #e09600); color: #1a0a00; box-shadow: 0 4px 18px rgba(249,171,0,.35); }
+.eqg-btn.unlocked:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,171,0,.45); }
+.eqg-hint { text-align: center; font-size: 11px; margin-top: 8px; }
+.eqg-hint.locked   { color: #9ca3af; }
+.eqg-hint.unlocked { color: #059669; font-weight: 700; }
+
+/* ─── BLOCK TOAST ──────────────────────────────────────── */
+.eaw-toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, #111827, #1f2937);
+  border: 1px solid rgba(249,171,0,.3);
+  border-radius: 16px; padding: 16px 20px;
+  min-width: 320px; max-width: 90vw;
+  display: flex; align-items: flex-start; gap: 14px;
+  box-shadow: 0 24px 48px rgba(0,0,0,.5);
+  z-index: 9999; opacity: 0;
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+  pointer-events: none;
+}
+.eaw-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: all; }
+.et-icon { font-size: 26px; flex-shrink: 0; line-height: 1; }
+.et-body { flex: 1; }
+.et-title { font-weight: 800; font-size: 14px; color: #f9fafb; margin-bottom: 3px; }
+.et-msg   { font-size: 12px; color: rgba(255,255,255,.6); line-height: 1.5; }
+.et-close { background: none; border: none; color: rgba(255,255,255,.4); font-size: 22px; cursor: pointer; padding: 0; flex-shrink: 0; align-self: flex-start; line-height: 1; }
+.et-bar {
+  position: absolute; bottom: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, #F9AB00, #ffd54f);
+  border-radius: 0 0 16px 16px;
+  animation: et-drain 6s linear forwards;
+}
+@keyframes et-drain { from { width:100%; } to { width:0%; } }
+</style>
+<div class="course-hero">
+  <div class="course-hero-inner">
+    <div>
+      <div class="breadcrumb"><a href="courses.html">Courses</a> › Culinary Skills</div>
+      <span class="cc-badge badge-free" style="position:static;margin-bottom:12px;display:inline-block;">Free Course</span>
+      <h1>Baking &amp; Cooking Essentials</h1>
+      <p>Master 9 complete cake recipes, healthy Nigerian rice meals, fresh juices, and healthier baking techniques, all from scratch, with simple ingredients.</p>
+      <div class="course-meta-row">
+        <span>⭐ 4.9 rating</span>
+        <span>👩‍🎓 5 Modules</span>
+        <span>🎂 9 Cake Recipes</span>
+        <span>🎓 Certificate included</span>
+        <span>📱 Mobile-friendly</span>
+      </div>
+      <div style="margin-top:20px;">
+        <div class="tutor-card" style="background:rgba(255,255,255,.1);border:none;color:#fff;">
+          <img src="ebere.jpg" alt="Ebere Irrechukwu" class="tutor-img" style="border-color:rgba(255,255,255,.3);">
+          <div>
+            <div class="tutor-name" style="color:#fff;">Ebere Irrechukwu</div>
+            <div class="tutor-title" style="color:rgba(255,255,255,.7);">Culinary Instructor · EAW Platform</div>
+            <p class="tutor-bio" style="color:rgba(255,255,255,.75);">BSc English. Young Nigerian woman with a passion for healthy baking, learned from her mother and professional classes. Teaches reduced-sugar, nutritious recipes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="course-card-box">
+      <div class="course-price"><span class="free-tag">Free</span></div>
+      <button onclick="enrollCourse()" class="enrol-btn">Enrol Now, It's Free!</button>
+      <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:8px;">No credit card required</p>
+      <div class="course-includes">
+        <h4>This course includes:</h4>
+        <div class="ci-item">🎂 9 complete cake recipes with exact measurements</div>
+        <div class="ci-item">🍹 5 healthy juice & smoothie recipes</div>
+        <div class="ci-item">🍚 9 Nigerian rice meal recipes</div>
+        <div class="ci-item">🥗 Healthier baking alternatives</div>
+        <div class="ci-item">🍴 Kitchen essentials guide</div>
+        <div class="ci-item">🎓 Certificate of completion</div>
+        <div class="ci-item">📱 Mobile-accessible forever</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div style="max-width:860px;">
+    <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:16px;">Course Content</h2>
+
+    <div id="progressBar" style="display:none;background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--r-lg);padding:16px;margin-bottom:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-weight:700;font-size:15px;color:var(--blue);">Your Progress</span>
+        <span id="courseProgressText" style="font-size:13px;color:var(--text-mid);">0% complete</span>
+      </div>
+      <div style="background:var(--gray-200);border-radius:99px;height:8px;overflow:hidden;">
+        <div id="courseProgressBar" style="height:100%;background:var(--blue);border-radius:99px;width:0%;transition:width .5s;"></div>
+      </div>
+    </div>
+    <div class="accordion">
+
+      <div class="accordion-item" id="module-1">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Module 1: Kitchen Essentials, Getting Started
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <p style="font-size:15px;color:var(--text-mid);margin-bottom:14px;">Before you can cook or bake, you need the right tools. This module introduces the essential kitchen equipment every cook should have.</p>
+          <!--
+		  <div class="lesson-item">🔪 Chef Knife, for cutting vegetables, yam, plantain</div>
+          <div class="lesson-item">🪵 Cutting Board, a must for all chopping tasks</div>
+          <div class="lesson-item">🥫 Can Opener, for canned foods and ingredients</div>
+          <div class="lesson-item">🥄 Measuring Cups & Spoons, precision baking</div>
+          <div class="lesson-item">🫙 Mixing Bowls, in various sizes for blending</div>
+          <div class="lesson-item">🥚 Whisk, for salad dressings, shakes, eggs</div>
+          <div class="lesson-item">🥦 Vegetable Peeler, for yam, carrots, potatoes</div>
+-->
+<!-- PPT DOWNLOAD -->
+          <a href="BAKING AND COOKING - Tutor Ebere/Ebere_Irrechukwu_-_bio.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 1 Slide Deck (PowerPoint)
+          </a>
+         
+          <button id="complete-btn-1" onclick="completeModule(1)" class="module-complete-btn">
+            Mark Module 1 as Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-2">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Module 2: Healthy Juices &amp; Smoothies (5 Recipes)
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">🍌 Banana Juice</div>
+          <div class="lesson-item">🍓 Strawberry &amp; Grape Smoothie</div>
+          <div class="lesson-item">🍎 Apple Juice</div>
+          <div class="lesson-item">🍍 Pineapple Juice</div>
+          <div class="lesson-item">🍊 Orange Juice</div>
+          <div style="margin-top:14px;background:var(--blue-pale);border-radius:var(--r-md);padding:12px;font-size:13px;color:var(--blue-dark);">
+            <strong>Pro Tip:</strong> Always wash fruits with a little salt and water before blending to remove surface bacteria. Refrigerate immediately for freshness.
+          </div>
+<!-- PPT DOWNLOAD -->
+          <a href="BAKING AND COOKING - Tutor Ebere/Healthy_Juices.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 2 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-2" onclick="completeModule(2)" class="module-complete-btn">
+            Mark Module 2 as Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-3">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Module 3: Nigerian Rice Meals &amp; Main Dishes (9 Recipes)
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">🍚 <strong>Fried Rice</strong> </div>
+          <div class="lesson-item">🍅 <strong>Jollof Rice</strong></div>
+          <div class="lesson-item">🫘 <strong>Beans Porridge</strong></div>
+          <div class="lesson-item">🌱 <strong>Plantain with Egg Sauce</strong></div>
+          <div class="lesson-item">🍟 <strong>Yam Chips</strong></div>
+          <div class="lesson-item">🥔 <strong>Baked Potato</strong></div>
+          <div class="lesson-item">🍇 <strong>Fruit Salad</strong></div>
+          <div class="lesson-item">🥣 <strong>Egusi Soup with Wheat</strong></div>
+          <div class="lesson-item">🌿 <strong>Okra Soup</strong></div>
+<!-- PPT DOWNLOAD -->
+          <a href="BAKING AND COOKING - Tutor Ebere/Making_Your_Favourite_Rice_Meal.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 3 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-3" onclick="completeModule(3)" class="module-complete-btn">
+            Mark Module 3 Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-4">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Module 4: Cake Recipes, 9 Complete Recipes with Exact Measurements ⭐
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div style="background:var(--blue-pale);border-radius:var(--r-md);padding:12px 16px;font-size:13px;color:var(--blue-dark);margin-bottom:14px;">
+            <strong>Before every cake recipe:</strong> Ensure all ingredients are at room temperature. Sieve flour. Preheat oven. Oil pan. Test with toothpick before removing from oven.
+          </div>
+
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🥕 1. Carrot Cake</h4>
+            <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Sugar 230g · Oil 250ml · Flour 280g · Eggs 3 · Baking Soda 1tsp · Cinnamon 1tsp · Ginger 1tsp · Salt pinch · Browning 1tsp<br><em>Mix wet ingredients, sieve dry into wet, combine, bake 40–45 mins medium heat.</em></div> -->
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🍦 2. Vanilla Cake</h4>
+            <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Sugar 320g · Flour 400g · Butter 400g · Eggs 8 · Baking Powder 2tsp · Cake Softener 15g · Vanilla 1 cup<br><em>Melt butter, mix until fluffy, add dry ingredients, bake 40 mins, do not open oven door.</em></div> -->
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🔴 3. Red Velvet Cake</h4>
+            <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Flour 400g · Sugar 350g · Cocoa 1.5tsp · Red Food Colour 1tsp · Salt 1tsp · Yoghurt 250ml · Oil 250ml · Eggs 3 · Vanilla/Pineapple 1 cup<br><em>Mix wet ingredients, add dry ingredients, bake 45 mins.</em></div> -->
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🍇 4. Fruit Cake</h4>
+            <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Flour 400g · Oil 400ml · Sugar 300g · Baking Powder 2tsp · Cinnamon 1tbsp · Eggs 9 · Pineapple Flavour 2tsp · Raisin/dried fruits 2 cups (soaked in Brandy)<br><em>Mix 30 mins, bake 50 mins medium heat.</em></div> -->
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🥥 5. Coconut Cake</h4>
+           <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Sugar 440g · Butter 530g · Flour 540g · Eggs 10 · Baking Powder 2tsp · Cake Softener 20g · Coconut Flavour 2 cups · 2 fresh coconuts<br><em>Homemade coconut flakes: break/wash coconuts, blend, fry with oil/salt. Cream butter/eggs, add dry ingredients, fold in flakes, bake 45–50 mins. Can reduce sugar 50–100g.</em></div> -->
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🌀 6. Marble Cake</h4>
+           <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Butter 250g · Flour 250g (sieved) · Sugar 250g · Baking Soda 1tsp · Eggs 4 · Milk 3tsp · Cocoa 3tsp · Vanilla Extract 1tsp<br><em>Whisk butter/egg/sugar, add milk/vanilla/flour, stir in cocoa, swirl with skewer for marble effect, bake 45–55 mins.</em></div>
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🍫 7. Chocolate Cake</h4>
+            <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Flour 240g · Cocoa 20g · Sugar 340g · Baking Soda 3tsp · Salt 1tsp · Eggs 3 · Olive Oil 200ml · Vanilla 1tsp<br><em>Mix dry ingredients, whisk eggs/oil, combine, bake 50 mins.</em></div> -->
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">🍌 8. Banana Bread</h4>
+           <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Butter 100g · Sugar 125g · Vanilla 1tsp · Eggs 2 · Flour 170g (sieved) · Ripe bananas 3 (mashed) · Milk 40ml<br><em>Mix wet ingredients, add flour, bake 45 mins in banana bread pan.</em></div> -->
+          </div>
+          <div style="border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:16px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:10px;">☁️ 9. Sponge Cake</h4>
+           <!-- <div style="font-size:13px;color:var(--text-mid);line-height:1.8;">Flour 200g (sieved) · Sugar 150g · Eggs 10 · Melted butter/oil 100g · Baking Soda 2tsp · Salt pinch · Vanilla 1tsp<br><em>Whisk egg/sugar/butter 10 mins, fold in flour/baking soda, bake 40 mins, test with toothpick.</em></div> -->
+          </div>
+<!-- PPT DOWNLOAD -->
+          <a href="BAKING AND COOKING - Tutor Ebere/Recipes_for_CAKE.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 4 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-4" onclick="completeModule(4)" class="module-complete-btn">
+            Mark Module 4 Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-5">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Module 5: Healthier Food Options &amp; Baking Tips
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div style="margin-bottom:16px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:8px;">Healthier Baking Substitutions:</h4>
+            <div class="lesson-item">✅ Use gluten-free flour for sensitive stomachs</div>
+            <div class="lesson-item">✅ Apple sauce or fresh fruits instead of icing for topping</div>
+            <div class="lesson-item">✅ Brown sugar or honey instead of white sugar</div>
+            <div class="lesson-item">✅ Gluten-free baking soda where possible</div>
+            <div class="lesson-item">✅ Olive oil to reduce calorie count</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <h4 style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:8px;">Healthier Nigerian Meal Options:</h4>
+            <div class="lesson-item">🌱 <strong>Roasted Plantain with Vegetables &amp; Stew</strong>, bake plantain 20 mins, prepare vegetable sauce</div>
+            <div class="lesson-item">🥬 <strong>Boiled Yam with Vegetables</strong>, boil yam with salt, serve with vegetable sauce</div>
+            <div class="lesson-item">🌿 <strong>Vegetable Soup with Wheat/Garri</strong>, waterleaf, ukazi, stockfish, meat, small palm oil, fry waterleaf separately</div>
+          </div>
+
+          <button id="complete-btn-5" onclick="goToQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;">
+            📝 Take Final Assessment →
+          </button>
+          <p style="text-align:center;font-size:13px;color:var(--text-mid);margin-top:8px;">Score 70% or above to unlock your Certificate of Completion</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:32px;background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:#fff;border-radius:var(--r-xl);padding:32px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">🎓</div>
+      <h3 style="font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;margin-bottom:10px;color:#fff;">Complete the course to earn your certificate</h3>
+      <p style="color:rgba(255,255,255,.88);margin-bottom:20px;">Finish all 5 modules and pass the final quiz to receive your official EAW Certificate of Completion in Baking &amp; Cooking Essentials.</p>
+      <button onclick="enrollCourse()" class="btn btn-white btn-lg">Start Course Now →</button>
+    </div>
+
+  </div>
+</section>
+
+
+<div class="cert-modal-overlay" id="certModal">
+  <div class="cert-modal">
+    <div class="cert-frame">
+      <div class="cert-title">Empowering African Women · EAW</div>
+      <div class="cert-of">Certificate of Completion</div>
+      <div class="cert-awarded">This is to certify that</div>
+      <div class="cert-student-name" id="certName">Student Name</div>
+      <div class="cert-awarded">has successfully completed</div>
+      <div class="cert-course-name">Baking &amp; Cooking Essentials</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate">Date</span></div>
+      <div class="cert-sigs">
+        <div class="cert-sig-line">EAW Administration<br>EAW Founder &amp; Director</div>
+        <div class="cert-sig-line">Ebere Irrechukwu<br>Course Instructor</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
+      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="display:inline-flex;">
+        <img src="eaw_icon.png" alt="EAW" style="height:40px;filter:brightness(0) invert(1);">
+        <span class="logo-text" style="color:#fff;">Empowering<br>African Women</span>
+      </div>
+      <p>A digital platform empowering young African women through vocational training, business education, and community mentorship. Registered as DBTWTEi, Nigeria.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Courses</h4>
+      <a href="course-mechanic.html">Female Mechanic Incubator</a>
+      <a href="course-baking.html">Baking & Cooking</a>
+      <a href="course-etiquette.html">Business Etiquette</a>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="about.html">About EAW</a>
+      <a href="stories.html">Student Stories</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="login.html">Sign In</a>
+      <a href="signup.html">Join for Free</a>
+      <a href="student-dashboard.html">Dashboard</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <span>Km 22 LEKKI Epe Expressway, Ajah, Lagos</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('hamburger')?.addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+
+const COURSE_ID = 'baking';
+const TOTAL_MODULES = 5;
+const QUIZ_URL = 'quiz-baking.html';
+
+function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || 'null'); }
+function saveUser(u) {
+  localStorage.setItem('eaw_user', JSON.stringify(u));
+  // Sync enrollment progress back to eaw_users registry
+  const _users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+  const _idx = _users.findIndex(x => x.email === u.email);
+  if (_idx >= 0) {
+    const _pw = _users[_idx].password;
+    _users[_idx] = Object.assign({}, u, { password: _pw });
+    localStorage.setItem('eaw_users', JSON.stringify(_users));
+  }
+}
+
+function toggleAccordion(header) {
+  header.classList.toggle('active');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function enrollCourse() {
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  if (!user.enrollments.find(e => e.courseId === COURSE_ID)) {
+    user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
+    saveUser(user);
+    fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})});
+  }
+  updateEnrolBtn();
+  const first = document.querySelector('.accordion-header');
+  if (first && !first.classList.contains('active')) first.click();
+  first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('progressBar').style.display = 'block';
+  updateModuleUI();
+}
+
+function updateEnrolBtn() {
+  const user = getUser();
+  const enrolled = user && (user.enrollments || []).find(e => e.courseId === COURSE_ID);
+  document.querySelectorAll('.enrol-btn').forEach(btn => {
+    if (enrolled) {
+      btn.textContent = '✓ Enrolled, Start Learning →';
+      btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
+      btn.style.cursor = 'default';
+      btn.onclick = function() {
+        const first = document.querySelector('.accordion-header');
+        if (first) { if (!first.classList.contains('active')) first.click(); first.scrollIntoView({ behavior:'smooth', block:'start' }); }
+      };
+    } else {
+      btn.textContent = 'Enrol Now, It\'s Free!';
+      btn.style.background = '';
+      btn.onclick = enrollCourse;
+    }
+  });
+}
+
+function completeModule(moduleNum) {
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
+  if (!enrol) {
+    enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() };
+    user.enrollments.push(enrol);
+  }
+  if (!enrol.completedModules) enrol.completedModules = [];
+  if (!enrol.completedModules.includes(moduleNum)) enrol.completedModules.push(moduleNum);
+  if (!_completedModules.includes(moduleNum)) _completedModules.push(moduleNum);
+  const _progKey = 'eaw_prog_' + (user.email||'') + '_' + COURSE_ID;
+  localStorage.setItem(_progKey, JSON.stringify(_completedModules));
+  enrol.progress = Math.min(80, enrol.completedModules.length * 20);
+  saveUser(user);
+  // Save progress to server (non-blocking, best-effort)
+  fetch('api/progress.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    credentials: 'include',
+    body: JSON.stringify({course: COURSE_ID, lesson: 'module-' + moduleNum})
+  }).catch(function(){});
+  updateModuleUI();
+  _refreshQuizGate();
+
+  const next = document.getElementById('module-' + (moduleNum + 1));
+  if (next) {
+    const h = next.querySelector('.accordion-header');
+    if (h && !h.classList.contains('active')) h.click();
+    setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+  }
+}
+
+function goToQuiz() {
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
+  if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); saveUser(user); }
+  window.location.href = QUIZ_URL;
+}
+
+function updateModuleUI() {
+  const user = getUser();
+  if (!user) return;
+  const enrol = (user.enrollments || []).find(e => e.courseId === COURSE_ID);
+  const completed = _completedModules.length > 0 ? _completedModules : (enrol ? (enrol.completedModules || []) : []);
+  const hasCert = user && (user.certificates || []).some(c => c.id === COURSE_ID);
+  const quizPassed = hasCert || (enrol ? !!enrol.quizPassed : false);
+  const pct = quizPassed ? 100 : (_completedModules.length > 0 ? Math.round(_completedModules.filter(n => CONTENT_MODULES.includes(n)).length / CONTENT_MODULES.length * 80) : (enrol ? (enrol.progress || 0) : 0));
+
+  const pbar = document.getElementById('courseProgressBar');
+  const ptext = document.getElementById('courseProgressText');
+  if (pbar) pbar.style.width = pct + '%';
+  if (ptext) ptext.textContent = pct + '% complete' + (quizPassed ? ', Certificate Earned! 🎓' : ', ' + completed.length + ' of ' + (TOTAL_MODULES-1) + ' modules + quiz');
+
+  for (let i = 1; i <= TOTAL_MODULES - 1; i++) {
+    const btn = document.getElementById('complete-btn-' + i);
+    if (btn && completed.includes(i)) {
+      btn.textContent = '✅ Module Complete!';
+      btn.style.background = 'var(--green)';
+      btn.disabled = true;
+    }
+  }
+
+  const quizBtn = document.getElementById('complete-btn-5');
+  if (quizBtn) {
+    if (quizPassed) {
+      quizBtn.textContent = '🎓 View Your Certificate';
+      quizBtn.style.background = 'var(--green)';
+      quizBtn.style.color = '#fff';
+      quizBtn.onclick = issueCertificate;
+    } else {
+      const attempts = user ? ((user.quizAttempts || {})[COURSE_ID] || []) : [];
+      if (attempts.length > 0) {
+        const last = attempts[attempts.length - 1];
+        quizBtn.textContent = `📝 Retake Quiz (Last: ${last.score}/${last.total}) →`;
+      }
+    }
+  }
+}
+
+function issueCertificate() {
+  const user = getUser();
+  if (!user) return;
+  const enrol = (user.enrollments||[]).find(e => e.courseId === COURSE_ID);
+  if (!enrol || !enrol.quizPassed) {
+    window.location.href = QUIZ_URL; return;
+  }
+  if (!user.certificates) user.certificates = [];
+  let cert = user.certificates.find(c => c.id === COURSE_ID);
+  if (!cert) {
+    cert = { id: COURSE_ID, title: 'Baking & Cooking Essentials', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() };
+    user.certificates.push(cert);
+    saveUser(user);
+    fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{});
+  }
+  const m = document.getElementById('certModal');
+  if (m) {
+    m.classList.add('open');
+    document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || '');
+    document.getElementById('certDate').textContent = cert.date;
+  }
+}
+
+// ── EAW Gate constants ────────────────────────────────────────
+const CONTENT_MODULES   = [1, 2, 3, 4];
+const QUIZ_BTN_ID       = 'complete-btn-5';
+const HAS_VIDEO_MODULES = [1, 2, 3, 4];
+const MODULE_NAMES = {
+  1: 'Module 1, Introduction to Cooking & Baking',
+  2: 'Module 2, Baking Fundamentals & Equipment',
+  3: 'Module 3, Nigerian Recipes & Techniques',
+  4: 'Module 4, Nutrition, Health & Food Safety'
+};
+
+// ── EAW COURSE GATE ENGINE ────────────────────────────────────────
+
+let _toastTimer = null;
+function _showToast(title, msg, icon) {
+  const t = document.getElementById('eawToast');
+  const bar = t.querySelector('.et-bar');
+  document.getElementById('eawToastTitle').textContent = title;
+  document.getElementById('eawToastMsg').textContent   = msg;
+  document.getElementById('eawToastIcon').textContent  = icon || '📋';
+  bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = '';
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 6000);
+}
+
+// ── DB-BACKED PROGRESS ─────────────────────────────────────────
+let _completedModules = [];
+let _certified = false;
+
+async function loadProgressFromDB() {
+  _certified = false;
+  const _serverNums = new Set();
+  try {
+    const res = await fetch('api/progress.php?course=' + COURSE_ID, { credentials: 'include' });
+    const data = await res.json();
+    if (data.completed) { _completedModules = data.completed.map(function(id){ var n=parseInt(String(id).replace('module-',''),10); return isNaN(n)?null:n; }).filter(function(n){return n!==null;}); _completedModules.forEach(function(n){_serverNums.add(n);}); }
+    if (data.certified) _certified = true;
+  } catch(e) {}
+  // Merge localStorage as fallback
+  const u = getUser();
+  const enrol = u ? (u.enrollments || []).find(x => x.courseId === COURSE_ID) : null;
+  if (enrol && enrol.completedModules) {
+    enrol.completedModules.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
+  }
+  const _u2 = getUser();
+  const _progKey2 = 'eaw_prog_' + (_u2 ? (_u2.email||'') : '') + '_' + COURSE_ID;
+  const _savedProg = JSON.parse(localStorage.getItem(_progKey2) || '[]');
+  _savedProg.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
+  // Push enrollment + any local-only completions up to server (one-way sync, idempotent)
+  fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+  _completedModules.forEach(function(n){if(!isNaN(n)&&!_serverNums.has(n)){fetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}});
+  // Sync merged progress + cert status back to localStorage
+  const _syncUser = getUser();
+  if (_syncUser) {
+    if (!_syncUser.enrollments) _syncUser.enrollments = [];
+    let _syncEnrol = _syncUser.enrollments.find(e => e.courseId === COURSE_ID);
+    if (!_syncEnrol) { _syncEnrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; _syncUser.enrollments.push(_syncEnrol); }
+    if (_completedModules.length > 0) {
+      _syncEnrol.completedModules = [..._completedModules];
+      _syncEnrol.progress = Math.round(_completedModules.filter(n => CONTENT_MODULES.includes(n)).length / CONTENT_MODULES.length * 80);
+    }
+    if (_certified || _syncEnrol.quizPassed) { _syncEnrol.quizPassed = true; _syncEnrol.progress = 100; }
+    saveUser(_syncUser);
+    localStorage.setItem('eaw_prog_' + (_syncUser.email||'') + '_' + COURSE_ID, JSON.stringify(_completedModules));
+  }
+}
+
+function _allDone()      { return CONTENT_MODULES.every(n => _completedModules.includes(n)); }
+function _doneCount()    { return _completedModules.filter(n => CONTENT_MODULES.includes(n)).length; }
+function _isCompleted(n) { return _completedModules.includes(n); }
+
+// ── Quiz Gate Block ──────────────────────────────────────────────
+function _buildQuizGate() {
+  const btn = document.getElementById(QUIZ_BTN_ID);
+  if (!btn) return;
+  const _u = getUser();
+  const _enrol = _u ? (_u.enrollments||[]).find(e => e.courseId === COURSE_ID) : null;
+  const quizPassed = (_u && (_u.certificates||[]).some(c => c.id === COURSE_ID)) || (_enrol && !!_enrol.quizPassed) || !!_certified;
+  const done = _allDone();
+  const count = _doneCount();
+  const total = CONTENT_MODULES.length;
+  const pct = quizPassed ? 100 : (total ? Math.round(count/total*100) : 0);
+
+  const items = CONTENT_MODULES.map(n => {
+    const ok = _isCompleted(n);
+    return `<div class="eqg-item ${ok?'done':'pending'}" id="eqg-item-${n}">
+      <div class="eqg-dot">${ok ? '✓' : ''}</div>
+      <div class="eqg-name">${MODULE_NAMES[n] || 'Module '+n}</div>
+      <div class="eqg-status">${ok ? 'Complete ✓' : 'Not yet done'}</div>
+    </div>`;
+  }).join('');
+
+  const html = `<div class="eaw-quiz-gate" id="eawQuizGate">
+    <div class="eqg-header">
+      <div class="eqg-icon" id="eqgIcon">${quizPassed?'🏆':(done?'🎓':'🔒')}</div>
+      <div class="eqg-text">
+        <div class="eqg-title" id="eqgTitle">${quizPassed ? 'Course Completed!' : (done ? 'Ready for Your Assessment' : 'Assessment Locked')}</div>
+        <div class="eqg-sub"   id="eqgSub">${quizPassed ? 'Congratulations! You have earned your EAW Certificate.' : (done ? 'All modules verified. Your assessment is now unlocked.' : 'Finish every module below to unlock your final assessment.')}</div>
+        <div class="eqg-bar-track"><div class="eqg-bar-fill" id="eqgBarFill" style="width:${pct}%"></div></div>
+      </div>
+    </div>
+    <div class="eqg-body">
+      <div class="eqg-checklist" id="eqgChecklist">${items}</div>
+      <button class="eqg-btn ${(done||quizPassed)?'unlocked':'locked'}" id="${QUIZ_BTN_ID}" onclick="${quizPassed?'issueCertificate()':'_guardQuiz()'}">
+        ${quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock')}
+      </button>
+      <div class="eqg-hint ${(done||quizPassed)?'unlocked':'locked'}" id="eqgHint">
+        ${quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`)}
+      </div>
+    </div>
+  </div>`;
+
+  btn.outerHTML = html;
+  const gate = document.getElementById('eawQuizGate');
+  const p = gate && gate.nextElementSibling;
+  if (p && p.tagName === 'P' && p.textContent.includes('70%')) p.style.display = 'none';
+}
+
+function _refreshQuizGate() {
+  if (!document.getElementById('eawQuizGate')) { _buildQuizGate(); return; }
+  const _u = getUser();
+  const _enrol = _u ? (_u.enrollments||[]).find(e => e.courseId === COURSE_ID) : null;
+  const quizPassed = (_u && (_u.certificates||[]).some(c => c.id === COURSE_ID)) || (_enrol && !!_enrol.quizPassed) || !!_certified;
+  const done = _allDone();
+  const count = _doneCount();
+  const total = CONTENT_MODULES.length;
+  const pct = quizPassed ? 100 : (total ? Math.round(count/total*100) : 0);
+
+  CONTENT_MODULES.forEach(n => {
+    const item = document.getElementById('eqg-item-'+n);
+    if (!item) return;
+    const ok = _isCompleted(n);
+    item.className = 'eqg-item '+(ok?'done':'pending');
+    item.querySelector('.eqg-dot').textContent = ok ? '✓' : '';
+    item.querySelector('.eqg-status').textContent = ok ? 'Complete ✓' : 'Not yet done';
+  });
+
+  const fill  = document.getElementById('eqgBarFill');
+  const icon  = document.getElementById('eqgIcon');
+  const title = document.getElementById('eqgTitle');
+  const sub   = document.getElementById('eqgSub');
+  const btn   = document.getElementById(QUIZ_BTN_ID);
+  const hint  = document.getElementById('eqgHint');
+
+  if (fill)  fill.style.width = pct+'%';
+  if (icon)  icon.textContent = quizPassed ? '🏆' : (done ? '🎓' : '🔒');
+  if (title) title.textContent = quizPassed ? 'Course Completed!' : (done ? 'Ready for Your Assessment' : 'Assessment Locked');
+  if (sub)   sub.textContent   = quizPassed ? 'Congratulations! You have earned your EAW Certificate.' : (done ? 'All modules verified. Your assessment is now unlocked.' : 'Finish every module below to unlock your final assessment.');
+  if (btn) {
+    btn.className = 'eqg-btn '+((done||quizPassed)?'unlocked':'locked');
+    btn.onclick = quizPassed ? issueCertificate : _guardQuiz;
+    btn.innerHTML = quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock');
+  }
+  if (hint) {
+    hint.className = 'eqg-hint '+((done||quizPassed)?'unlocked':'locked');
+    hint.textContent = quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`);
+  }
+}
+
+function _guardQuiz() {
+  if (!_allDone()) {
+    const remaining = CONTENT_MODULES.filter(n => !_isCompleted(n)).map(n => MODULE_NAMES[n] || 'Module '+n);
+    _showToast(
+      '🔒 Assessment Not Yet Available',
+      'Please complete: ' + remaining.join(', ') + ' before taking the assessment.',
+      '📚'
+    );
+    return;
+  }
+  goToQuiz();
+}
+
+// ── Video Watch Gate ─────────────────────────────────────────────
+const _vtimers = {};
+const _vwatched = {};
+
+function _initVideoGate(n) {
+  if (!HAS_VIDEO_MODULES.includes(n)) return;
+  if (_isCompleted(n)) return;
+  const btn = document.getElementById('complete-btn-'+n);
+  if (!btn || document.getElementById('vcb-'+n)) return;
+  btn.classList.add('eaw-locked');
+  btn.disabled = true;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'vcb-wrap'; wrap.id = 'vcb-'+n;
+  wrap.innerHTML = `
+    <div class="vcb-icon">▶️</div>
+    <div class="vcb-body">
+      <div class="vcb-title">Study this powerpoint file to continue</div>
+      <div class="vcb-sub">A confirmation button appears once you've had time to watch</div>
+    </div>
+    <div class="vcb-pill" id="vcbpill-${n}">⏳ studying…</div>
+    <button class="vcb-confirm-btn" id="vcbbtn-${n}" onclick="_confirmWatched(${n})">
+      ✅ Mark Done
+    </button>`;
+  btn.insertAdjacentElement('beforebegin', wrap);
+}
+
+function _startVideoTimer(n) {
+  if (!HAS_VIDEO_MODULES.includes(n)) return;
+  if (_vwatched[n] || _vtimers[n] || _isCompleted(n)) return;
+  let secs = 15;
+  const pill = document.getElementById('vcbpill-'+n);
+  const cbtn = document.getElementById('vcbbtn-'+n);
+  _vtimers[n] = setInterval(() => {
+    secs--;
+    if (pill) pill.textContent = secs > 0 ? `⏳ ${secs}s remaining` : '✅ Ready!';
+    if (secs <= 0) {
+      clearInterval(_vtimers[n]); _vtimers[n] = null;
+      if (cbtn) cbtn.classList.add('ready');
+    }
+  }, 1000);
+}
+
+function _confirmWatched(n) {
+  _vwatched[n] = true;
+  const wrap = document.getElementById('vcb-'+n);
+  if (wrap) wrap.style.display = 'none';
+  const btn = document.getElementById('complete-btn-'+n);
+  if (btn) { btn.classList.remove('eaw-locked'); btn.disabled = false; }
+}
+
+function _attachLocalVideo(n) {
+  const mod = document.getElementById('module-'+n);
+  if (!mod) return;
+  const video = mod.querySelector('video');
+  if (!video) return;
+  video.addEventListener('ended', () => _confirmWatched(n));
+  video.addEventListener('timeupdate', () => {
+    if (!_vwatched[n] && video.duration && video.currentTime/video.duration >= 0.8)
+      _confirmWatched(n);
+  });
+}
+
+function _patchAccordions() {
+  document.querySelectorAll('.accordion-header').forEach(h => {
+    const orig = h.getAttribute('onclick') || '';
+    h.setAttribute('onclick', '');
+    h.addEventListener('click', function() {
+      const fnName = orig.includes('toggleAccordion') ? 'toggleAccordion' : 'toggleAcc';
+      if (typeof window[fnName] === 'function') window[fnName](this);
+      if (this.classList.contains('active')) {
+        CONTENT_MODULES.forEach(n => {
+          const mod = document.getElementById('module-'+n);
+          if (mod && mod.contains(this)) _startVideoTimer(n);
+        });
+      }
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProgressFromDB();
+  updateModuleUI();
+  _buildQuizGate();
+  CONTENT_MODULES.forEach(n => _initVideoGate(n));
+  _patchAccordions();
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  // Enrollment gate, user must have explicitly enrolled
+  // Auto-enroll if not already enrolled
+  if (!(user.enrollments || []).find(e => e.courseId === COURSE_ID)) {
+    if (!user.enrollments) user.enrollments = [];
+    user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
+    saveUser(user);
+    fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+  }
+  const enrol = user ? (user.enrollments || []).find(e => e.courseId === COURSE_ID) : null;
+  if (enrol) document.getElementById('progressBar').style.display = 'block';
+  updateEnrolBtn();
+  if (user) {
+    const navCta = document.querySelector('.nav-cta');
+    if (navCta) navCta.innerHTML = `<a href="student-dashboard.html" class="btn btn-blue btn-sm">My Dashboard →</a>`;
+  }
+});
+</script>
+
+<div class="eaw-toast" id="eawToast">
+  <div class="et-icon" id="eawToastIcon">📋</div>
+  <div class="et-body">
+    <div class="et-title" id="eawToastTitle">Complete Your Modules First</div>
+    <div class="et-msg"   id="eawToastMsg">Please finish all course modules before taking the assessment.</div>
+  </div>
+  <button class="et-close" onclick="document.getElementById('eawToast').classList.remove('show')">×</button>
+  <div class="et-bar"></div>
+</div>
+<script src="eaw-common.js"></script>
+</body>
+</html>

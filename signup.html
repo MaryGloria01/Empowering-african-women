@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Join for Free | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .pw-wrap { position: relative; }
+    .pw-wrap .form-input { padding-right: 44px; }
+    .pw-eye { position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);padding:4px;display:flex;align-items:center;justify-content:center; }
+    .pw-eye:hover { color:var(--blue); }
+    .pw-eye svg { display:block;pointer-events:none; }
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear { display:none; }
+    .pw-strength { margin-top:8px;font-size:13px; }
+    .pw-strength-bars { display:flex;gap:4px;margin-bottom:5px; }
+    .pw-strength span { display:inline-block;flex:1;height:5px;border-radius:99px;background:#e2e8f0;transition:.3s; }
+    .pw-strength span.active-weak { background:#ef4444; }
+    .pw-strength span.active-fair { background:#f97316; }
+    .pw-strength span.active-good { background:#eab308; }
+    .pw-strength span.active-strong { background:#22c55e; }
+    .pw-strength-label { font-size:13px;color:var(--text-light);margin-top:4px;font-weight:600; }
+    .pw-rules { font-size:13px;color:var(--text-light);margin-top:8px;line-height:1.8;background:var(--gray-50);border-radius:var(--r-md);padding:10px 14px;border:1px solid var(--gray-200); }
+    .pw-rules .rule { display:flex;align-items:center;gap:8px; }
+    .pw-rules .rule.ok { color:#16a34a; }
+    .pw-rules .rule.ok::before { content:'✓';font-weight:800; }
+    .pw-rules .rule:not(.ok)::before { content:'○'; }
+
+    /* OTP Step */
+    #otpStep { display:none; }
+    .otp-box { background:linear-gradient(135deg,var(--blue-pale),#fff);border:1.5px solid var(--blue-light);border-radius:var(--r-xl);padding:28px;text-align:center;margin-bottom:20px;box-shadow:0 4px 20px rgba(29,78,216,.08); }
+    .otp-title { font-family:'Source Serif 4',serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:8px; }
+    .otp-sub { font-size:14px;color:var(--text-mid);margin-bottom:20px;line-height:1.65; }
+    .otp-inputs { display:flex;gap:10px;justify-content:center;margin-bottom:16px; }
+    .otp-inputs input { width:48px;height:52px;text-align:center;font-size:22px;font-weight:700;border:2px solid var(--blue-light);border-radius:var(--r-md);outline:none;transition:.2s;background:#fff; }
+    .otp-inputs input:focus { border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.15); }
+    .otp-resend { font-size:14px;color:var(--text-light);margin-top:10px; }
+    .otp-resend button { background:none;border:none;color:var(--blue);font-weight:600;cursor:pointer;font-size:13px;padding:0; }
+
+    /* Role cards, enhanced */
+    .role-card { border:2px solid var(--gray-200);border-radius:var(--r-lg);padding:18px;text-align:center;cursor:pointer;transition:all .25s ease;position:relative; }
+    .role-card.active { border-color:var(--blue);background:linear-gradient(135deg,var(--blue-pale),#fff);box-shadow:0 4px 16px rgba(29,78,216,.16); }
+    .role-card.active::after { content:'✓';position:absolute;top:8px;right:10px;width:20px;height:20px;background:var(--blue);color:#fff;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center; }
+    .role-card:hover { border-color:var(--blue);box-shadow:0 2px 10px rgba(29,78,216,.12); }
+    .role-icon { font-size:32px;display:block;margin-bottom:8px; }
+    .role-label { font-family:'Source Serif 4',serif;font-size:17px;font-weight:700;display:block;margin-bottom:4px; }
+    .role-desc { font-size:13px;color:var(--text-light);display:block; }
+
+    /* No navbar spacing on auth pages */
+    body { padding-top: 0 !important; }
+  </style>
+</head>
+<body>
+<!-- Mobile header (shown when sidebar panel hidden) -->
+<div class="auth-mobile-header">
+  <img src="eaw_icon.png" alt="EAW">
+  <h2>Join EAW, It's Free</h2>
+  <p>Create your account and start learning today</p>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-left">
+    <img src="eaw_icon.png" alt="EAW" class="auth-left-logo">
+    <h2>Join hundreds of empowered African women</h2>
+    <p>Free access to vocational courses in auto-mechanics, baking &amp; cooking, and business skills. Earn certificates and join a powerful community of African women transforming their lives.</p>
+    <div class="auth-img-wrap">
+      <img src="Pictures/Training2.jpg" alt="EAW Training">
+    </div>
+    <div class="auth-testimonial">
+      <p>"This program gave me the skills and confidence to start my own career. I never imagined I could fix cars, now I run my own workshop."</p>
+      <cite>Florence Iria, EAW Graduate, Lagos, Nigeria</cite>
+    </div>
+    <div class="auth-trust-points">
+      <div class="auth-trust-item"><span>✓</span><span>100% free, no hidden fees</span></div>
+      <div class="auth-trust-item"><span>✓</span><span>Official certificates on completion</span></div>
+      <div class="auth-trust-item"><span>✓</span><span>Learn at your own pace, on any device</span></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <a href="index.html"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
+    <h1>Create Your Account</h1>
+    <p class="auth-right-subtitle-small">Join the EAW community, completely free.</p>
+    <p class="auth-subtitle">Already have an account? <a href="login.html">Sign in here →</a></p>
+
+    <!-- ROLE SELECTOR -->
+    <label class="form-label">I want to join as:</label>
+    <div class="role-cards">
+      <div class="role-card active" data-role="student" onclick="selectRole('student',this)">
+        <span class="role-icon">👩‍🎓</span>
+        <span class="role-label">Student</span>
+        <span class="role-desc">Learn &amp; earn certificates</span>
+      </div>
+      <div class="role-card" data-role="tutor" onclick="selectRole('tutor',this)">
+        <span class="role-icon">👩‍🏫</span>
+        <span class="role-label">Tutor</span>
+        <span class="role-desc">Create &amp; teach courses</span>
+      </div>
+    </div>
+
+    <!-- STUDENT FORM -->
+    <form id="studentForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input type="text" id="firstName" class="form-input" required maxlength="60">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" id="lastName" class="form-input" maxlength="60">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input type="email" id="email" class="form-input" placeholder="you@example.com" required maxlength="254">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number *</label>
+        <div style="display:flex;gap:8px;">
+          <select id="phoneCode" class="form-input" style="width:130px;flex-shrink:0;">
+            <option value="+234">🇳🇬 +234</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+27">🇿🇦 +27</option>
+            <option value="+233">🇬🇭 +233</option>
+            <option value="+254">🇰🇪 +254</option>
+            <option value="+256">🇺🇬 +256</option>
+            <option value="+255">🇹🇿 +255</option>
+            <option value="+251">🇪🇹 +251</option>
+            <option value="+212">🇲🇦 +212</option>
+            <option value="+20">🇪🇬 +20</option>
+            <option value="+225">🇨🇮 +225</option>
+            <option value="+221">🇸🇳 +221</option>
+            <option value="+237">🇨🇲 +237</option>
+            <option value="+249">🇸🇩 +249</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+other">🌍 Other</option>
+          </select>
+          <input type="tel" id="phone" class="form-input" placeholder="800 000 0000" required style="flex:1;" maxlength="20">
+        </div>
+        <div id="otherCodeWrap" style="display:none;margin-top:6px;">
+          <input type="text" id="otherCode" class="form-input" placeholder="Enter country code e.g. +60" style="width:160px;" maxlength="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password *</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" class="form-input" placeholder="Create a strong password" required oninput="checkStrength(this.value)" maxlength="128">
+          <button type="button" class="pw-eye" onclick="togglePw('password',this)" title="Show/hide password"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="pw-strength">
+          <div class="pw-strength-bars"><span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span></div>
+        </div>
+        <div class="pw-rules" id="pwRules">
+          <div class="rule" id="r-len">At least 8 characters</div>
+          <div class="rule" id="r-upper">At least 1 uppercase letter</div>
+          <div class="rule" id="r-digit">At least 1 number</div>
+          <div class="rule" id="r-special">At least 1 special character (!@#$%^&amp;*)</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password *</label>
+        <div class="pw-wrap">
+          <input type="password" id="confirmPw" class="form-input" placeholder="Repeat your password" required maxlength="128">
+          <button type="button" class="pw-eye" onclick="togglePw('confirmPw',this)" title="Show/hide password"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;font-size:15px;color:var(--text-mid);">
+        <input type="checkbox" id="terms" required style="margin-top:3px;width:auto;flex-shrink:0;">
+        <span>I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a></span>
+      </div>
+      <div id="formError" style="display:none;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:14px;margin-bottom:12px;"></div>
+      <button type="button" onclick="startVerification()" class="btn-auth" id="signupBtn">Create Account →</button>
+    </form>
+
+    <!-- OTP STEP -->
+    <div id="otpStep">
+      <div class="otp-box">
+        <div class="otp-title">✉️ Verify Your Email</div>
+        <div class="otp-sub" id="otpSubText">We sent a 6-digit code to your email.<br>Enter it below to complete your account creation.</div>
+        <div class="otp-inputs">
+          <input type="text" maxlength="1" class="otp-digit" id="d1" oninput="otpNext(this,'d2')" onkeydown="otpBack(event,this,'')">
+          <input type="text" maxlength="1" class="otp-digit" id="d2" oninput="otpNext(this,'d3')" onkeydown="otpBack(event,this,'d1')">
+          <input type="text" maxlength="1" class="otp-digit" id="d3" oninput="otpNext(this,'d4')" onkeydown="otpBack(event,this,'d2')">
+          <input type="text" maxlength="1" class="otp-digit" id="d4" oninput="otpNext(this,'d5')" onkeydown="otpBack(event,this,'d3')">
+          <input type="text" maxlength="1" class="otp-digit" id="d5" oninput="otpNext(this,'d6')" onkeydown="otpBack(event,this,'d4')">
+          <input type="text" maxlength="1" class="otp-digit" id="d6" oninput="otpNext(this,'')"   onkeydown="otpBack(event,this,'d5')">
+        </div>
+        <div id="otpError" style="display:none;color:var(--red);font-size:14px;margin-bottom:10px;"></div>
+        <button type="button" onclick="verifyOTP()" class="btn-auth" style="width:100%;">Verify &amp; Create Account →</button>
+        <div class="otp-resend">Didn't get the code? <button onclick="resendOTP()">Resend</button></div>
+      </div>
+    </div>
+
+    <!-- TUTOR NOTICE (hidden by default) -->
+    <div id="tutorInfo" style="display:none;">
+      <div class="notice-box show" style="margin-bottom:20px;">
+        ℹ️ <strong>Tutor accounts require admin approval.</strong> After you apply, an admin will review your application. You'll be notified by email when approved.
+      </div>
+      <button onclick="window.location.href='tutor-apply.html'" class="btn-auth" style="background:var(--gold);color:var(--gray-900);">Continue to Tutor Application →</button>
+      <p style="text-align:center;font-size:14px;color:var(--text-light);margin-top:14px;">You can also <a href="signup.html" style="color:var(--blue);">sign up as a student</a> first.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Country code "Other" toggle ─────────────────────────────────────────────
+document.getElementById('phoneCode').addEventListener('change', function() {
+  document.getElementById('otherCodeWrap').style.display = this.value === '+other' ? 'block' : 'none';
+});
+
+// ─── OTP Worker Config ────────────────────────────────────────────────────────
+// After deploying your Cloudflare Worker, replace the URL below.
+const EAW_WORKER_URL = 'https://eaw-otp-worker.empoweringafricanwomen.workers.dev';
+
+let _pendingUser = null;
+
+// ─── UI Helpers ───────────────────────────────────────────────────────────────
+const EYE_ON  = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+function togglePw(fieldId, btn) {
+  const f = document.getElementById(fieldId);
+  if (f.type === 'password') { f.type = 'text'; btn.innerHTML = EYE_OFF; }
+  else { f.type = 'password'; btn.innerHTML = EYE_ON; }
+}
+
+function selectRole(role, card) {
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+  if (role === 'tutor') { window.location.href = 'tutor-apply.html'; return; }
+  document.getElementById('studentForm').style.display = 'block';
+  document.getElementById('tutorInfo').style.display = 'none';
+}
+
+function showErr(msg) {
+  const el = document.getElementById('formError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ─── Password Strength ────────────────────────────────────────────────────────
+function checkStrength(pw) {
+  const rules = {
+    len:     pw.length >= 8,
+    upper:   /[A-Z]/.test(pw),
+    digit:   /[0-9]/.test(pw),
+    special: /[!@#$%^&*()\-_=+\[\]{};:'",.<>?\/\\|`~]/.test(pw)
+  };
+  const score = Object.values(rules).filter(Boolean).length;
+  const bars  = ['s1','s2','s3','s4'];
+  const cls   = ['active-weak','active-fair','active-good','active-strong'];
+  bars.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.className = '';
+    if (i < score) el.classList.add(cls[score - 1]);
+  });
+  setRule('r-len',     rules.len);
+  setRule('r-upper',   rules.upper);
+  setRule('r-digit',   rules.digit);
+  setRule('r-special', rules.special);
+}
+
+function setRule(id, ok) {
+  const el = document.getElementById(id);
+  if (ok) el.classList.add('ok'); else el.classList.remove('ok');
+}
+
+function validatePassword(pw) {
+  if (pw.length < 8)                                                         return 'Password must be at least 8 characters.';
+  if (!/[A-Z]/.test(pw))                                                     return 'Password must contain at least 1 uppercase letter.';
+  if (!/[0-9]/.test(pw))                                                     return 'Password must contain at least 1 number.';
+  if (!/[!@#$%^&*()\-_=+\[\]{};:'",.<>?\/\\|`~]/.test(pw))                 return 'Password must contain at least 1 special character (e.g. !@#$%).';
+  return null;
+}
+
+// ─── OTP Input Helpers ────────────────────────────────────────────────────────
+function otpNext(el, nextId) {
+  el.value = el.value.replace(/\D/,'');
+  if (el.value && nextId) document.getElementById(nextId).focus();
+}
+function otpBack(e, el, prevId) {
+  if (e.key === 'Backspace' && !el.value && prevId) document.getElementById(prevId).focus();
+}
+function getOTPValue() {
+  return ['d1','d2','d3','d4','d5','d6'].map(id => document.getElementById(id).value).join('');
+}
+
+// ─── Send OTP ─────────────────────────────────────────────────────────────────
+async function sendOTP(email, name) {
+  try {
+    const res = await fetch(EAW_WORKER_URL + '/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.error || 'Failed to send');
+    return true;
+  } catch (err) {
+    console.error('OTP send error:', err);
+    return false;
+  }
+}
+
+// ─── Registration Flow ────────────────────────────────────────────────────────
+async function startVerification() {
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName  = document.getElementById('lastName').value.trim();
+  const email     = document.getElementById('email').value.trim().toLowerCase();
+  const _code = document.getElementById('phoneCode').value === '+other' ? document.getElementById('otherCode').value.trim() : document.getElementById('phoneCode').value;
+  const phone = _code + document.getElementById('phone').value.trim();
+  const password  = document.getElementById('password').value;
+  const confirmPw = document.getElementById('confirmPw').value;
+  const terms     = document.getElementById('terms').checked;
+
+  if (!firstName || !email || !phone || !password) { showErr('Please fill in all required fields.'); return; }
+  if (password !== confirmPw) { showErr('Passwords do not match.'); return; }
+
+  const pwErr = validatePassword(password);
+  if (pwErr) { showErr(pwErr); return; }
+
+  if (!terms) { showErr('Please accept the Terms of Service.'); return; }
+
+  // Store pending user (saved to DB only after OTP verified) — role is always hardcoded to 'student'
+  _pendingUser = { firstName, lastName, email, phone, password };
+
+  const btn = document.getElementById('signupBtn');
+  btn.textContent = 'Sending code…';
+  btn.disabled = true;
+
+  const sent = await sendOTP(email, firstName);
+  btn.textContent = 'Create Account →';
+  btn.disabled = false;
+
+  if (!sent) { showErr('Failed to send verification code. Please try again.'); return; }
+
+  document.getElementById('studentForm').style.display = 'none';
+  document.getElementById('otpStep').style.display = 'block';
+  document.getElementById('d1').focus();
+}
+
+async function verifyOTP() {
+  const entered = getOTPValue();
+  if (entered.length < 6) { showOTPErr('Please enter all 6 digits.'); return; }
+  const verifyBtn = document.querySelector('#otpStep .btn-auth');
+  if (verifyBtn) { verifyBtn.textContent = 'Verifying…'; verifyBtn.disabled = true; }
+  try {
+    const res = await fetch(EAW_WORKER_URL + '/verify-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: _pendingUser.email, otp: entered })
+    });
+    const data = await res.json();
+    if (!data.valid) {
+      showOTPErr(data.error || 'Incorrect code. Please try again.');
+      if (verifyBtn) { verifyBtn.textContent = 'Verify & Create Account →'; verifyBtn.disabled = false; }
+      return;
+    }
+  } catch {
+    showOTPErr('Verification failed. Please try again.');
+    if (verifyBtn) { verifyBtn.textContent = 'Verify & Create Account →'; verifyBtn.disabled = false; }
+    return;
+  }
+
+  // Register user via PHP API
+  const refCode = new URLSearchParams(location.search).get('ref') || '';
+  try {
+    const res = await fetch('api/signup.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        firstName: _pendingUser.firstName,
+        lastName:  _pendingUser.lastName,
+        email:     _pendingUser.email,
+        phone:     _pendingUser.phone,
+        password:  _pendingUser.password,
+        role:      'student',
+        ref:       refCode
+      })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      showOTPErr(data.error || 'Registration failed. Please try again.');
+      if (verifyBtn) { verifyBtn.textContent = 'Verify & Create Account →'; verifyBtn.disabled = false; }
+      return;
+    }
+    // Cache session in localStorage (no password)
+    localStorage.setItem('eaw_user', JSON.stringify(data.user));
+    // Track referral in localStorage for offline fallback
+    if (refCode) {
+      const allUsers = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+      const referrer = allUsers.find(u => {
+        let h = 0; const s = u.email;
+        for (let i = 0; i < s.length; i++) h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+        return Math.abs(h).toString(36).toUpperCase().padStart(8,'0').slice(0,8) === refCode;
+      });
+      if (referrer) {
+        const rKey = 'eaw_ref_' + referrer.email;
+        const rData = JSON.parse(localStorage.getItem(rKey) || '{}');
+        rData.referred = rData.referred || [];
+        rData.referred.push({ firstName: _pendingUser.firstName, lastName: _pendingUser.lastName, joinedAt: new Date().toISOString() });
+        localStorage.setItem(rKey, JSON.stringify(rData));
+      }
+    }
+  } catch {
+    showOTPErr('Connection error. Please try again.');
+    if (verifyBtn) { verifyBtn.textContent = 'Verify & Create Account →'; verifyBtn.disabled = false; }
+    return;
+  }
+
+  window.location.href = 'student-dashboard.html';
+}
+
+async function resendOTP() {
+  if (!_pendingUser) return;
+  const sent = await sendOTP(_pendingUser.email, _pendingUser.firstName);
+  if (sent) {
+    ['d1','d2','d3','d4','d5','d6'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('d1').focus();
+    document.getElementById('otpError').style.display = 'none';
+  }
+}
+
+function showOTPErr(msg) {
+  const el = document.getElementById('otpError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// Pre-select tutor if ?role=tutor
+const params = new URLSearchParams(window.location.search);
+if (params.get('role') === 'tutor') selectRole('tutor', document.querySelector('[data-role="tutor"]'));
+</script>
+<script src="eaw-common.js"></script>
+</body>
+</html>

@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    [id^="sec-"] { display: none; }
+    #sec-overview { display: block; }
+    .cert-display { background:#fff; border-radius:var(--r-xl); overflow:hidden; }
+
+    /* ── MODERN CONFIRM DIALOG ── */
+    .eaw-dialog-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 9999; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .25s ease;
+    }
+    .eaw-dialog-overlay.open { opacity: 1; pointer-events: auto; }
+    .eaw-dialog {
+      background: #fff; border-radius: 20px; padding: 36px 32px 28px; max-width: 420px; width: 90%;
+      box-shadow: 0 24px 64px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.05);
+      transform: scale(.92) translateY(12px); transition: transform .3s cubic-bezier(.4,0,.2,1);
+      text-align: center;
+    }
+    .eaw-dialog-overlay.open .eaw-dialog { transform: scale(1) translateY(0); }
+    .eaw-dialog-icon {
+      width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 18px;
+    }
+    .eaw-dialog-icon.danger { background: #FEE2E2; }
+    .eaw-dialog-icon.enroll { background: #DBEAFE; }
+    .eaw-dialog-title {
+      font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px;
+    }
+    .eaw-dialog-msg {
+      font-size: 15px; color: var(--text-mid); line-height: 1.65; margin-bottom: 28px;
+    }
+    .eaw-dialog-actions { display: flex; gap: 12px; justify-content: center; }
+    .eaw-dialog-actions button {
+      padding: 11px 28px; border-radius: 12px; font-family: 'Source Sans 3', sans-serif;
+      font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all .2s ease;
+    }
+    .eaw-dialog-cancel {
+      background: var(--gray-100); color: var(--gray-700);
+    }
+    .eaw-dialog-cancel:hover { background: var(--gray-200); }
+    .eaw-dialog-confirm-danger {
+      background: #DC2626; color: #fff;
+    }
+    .eaw-dialog-confirm-danger:hover { background: #B91C1C; }
+    .eaw-dialog-confirm-enroll {
+      background: var(--blue); color: #fff;
+    }
+    .eaw-dialog-confirm-enroll:hover { background: var(--blue-dark); }
+
+    body.dark-mode .eaw-dialog { background: #1E293B; }
+    body.dark-mode .eaw-dialog-title { color: #F1F5F9; }
+    body.dark-mode .eaw-dialog-msg { color: #CBD5E1; }
+    body.dark-mode .eaw-dialog-cancel { background: #334155; color: #E2E8F0; }
+    body.dark-mode .eaw-dialog-cancel:hover { background: #475569; }
+    body.dark-mode .eaw-dialog-icon.danger { background: rgba(220,38,38,.15); }
+    body.dark-mode .eaw-dialog-icon.enroll { background: rgba(29,78,216,.2); }
+  </style>
+</head>
+<body class="dash-body">
+
+<!-- OVERLAY for mobile sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- TOP NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <button class="mobile-menu-btn" id="mobileSidebarBtn" onclick="toggleSidebar()" aria-label="Open menu">
+      <svg id="menuIconHamburger" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg id="menuIconClose" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <div style="flex:1;"></div>
+    <div class="nav-cta">
+      <a href="courses.html" class="btn btn-ghost btn-sm">Browse Courses</a>
+      <a href="index.html" class="btn btn-blue btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.clear()">Sign Out</a>
+    </div>
+  </div>
+</nav>
+
+<div class="dash-wrap">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="dashSidebar">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sidebarInitial">U</div>
+      <div class="sb-name" id="sidebarName">Loading…</div>
+      <div class="sb-role">Student</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Main</div>
+
+      <button class="sb-link active" id="nav-overview" onclick="showSection('overview')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </button>
+
+      <button class="sb-link" id="nav-myCourses" onclick="showSection('myCourses')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        My Courses
+        <span class="badge-count" id="coursesBadge">0</span>
+      </button>
+
+      <button class="sb-link" id="nav-certificates" onclick="showSection('certificates')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        Certificates
+        <span class="badge-count" id="certsBadge">0</span>
+      </button>
+
+      <button class="sb-link" id="nav-progress" onclick="showSection('progress')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        My Progress
+      </button>
+
+      <div class="sb-section">Explore Courses</div>
+
+      <button class="sb-link" id="browseCoursesBtn" onclick="toggleBrowseMenu()" style="font-weight:700;color:var(--blue);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Browse All Courses
+        <svg id="browseChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div id="courseCategoryMenu" style="display:none;margin:2px 0 4px 8px;padding-left:12px;border-left:2px solid var(--blue-light);"></div>
+
+      <div class="sb-section">Account</div>
+
+      <button class="sb-link" id="nav-profile" onclick="showSection('profile')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Profile
+      </button>
+
+      <button class="sb-link" id="nav-settings" onclick="showSection('settings')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+
+      <button class="sb-link" id="nav-referrals" onclick="showSection('referrals')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Refer Friends
+      </button>
+
+      <a href="index.html" class="sb-link danger" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.clear()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="dash-main">
+
+    <!-- ── OVERVIEW ── -->
+    <div id="sec-overview">
+      <!-- WELCOME BANNER -->
+      <div class="dash-welcome-banner" id="welcomeBanner">
+        <div style="position:relative;z-index:1;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px;">Student Portal</div>
+          <h2>Welcome back, <span id="greetName">there</span>!</h2>
+          <p>Track your learning progress and continue your empowerment journey.</p>
+        </div>
+        <div class="dash-welcome-banner-right" style="display:none;" id="bannerStats">
+          <div class="dash-welcome-banner-stat">
+            <strong id="bannerEnrolled">0</strong>
+            <span>Courses Enrolled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions-row">
+        <a href="courses.html" class="quick-action-btn"><span>📚</span><span>Browse Courses</span></a>
+        <button class="quick-action-btn" onclick="showSection('myCourses')"><span>▶️</span><span>Continue Learning</span></button>
+        <button class="quick-action-btn" onclick="showSection('certificates')"><span>🎓</span><span>My Certificates</span></button>
+        <button class="quick-action-btn" onclick="showSection('profile')"><span>👤</span><span>My Profile</span></button>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="statEnrolled">0</div><div class="stat-lbl">Courses Enrolled</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="statCompleted">0</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat-card"><div class="stat-icon">🎓</div><div class="stat-num" id="statCerts">0</div><div class="stat-lbl">Certificates</div></div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num">0h</div><div class="stat-lbl">Learning Time</div></div>
+      </div>
+
+      <div class="dash-section-title">Continue Learning</div>
+      <div id="overviewCourses"></div>
+
+      <div class="dash-section-title" style="margin-top:32px;">Recommended Courses, Start Now</div>
+      <div id="recommendedGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;"></div>
+
+      <!-- SEARCH BAR -->
+      <div style="margin-top:40px;">
+        <div class="dash-section-title">Search All Courses</div>
+        <div class="eaw-search-bar" style="max-width:680px;margin-bottom:14px;">
+          <span class="eaw-search-bar-icon">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input class="eaw-search-input" id="dashSearchInput" type="text" placeholder="e.g. Baking, Coding, Finance…"
+            oninput="eawSearch(this.value,'dashSearchResults')"
+            onkeydown="if(event.key==='Enter')eawSearch(this.value,'dashSearchResults')">
+          <button class="eaw-search-btn" onclick="eawSearchFromInput('dashSearchInput','dashSearchResults')" aria-label="Search">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+        <div class="eaw-pills" style="justify-content:flex-start;">
+          <button class="eaw-pill active" onclick="eawPillSearch('',this)">All</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Auto Mechanics',this)">Auto Mechanics</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Business',this)">Business</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Technology',this)">Tech & Coding</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Finance',this)">Finance</button>
+          <button class="eaw-pill" onclick="eawPillSearch('Health',this)">Health</button>
+        </div>
+        <div id="dashSearchResults"></div>
+      </div>
+    </div>
+
+    <!-- ── MY COURSES ── -->
+    <div id="sec-myCourses">
+      <div class="dash-greeting">
+        <h1>My Courses</h1>
+        <p>All courses you are enrolled in. Your progress starts at 0% and grows as you complete modules.</p>
+      </div>
+      <div style="margin-bottom:20px;"><a href="courses.html" class="btn btn-blue btn-sm">+ Enrol in New Course</a></div>
+      <div id="myCoursesGrid"></div>
+    </div>
+
+    <!-- ── CERTIFICATES ── -->
+    <div id="sec-certificates">
+      <div class="dash-greeting">
+        <h1>My Certificates</h1>
+        <p>Complete a course to earn your official EAW certificate, printable and shareable.</p>
+      </div>
+      <div id="certsGrid"></div>
+    </div>
+
+    <!-- ── PROGRESS ── -->
+    <div id="sec-progress">
+      <div class="dash-greeting">
+        <h1>My Progress</h1>
+        <p>Detailed view of your learning progress across all enrolled courses.</p>
+      </div>
+      <div id="progressGrid"></div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div id="sec-profile">
+      <div class="dash-greeting"><h1>My Profile</h1><p>Your account details.</p></div>
+      <div style="background:#fff;border-radius:var(--r-lg);border:1px solid var(--gray-200);padding:32px;max-width:560px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+          <div id="profileAvatar" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;">U</div>
+          <div>
+            <div id="profileName" style="font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;"></div>
+            <div style="font-size:13px;color:var(--text-light);">Student · EAW Platform</div>
+          </div>
+        </div>
+        <div id="profileDetails" style="display:flex;flex-direction:column;gap:14px;"></div>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gray-100);">
+          <a href="index.html" class="btn btn-danger btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.clear()">Sign Out</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div id="sec-settings">
+      <div class="dash-greeting"><h1>Settings</h1><p>Manage your account preferences.</p></div>
+      <div style="background:#fff;border-radius:var(--r-lg);border:1px solid var(--gray-200);padding:32px;max-width:560px;">
+        <h3 style="font-family:'Source Serif 4',serif;margin-bottom:16px;">Email Notifications</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" checked style="width:auto;"> Course updates and new modules
+          </label>
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" checked style="width:auto;"> Certificate notifications
+          </label>
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" style="width:auto;"> EAW newsletter
+          </label>
+        </div>
+        <div style="padding-top:20px;border-top:1px solid var(--gray-100);">
+          <h3 style="font-family:'Source Serif 4',serif;margin-bottom:12px;color:var(--red);">Danger Zone</h3>
+          <a href="index.html" class="btn btn-danger btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user');sessionStorage.clear()">Sign Out of Account</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="sec-referrals">
+      <h2 class="section-title" style="margin-bottom:6px;">Refer Friends &amp; Grow Together</h2>
+      <p style="color:var(--text-mid);margin-bottom:28px;">Share your unique referral link with friends. Every woman you invite joins the EAW community!</p>
+      <div id="referralContent">
+        <div style="text-align:center;padding:40px;color:var(--text-light);">Loading your referral link…</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODERN CONFIRM DIALOG -->
+<div class="eaw-dialog-overlay" id="eawDialogOverlay" onclick="if(event.target===this)_closeDialog()">
+  <div class="eaw-dialog">
+    <div class="eaw-dialog-icon" id="eawDialogIcon"></div>
+    <div class="eaw-dialog-title" id="eawDialogTitle"></div>
+    <div class="eaw-dialog-msg" id="eawDialogMsg"></div>
+    <div class="eaw-dialog-actions">
+      <button class="eaw-dialog-cancel" onclick="_closeDialog()">Cancel</button>
+      <button id="eawDialogConfirmBtn" onclick="_confirmDialog()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="cert-modal-overlay" id="certOverlay" onclick="if(event.target===this)closeCert()">
+  <div class="cert-modal">
+    <div class="cert-frame">
+      <div class="cert-title">Empowering African Women · EAW</div>
+      <div class="cert-of">Certificate of Completion</div>
+      <div class="cert-awarded">This is to certify that</div>
+      <div class="cert-student-name" id="certStudentName"></div>
+      <div class="cert-awarded">has successfully completed</div>
+      <div class="cert-course-name" id="certCourseName"></div>
+      <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate"></span></div>
+      <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px;" id="certScoreDisplay"></div>
+      <div class="cert-sigs">
+        <div class="cert-sig-line">EAW Administration<br>EAW Founder &amp; Director</div>
+        <div class="cert-sig-line">Course Instructor</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
+      <button onclick="closeCert()" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── XSS ESCAPE — applied to all user data before innerHTML ──
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+// ── SIDEBAR TOGGLE ──
+function toggleSidebar() {
+  const isOpen = document.getElementById('dashSidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+  document.getElementById('menuIconHamburger').style.display = isOpen ? 'none' : '';
+  document.getElementById('menuIconClose').style.display    = isOpen ? ''     : 'none';
+}
+function closeSidebar() {
+  document.getElementById('dashSidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.getElementById('menuIconHamburger').style.display = '';
+  document.getElementById('menuIconClose').style.display    = 'none';
+}
+
+// ── SECTION NAV ──
+function showSection(section) {
+  document.querySelectorAll('[id^="sec-"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.sb-link').forEach(el => el.classList.remove('active'));
+  document.getElementById('sec-' + section).style.display = 'block';
+  const navBtn = document.getElementById('nav-' + section);
+  if (navBtn) navBtn.classList.add('active');
+  closeSidebar();
+  // refresh data when switching tabs
+  if (section === 'myCourses') renderCourseList(buildEnrollments(), 'myCoursesGrid');
+  if (section === 'certificates') renderCertList(getUser().certificates || [], 'certsGrid');
+  if (section === 'progress') renderProgressGrid(buildEnrollments(), 'progressGrid');
+  if (section === 'referrals') loadReferrals();
+}
+
+// ── USER ──
+function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || '{}'); }
+async function saveUser(u) {
+  localStorage.setItem('eaw_user', JSON.stringify(u));
+  try {
+    await fetch('api/user.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ firstName: u.firstName, lastName: u.lastName, phone: u.phone })
+    });
+  } catch (e) { /* best effort */ }
+}
+
+// Server-loaded enrollments
+let _serverEnrollments = [];
+let _serverProgress = {};
+let _serverCertSlugs = new Set(); // slugs that have server-issued certificates
+
+// Build enrollment objects merging server slugs with server progress + localStorage fallback
+function buildEnrollments() {
+  const user = getUser();
+  const saved = user.enrollments || [];
+  return _serverEnrollments.map(slug => {
+    const cd = COURSES[slug];
+    const totalMods = cd ? cd.totalModules : 4;
+
+    // Server lesson count (from progress table)
+    const serverCount = _serverProgress[slug] || 0;
+
+    // Also check localStorage for quiz completion and completed modules
+    const match = saved.find(e => e.courseId === slug);
+    const quizPassed = (match && match.quizPassed) || _serverCertSlugs.has(slug);
+    const localProgress = match ? (match.progress || 0) : 0;
+
+    // Also check per-course progress key
+    const progKey = 'eaw_prog_' + (user.email || '') + '_' + slug;
+    const savedModules = JSON.parse(localStorage.getItem(progKey) || '[]');
+    const localModules = match && match.completedModules ? match.completedModules : [];
+    const allCompleted = [...new Set([...localModules, ...savedModules])];
+
+    let pct;
+    if (quizPassed) {
+      pct = 100;
+    } else if (serverCount > 0) {
+      const contentMods = Math.max(1, totalMods - 1);
+      pct = Math.min(80, Math.round(serverCount / contentMods * 80));
+    } else if (allCompleted.length > 0) {
+      const contentMods = Math.max(1, totalMods - 1);
+      pct = Math.min(80, Math.round(allCompleted.length / contentMods * 80));
+    } else {
+      pct = localProgress;
+    }
+
+    return { courseId: slug, progress: pct };
+  });
+}
+
+// ── ENROL ──
+async function enrollAndGo(courseId, url) {
+  const title = COURSES[courseId] ? COURSES[courseId].title : courseId;
+  const ok = await _showDialog({
+    type: 'enroll',
+    icon: '📚',
+    title: 'Enrol in Course?',
+    msg: 'Start learning "' + title + '"? You can remove it anytime from your dashboard.',
+    confirmText: 'Yes, Enrol'
+  });
+  if (!ok) return;
+  try {
+    await fetch('api/enroll.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ course: courseId })
+    });
+    if (!_serverEnrollments.includes(courseId)) { _serverEnrollments.push(courseId); renderRecommended(); }
+  } catch (e) { /* best effort */ }
+  // Also save to localStorage
+  const user = getUser();
+  if (user && user.firstName) {
+    if (!user.enrollments) user.enrollments = [];
+    if (!user.enrollments.find(e => e.courseId === courseId)) {
+      user.enrollments.push({ courseId: courseId, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
+      saveUser(user);
+    }
+  }
+  window.location.href = url;
+}
+
+// ── COURSE DATA, add new courses here and everywhere updates automatically ──
+const COURSES = {
+  mechanic:         { title: 'Female Mechanic Incubator',       cat: 'Auto Mechanics',    icon: '🔧', img: 'Pictures/Female_Mechanic_Incubator.jpg',            color: ['#0F172A','#1E3A8A'], link: 'course-mechanic.html',        totalModules: 4  },
+  baking:           { title: 'Baking & Cooking Essentials',     cat: 'Baking & Cooking',  icon: '🎂', img: 'Pictures/Baking_&_Cooking_Essentials.jpg',          color: ['#7C2D12','#C2410C'], link: 'course-baking.html',          totalModules: 5  },
+  etiquette:        { title: 'Social & Business Etiquette',     cat: 'Business Skills',   icon: '💼', img: 'Pictures/Social_&_Business_Etiquette.jpg',          color: ['#1D4ED8','#2563EB'], link: 'course-etiquette.html',       totalModules: 10 },
+  coding:           { title: 'Coding & Tech Basics',            cat: 'Technology',        icon: '💻', img: 'Pictures/Coding_&_Web_Development.jpg',             color: ['#0F766E','#0D9488'], link: 'course-coding.html',          totalModules: 4  },
+  'digital-skills': { title: 'Digital Skills',                  cat: 'Technology',        icon: '📱', img: 'Pictures/Computer_Science_&_Digital_Skills.jpg',    color: ['#0369A1','#0EA5E9'], link: 'course-digital-skills.html',  totalModules: 5  },
+  english:          { title: 'English Communication',           cat: 'Language',          icon: '📝', img: 'Pictures/English_Language_&_Communication.jpg',     color: ['#7E22CE','#9333EA'], link: 'course-english.html',         totalModules: 4  },
+  entrepreneurship: { title: 'Entrepreneurship & Business',     cat: 'Business Skills',   icon: '🚀', img: 'Pictures/Business_&_Entrepreneurship.jpg',          color: ['#B45309','#D97706'], link: 'course-entrepreneurship.html',totalModules: 5  },
+  finance:          { title: 'Personal Finance',                cat: 'Finance',           icon: '💰', img: 'Pictures/Financial_Literacy.jpg',                   color: ['#065F46','#059669'], link: 'course-finance.html',         totalModules: 4  },
+  health:           { title: 'Health & Wellness',               cat: 'Health',            icon: '🏥', img: 'Pictures/Health _&_Body_Awareness.jpg',             color: ['#BE185D','#DB2777'], link: 'course-health.html',          totalModules: 4  },
+  sewing:           { title: 'Fashion & Sewing',                cat: 'Fashion & Design',  icon: '🧵', img: 'Pictures/Sewing_&_Fashion_Design.jpg',              color: ['#9D174D','#BE185D'], link: 'course-sewing.html',          totalModules: 4  },
+  'soft-skills':    { title: 'Soft Skills Development',         cat: 'Career Skills',     icon: '⭐', img: 'Pictures/Professional_Soft_Skills.jpg',             color: ['#1E40AF','#3B82F6'], link: 'course-soft-skills.html',     totalModules: 5  },
+};
+
+// ── BROWSE COURSES SUBMENU (dynamic from COURSES data) ──
+function toggleBrowseMenu() {
+  const menu = document.getElementById('courseCategoryMenu');
+  const chevron = document.getElementById('browseChevron');
+  const isOpen = menu.style.display !== 'none';
+  if (isOpen) { menu.style.display = 'none'; chevron.style.transform = ''; return; }
+  // Build categories dynamically from COURSES
+  const cats = {};
+  Object.entries(COURSES).forEach(([id, c]) => {
+    if (!cats[c.cat]) cats[c.cat] = [];
+    cats[c.cat].push({ id, ...c });
+  });
+  menu.innerHTML = Object.entries(cats).map(([cat, list]) =>
+    `<a href="courses.html" class="sb-link" style="font-size:13px;padding:5px 8px;color:var(--text-mid);">${cat} <span style="font-size:11px;color:var(--text-light);">(${list.length})</span></a>`
+  ).join('');
+  menu.style.display = 'block';
+  chevron.style.transform = 'rotate(90deg)';
+}
+
+// ── RECOMMENDED COURSES (excludes already enrolled, updates in real time) ──
+function renderRecommended() {
+  const grid = document.getElementById('recommendedGrid');
+  if (!grid) return;
+  const unenrolled = Object.entries(COURSES).filter(([id]) => !_serverEnrollments.includes(id));
+  if (!unenrolled.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;background:var(--green-pale);border:1px solid var(--green);border-radius:var(--r-lg);color:var(--green);font-weight:700;">🎉 You're enrolled in all available courses! Check back soon for new ones.</div>`;
+    return;
+  }
+  // Show up to 3, picking unenrolled courses
+  grid.innerHTML = unenrolled.slice(0, 3).map(([id, c]) => `
+    <div class="rec-course-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,${c.color[0]},${c.color[1]});"></div>
+      <div style="width:52px;height:52px;background:linear-gradient(135deg,${c.color[0]},${c.color[1]});border-radius:12px;overflow:hidden;margin-bottom:14px;">${c.img ? `<img src="${c.img}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:26px;">${c.icon}</span>`}</div>
+      <span style="display:inline-block;background:linear-gradient(135deg,#059669,#10B981);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px;letter-spacing:.4px;margin-bottom:10px;">FREE</span>
+      <div class="rec-title">${c.title}</div>
+      <div class="rec-sub">${c.totalModules} Modules · Certificate Included</div>
+      <button onclick="enrollAndGo('${id}','${c.link}')" class="btn btn-blue btn-full btn-sm">Enrol &amp; Start →</button>
+    </div>`).join('');
+}
+
+function renderCourseList(enrollments, containerId) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  if (!enrollments.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📖</div><h3>No courses enrolled yet</h3><p>Browse our free courses and start your learning journey today!</p><a href="courses.html" class="btn btn-blue">Browse Courses →</a></div>`;
+    return;
+  }
+  const _localCertIds = new Set((getUser().certificates||[]).map(c => c.id));
+  c.innerHTML = enrollments.map(e => {
+    const cd = COURSES[e.courseId] || { title: e.courseId, cat: 'Course', icon: '📚', link: 'courses.html', totalModules: 1 };
+    const pct = e.progress || 0;
+    const isCompleted = pct === 100 || _serverCertSlugs.has(e.courseId) || _localCertIds.has(e.courseId);
+    return `<div class="enrolled-card">
+      <div class="ec-thumb" style="background:linear-gradient(135deg,${(cd.color||['#1D4ED8','#2563EB'])[0]},${(cd.color||['#1D4ED8','#2563EB'])[1]});overflow:hidden;">${cd.img ? `<img src="${cd.img}" alt="${cd.title}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="font-size:22px;display:flex;align-items:center;justify-content:center;height:100%;">${cd.icon}</span>`}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="ec-cat">${cd.cat}</div>
+        <div class="ec-title">${cd.title}</div>
+        <div class="ec-progress-bar"><div class="ec-progress-fill" style="width:${isCompleted ? 100 : pct}%"></div></div>
+        <div class="ec-progress-text">${isCompleted ? '100% complete, ' + cd.totalModules + ' of ' + cd.totalModules + ' modules' : pct + '% complete, ' + Math.round(pct/100*cd.totalModules) + ' of ' + cd.totalModules + ' modules'}</div>
+      </div>
+      ${isCompleted
+        ? `<a href="${cd.link}" class="btn btn-sm" style="background:linear-gradient(135deg,#059669,#10B981);color:#fff;border:none;">✓ Completed</a>`
+        : `<a href="${cd.link}" class="btn btn-outline btn-sm">Continue →</a>
+           <button onclick="unenrolCourse('${e.courseId}')" class="btn btn-sm" style="background:#FEE2E2;color:#DC2626;border:1px solid #FECACA;margin-left:8px;" title="Remove this course">✕ Remove</button>`
+      }
+    </div>`;
+  }).join('');
+}
+
+// ── MODERN DIALOG SYSTEM ──
+let _dialogResolve = null;
+function _showDialog(opts) {
+  const overlay = document.getElementById('eawDialogOverlay');
+  document.getElementById('eawDialogIcon').className = 'eaw-dialog-icon ' + (opts.type || 'enroll');
+  document.getElementById('eawDialogIcon').textContent = opts.icon || '';
+  document.getElementById('eawDialogTitle').textContent = opts.title || '';
+  document.getElementById('eawDialogMsg').textContent = opts.msg || '';
+  const btn = document.getElementById('eawDialogConfirmBtn');
+  btn.textContent = opts.confirmText || 'Confirm';
+  btn.className = opts.type === 'danger' ? 'eaw-dialog-confirm-danger' : 'eaw-dialog-confirm-enroll';
+  overlay.classList.add('open');
+  return new Promise(resolve => { _dialogResolve = resolve; });
+}
+function _closeDialog() {
+  document.getElementById('eawDialogOverlay').classList.remove('open');
+  if (_dialogResolve) { _dialogResolve(false); _dialogResolve = null; }
+}
+function _confirmDialog() {
+  document.getElementById('eawDialogOverlay').classList.remove('open');
+  if (_dialogResolve) { _dialogResolve(true); _dialogResolve = null; }
+}
+
+async function unenrolCourse(courseId) {
+  const title = COURSES[courseId] ? COURSES[courseId].title : courseId;
+  const ok = await _showDialog({
+    type: 'danger',
+    icon: '🗑️',
+    title: 'Remove Course?',
+    msg: 'Remove "' + title + '" from your courses? Your progress will be saved if you re-enrol.',
+    confirmText: 'Yes, Remove'
+  });
+  if (!ok) return;
+  const user = getUser();
+  if (!user) return;
+  if (user.enrollments) {
+    user.enrollments = user.enrollments.filter(e => e.courseId !== courseId);
+    saveUser(user);
+  }
+  _serverEnrollments = _serverEnrollments.filter(s => s !== courseId);
+  try {
+    fetch('api/enroll.php', {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
+      body: JSON.stringify({course: courseId})
+    }).catch(function(){});
+  } catch(e) {}
+  const enrollments = buildEnrollments();
+  renderCourseList(enrollments, 'myCoursesGrid');
+  renderCourseList(enrollments, 'overviewCourses');
+  renderRecommended();
+  document.getElementById('statEnrolled').textContent = enrollments.length;
+  document.getElementById('coursesBadge').textContent = enrollments.length;
+}
+
+function renderCertList(certs, containerId) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  if (!certs.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">🎓</div><h3>No certificates yet</h3><p>Complete a course to earn your first official EAW certificate!</p><a href="courses.html" class="btn btn-blue">Start Learning</a></div>`;
+    return;
+  }
+  c.innerHTML = certs.map(cert => `
+    <div class="cert-item-card">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--gold),#ffd700);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 2px 8px rgba(249,171,0,.3);">🎓</div>
+      <div style="flex:1;">
+        <div style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;margin-bottom:2px;">${esc(cert.title || cert.id)}</div>
+        <div style="font-size:13px;color:var(--text-light);">Issued: ${esc(cert.date)}</div>
+        ${cert.score ? `<div style="font-size:12px;color:var(--green);font-weight:600;margin-top:2px;">Assessment score: ${esc(cert.score)}</div>` : ''}
+      </div>
+      <button onclick="showCertificate('${esc(cert.id)}')" class="btn btn-blue btn-sm">🎓 View Certificate</button>
+    </div>`).join('');
+}
+
+function renderProgressGrid(enrollments, containerId) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  if (!enrollments.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><h3>No progress yet</h3><p>Enrol in a course and complete modules to see your progress here.</p><a href="courses.html" class="btn btn-blue">Browse Courses →</a></div>`;
+    return;
+  }
+  c.innerHTML = enrollments.map(e => {
+    const cd = COURSES[e.courseId] || { title: e.courseId, icon: '📚', totalModules: 1 };
+    const pct = e.progress || 0;
+    const completed = Math.round(pct / 100 * cd.totalModules);
+    return `<div class="progress-section">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="font-size:28px;">${cd.icon}</div>
+        <div>
+          <div style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;">${cd.title}</div>
+          <div style="font-size:13px;color:var(--text-light);">${completed} of ${cd.totalModules} modules complete</div>
+        </div>
+        <div style="margin-left:auto;font-family:'Source Serif 4',serif;font-size:22px;font-weight:700;color:${pct===100?'var(--green)':'var(--blue)'};">${pct}%</div>
+      </div>
+      <div style="height:8px;background:var(--gray-200);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${pct===100?'var(--green)':'var(--blue)'};border-radius:4px;"></div>
+      </div>
+      ${pct === 100 ? `<div style="margin-top:10px;display:flex;align-items:center;gap:8px;"><span style="color:var(--green);font-weight:700;">✓ Course Complete!</span><button onclick="showCertificate('${e.courseId}')" class="btn btn-blue btn-sm" style="margin-left:auto;">View Certificate 🎓</button></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ── CERTIFICATE ──
+function showCertificate(courseId) {
+  const user = getUser();
+  const cd = COURSES[courseId] || { title: courseId };
+  const cert = (user.certificates || []).find(c => c.id === courseId);
+  const dateStr = cert ? cert.date : new Date().toLocaleDateString('en-NG', { year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('certStudentName').textContent = (user.firstName || '') + ' ' + (user.lastName || '');
+  document.getElementById('certCourseName').textContent = cert ? cert.title : cd.title;
+  document.getElementById('certDate').textContent = dateStr;
+  const scoreEl = document.getElementById('certScoreDisplay');
+  if (scoreEl) scoreEl.textContent = cert && cert.score ? 'Final Assessment Score: ' + cert.score : '';
+  document.getElementById('certOverlay').classList.add('open');
+}
+function closeCert() { document.getElementById('certOverlay').classList.remove('open'); }
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = getUser();
+  if (!user.firstName) { window.location.href = 'login.html'; return; }
+  if (user.role === 'tutor' || user.role === 'tutor-pending') { window.location.href = 'tutor-dashboard.html'; return; }
+
+  // Fetch enrollments from server, fall back to localStorage
+  try {
+    const res = await fetch('api/enroll.php', { credentials: 'include' });
+    const data = await res.json();
+    if (data.enrollments && data.enrollments.length) _serverEnrollments = data.enrollments;
+    if (data.progress) _serverProgress = data.progress;
+  } catch (e) { /* offline */ }
+  // Always merge localStorage enrollments so nothing is lost
+  const localUser = getUser();
+  if (localUser.enrollments && localUser.enrollments.length) {
+    localUser.enrollments.forEach(e => {
+      if (!_serverEnrollments.includes(e.courseId)) {
+        _serverEnrollments.push(e.courseId);
+        // Sync this local-only enrollment up to the server (idempotent)
+        fetch('api/enroll.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ course: e.courseId })
+        }).catch(function(){});
+      }
+    });
+  }
+
+  // Fetch certificates from server and merge into localStorage
+  try {
+    const certRes  = await fetch('api/certificate.php', { credentials: 'include' });
+    const certData = await certRes.json();
+    if (certData.certificates && certData.certificates.length) {
+      const cu = getUser();
+      if (!cu.certificates) cu.certificates = [];
+      certData.certificates.forEach(sc => {
+        _serverCertSlugs.add(sc.id);
+        if (!cu.certificates.find(c => c.id === sc.id)) cu.certificates.push(sc);
+      });
+      saveUser(cu);
+      // Re-render search cards now that server cert data is in localStorage
+      if (typeof eawSearch === 'function') {
+        const inp = document.getElementById('dashSearchInput');
+        eawSearch(inp ? inp.value : '', 'dashSearchResults');
+      }
+    }
+  } catch (e) { /* offline */ }
+
+  renderRecommended();
+
+  const firstName = user.firstName;
+  const fullName = firstName + (user.lastName ? ' ' + user.lastName : '');
+  const initial = firstName.charAt(0).toUpperCase();
+
+  document.getElementById('greetName').textContent = firstName;
+  document.getElementById('sidebarInitial').textContent = initial;
+  document.getElementById('sidebarName').textContent = fullName;
+  document.getElementById('profileAvatar').textContent = initial;
+  document.getElementById('profileName').textContent = fullName;
+
+  // Map server slugs to enrollment objects, merging locally saved progress
+  const enrollments = buildEnrollments();
+  const certs = getUser().certificates || [];
+
+  document.getElementById('statEnrolled').textContent = enrollments.length;
+  document.getElementById('statCompleted').textContent = certs.length;
+  document.getElementById('statCerts').textContent = certs.length;
+  document.getElementById('coursesBadge').textContent = enrollments.length;
+  document.getElementById('certsBadge').textContent = certs.length;
+
+  // Show banner stats if enrolled
+  if (enrollments.length > 0) {
+    const bannerStats = document.getElementById('bannerStats');
+    if (bannerStats) {
+      document.getElementById('bannerEnrolled').textContent = enrollments.length;
+      bannerStats.style.display = 'block';
+    }
+  }
+
+  const phoneVerified = user.phoneVerified === true;
+  const phoneBadge = user.phone
+    ? (phoneVerified
+        ? `<span style="display:inline-block;background:#dcfce7;color:#166534;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:8px;">✓ Verified</span>`
+        : `<span style="display:inline-block;background:#fef9c3;color:#854d0e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:8px;">Unverified</span>
+           <button onclick="startPhoneVerify()" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:600;cursor:pointer;padding:0;margin-left:6px;text-decoration:underline;">Verify Now</button>`)
+    : '';
+
+  document.getElementById('profileDetails').innerHTML = `
+    <div style="display:flex;gap:12px;"><span style="font-size:12px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Name</span><span style="font-size:15px;">${esc(fullName)}</span></div>
+    <div style="display:flex;gap:12px;"><span style="font-size:12px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Email</span><span style="font-size:15px;">${esc(user.email) || 'N/A'}</span></div>
+    <div style="display:flex;gap:12px;align-items:center;"><span style="font-size:12px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Phone</span><span style="font-size:15px;">${esc(user.phone) || 'N/A'}${phoneBadge}</span></div>
+    <div style="display:flex;gap:12px;"><span style="font-size:12px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Role</span><span style="font-size:15px;text-transform:capitalize;">${esc(user.role) || 'student'}</span></div>
+    <div style="display:flex;gap:12px;"><span style="font-size:12px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Joined</span><span style="font-size:15px;">${user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-NG',{year:'numeric',month:'long',day:'numeric'}) : 'N/A'}</span></div>
+    <div id="phoneVerifySection" style="display:none;margin-top:12px;padding:16px;background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--r-md);">
+      <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:8px;">Verify Your Phone Number</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-bottom:12px;">A verification code will be sent to your registered email address.</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <input type="text" id="phoneOtpInput" maxlength="6" placeholder="Enter 6-digit code" style="flex:1;padding:10px 12px;border:1.5px solid var(--blue-light);border-radius:8px;font-size:15px;outline:none;">
+        <button onclick="verifyPhoneOTP()" style="background:var(--blue);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;">Verify</button>
+      </div>
+      <div id="phoneOtpError" style="display:none;color:var(--red);font-size:12px;margin-bottom:6px;"></div>
+      <button onclick="resendPhoneOTP()" style="background:none;border:none;color:var(--blue);font-size:12px;cursor:pointer;text-decoration:underline;">Resend code</button>
+    </div>
+  `;
+
+  renderCourseList(enrollments, 'overviewCourses');
+});
+
+// ── PHONE VERIFICATION ──────────────────────────────────────────────────────
+const EAW_WORKER_URL = 'https://eaw-otp-worker.empoweringafricanwomen.workers.dev';
+
+function startPhoneVerify() {
+  const section = document.getElementById('phoneVerifySection');
+  if (!section) return;
+  section.style.display = 'block';
+  sendPhoneOTP();
+}
+
+async function sendPhoneOTP() {
+  const user = getUser();
+  try {
+    const res = await fetch(EAW_WORKER_URL + '/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: user.email, name: user.firstName })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.error || 'Failed to send');
+    document.getElementById('phoneOtpError').style.display = 'none';
+  } catch (e) {
+    console.error('OTP send error:', e);
+  }
+}
+
+async function verifyPhoneOTP() {
+  const entered = document.getElementById('phoneOtpInput').value.trim();
+  if (!entered || entered.length < 6) { showPhoneErr('Please enter the 6-digit code.'); return; }
+  const user = getUser();
+  try {
+    const res = await fetch(EAW_WORKER_URL + '/verify-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: user.email, otp: entered })
+    });
+    const data = await res.json();
+    if (!data.valid) { showPhoneErr(data.error || 'Incorrect code. Please try again.'); return; }
+  } catch {
+    showPhoneErr('Verification failed. Please try again.'); return;
+  }
+
+  user.phoneVerified = true;
+  await saveUser(user);
+
+  // Refresh profile section
+  document.getElementById('phoneVerifySection').style.display = 'none';
+  const phoneBadge = `<span style="display:inline-block;background:#dcfce7;color:#166534;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:8px;">✓ Verified</span>`;
+  const phoneEl = document.querySelector('#profileDetails div:nth-child(3) span:last-child');
+  if (phoneEl) phoneEl.innerHTML = esc(user.phone || 'N/A') + phoneBadge;
+}
+
+function resendPhoneOTP() { sendPhoneOTP(); document.getElementById('phoneOtpInput').value = ''; }
+function showPhoneErr(msg) { const el = document.getElementById('phoneOtpError'); el.textContent = msg; el.style.display = 'block'; }
+
+// Handle hash navigation
+if (window.location.hash) {
+  const section = window.location.hash.replace('#','');
+  if (document.getElementById('sec-'+section)) setTimeout(() => showSection(section), 100);
+}
+
+// ── REFERRALS ──
+function _genRefCode(email) {
+  let h = 0;
+  for (let i = 0; i < email.length; i++) h = Math.imul(31, h) + email.charCodeAt(i) | 0;
+  return Math.abs(h).toString(36).toUpperCase().padStart(8,'0').slice(0,8);
+}
+
+function _renderReferralUI(code, count, referred) {
+  const el = document.getElementById('referralContent');
+  if (!el) return;
+  const link = `${location.origin}/signup.html?ref=${code}`;
+  el.innerHTML = `
+    <div style="background:linear-gradient(135deg,#1D4ED8,#0F766E);border-radius:var(--r-xl);padding:28px;color:#fff;margin-bottom:24px;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-bottom:8px;">Your Referral Link</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-size:13px;word-break:break-all;min-width:0;">${esc(link)}</div>
+        <button onclick="navigator.clipboard.writeText('${esc(link)}').then(()=>{this.textContent='✓ Copied!';setTimeout(()=>this.textContent='Copy Link',2000)})" style="background:#fff;color:#1D4ED8;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Copy Link</button>
+      </div>
+      <div style="margin-top:16px;font-size:13px;opacity:.8;">Your code: <strong>${esc(code)}</strong></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;">
+      <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--blue);">${esc(String(count))}</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Friends Invited</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--green);">🌍</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Growing Africa Together</div>
+      </div>
+    </div>
+    ${referred.length ? `
+      <h3 style="font-size:16px;margin-bottom:14px;">People You've Invited (${referred.length})</h3>
+      <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);overflow:hidden;">
+        ${referred.map(u => `<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--gray-100);">
+          <div style="width:38px;height:38px;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);font-size:15px;">${esc((u.first_name||u.firstName||'?')[0])}${esc((u.last_name||u.lastName||'?')[0])}</div>
+          <div><div style="font-weight:600;">${esc(u.first_name||u.firstName)} ${esc(u.last_name||u.lastName)}</div><div style="font-size:12px;color:var(--text-light);">Joined ${new Date(u.created_at||u.joinedAt||Date.now()).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div></div>
+        </div>`).join('')}
+      </div>` : `<div style="background:var(--gray-50);border:1.5px dashed var(--gray-300);border-radius:var(--r-lg);padding:32px;text-align:center;color:var(--text-mid);">
+        <div style="font-size:36px;margin-bottom:12px;">💌</div>
+        <div style="font-weight:600;margin-bottom:6px;">No referrals yet</div>
+        <div style="font-size:14px;">Share your link above to invite friends and grow the EAW community!</div>
+      </div>`}`;
+}
+
+async function loadReferrals() {
+  const el = document.getElementById('referralContent');
+  if (!el) return;
+
+  // Try server first
+  try {
+    const res = await fetch('api/referral.php', { credentials: 'include' });
+    const data = await res.json();
+    if (data.success) {
+      _renderReferralUI(data.referral_code, data.referred_count, data.referred);
+      return;
+    }
+  } catch(e) {}
+
+  // Fallback: localStorage-based referral
+  const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
+  if (!user.email) {
+    el.innerHTML = '<p style="color:var(--text-mid);padding:20px;">Please sign in to view your referral link.</p>';
+    return;
+  }
+  const key = 'eaw_ref_' + user.email;
+  let refData = JSON.parse(localStorage.getItem(key) || '{}');
+  if (!refData.code) {
+    refData = { code: _genRefCode(user.email), referred: [] };
+    localStorage.setItem(key, JSON.stringify(refData));
+  }
+  _renderReferralUI(refData.code, (refData.referred||[]).length, refData.referred||[]);
+}
+</script>
+<script src="eaw-common.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof eawSearch === 'function') eawSearch('', 'dashSearchResults');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Page Not Found | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .err-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background: linear-gradient(160deg, #0F172A 0%, #1E3A8A 55%, #1D4ED8 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .err-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 40%, rgba(29,78,216,.35) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(217,119,6,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .err-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 99px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #FCD34D;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .err-code {
+      font-family: 'Source Serif 4', serif;
+      font-size: clamp(100px, 22vw, 180px);
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, #fff 30%, #FCD34D 70%, #D97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .err-title {
+      font-family: 'Source Serif 4', serif;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .err-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,.72);
+      max-width: 460px;
+      line-height: 1.7;
+      margin-bottom: 44px;
+      position: relative;
+    }
+    .err-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 60px;
+    }
+    .err-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      position: relative;
+    }
+    .err-link {
+      font-size: 14px;
+      color: rgba(255,255,255,.6);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 99px;
+      border: 1px solid rgba(255,255,255,.15);
+      transition: all .2s ease;
+    }
+    .err-link:hover {
+      color: #fff;
+      border-color: rgba(255,255,255,.45);
+      background: rgba(255,255,255,.08);
+    }
+    .err-divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      border-radius: 99px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="stories.html">Stories</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- 404 CONTENT -->
+<main class="err-page">
+  <div class="err-badge">⚠ Page Not Found</div>
+  <div class="err-code">404</div>
+  <div class="err-divider"></div>
+  <h1 class="err-title">This page took a wrong turn</h1>
+  <p class="err-sub">The page you're looking for may have been moved, renamed, or never existed. Let's get you back on track.</p>
+  <div class="err-actions">
+    <a href="index.html" class="btn btn-gold btn-lg">← Back to Home</a>
+    <a href="courses.html" class="btn btn-glass btn-lg">Browse Courses</a>
+  </div>
+  <div class="err-links">
+    <a href="about.html" class="err-link">About EAW</a>
+    <a href="stories.html" class="err-link">Student Stories</a>
+    <a href="contact.html" class="err-link">Contact Us</a>
+    <a href="login.html" class="err-link">Sign In</a>
+    <a href="signup.html" class="err-link">Join Free</a>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="display:inline-flex;">
+        <img src="eaw_icon.png" alt="EAW" style="height:40px;filter:brightness(0) invert(1);">
+        <span class="logo-text" style="color:#fff;">Empowering<br>African Women</span>
+      </div>
+      <p>A digital platform empowering young African women through vocational training, business education, and community mentorship. Registered as DBTWTEi, Incorporated Trustees, Nigeria.</p>
+      <div class="footer-socials">
+        <a href="https://youtube.com/@empoweringafricanwomen9947" target="_blank" class="footer-social-link">📺 YouTube</a>
+        <a href="https://twitter.com/Digitaltutelage" target="_blank" class="footer-social-link">🐦 Twitter</a>
+        <a href="https://dtautocafe.com/" target="_blank" class="footer-social-link">🤝 DT Autocafe</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Courses</h4>
+      <a href="course-mechanic.html">Female Mechanic Incubator</a>
+      <a href="course-mechanic.html">AutoCare 101</a>
+      <a href="course-baking.html">Baking & Cooking</a>
+      <a href="course-etiquette.html">Business Etiquette</a>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="about.html">About EAW</a>
+      <a href="stories.html">Student Stories</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="tutor-apply.html">Become a Tutor</a>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="login.html">Sign In</a>
+      <a href="signup.html">Join for Free</a>
+      <a href="student-dashboard.html">Student Dashboard</a>
+      <a href="tutor-dashboard.html">Tutor Dashboard</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <span>Km 22 LEKKI Epe Expressway, Ajah, Lagos</span>
+  </div>
+</footer>
+
+<script src="eaw-common.js"></script>
+<script>
+document.getElementById('hamburger')?.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+});
+window.addEventListener('DOMContentLoaded', () => {
+  const theme = localStorage.getItem('eaw_theme');
+  if (theme === 'dark') applyDarkMode(true);
+});
+</script>
+</body>
+</html>

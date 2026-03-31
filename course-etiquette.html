@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social & Business Etiquette | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .module-ppt-link { display: inline-flex; align-items: center; gap: 8px; background: var(--blue-pale); border: 1px solid var(--blue-light); border-radius: var(--r-md); padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--blue); text-decoration: none; margin-top: 12px; transition: var(--ease); }
+    .module-ppt-link:hover { background: var(--blue); color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="stories.html">Stories</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<style>
+/* ─── EAW COURSE GATE SYSTEM ──────────────────────────── */
+
+/* Video watch bar that sits above each "Mark Complete" button */
+.vcb-wrap {
+  background: linear-gradient(135deg, #0d1b2a, #1b3a5c);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 12px 0 8px;
+  display: flex; align-items: center; gap: 14px;
+  border: 1px solid rgba(249,171,0,.2);
+}
+.vcb-icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(249,171,0,.12);
+  border: 1.5px solid rgba(249,171,0,.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  animation: eaw-pulse 2.2s ease-in-out infinite;
+}
+@keyframes eaw-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(249,171,0,.3); }
+  50%      { box-shadow: 0 0 0 8px rgba(249,171,0,.0); }
+}
+.vcb-body { flex: 1; }
+.vcb-title { font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 2px; }
+.vcb-sub   { font-size: 11px; color: rgba(255,255,255,.5); }
+.vcb-pill {
+  font-size: 11px; font-weight: 800; color: #F9AB00;
+  background: rgba(249,171,0,.12);
+  border: 1px solid rgba(249,171,0,.3);
+  border-radius: 20px; padding: 4px 12px;
+  flex-shrink: 0; white-space: nowrap; transition: all .3s;
+}
+.vcb-confirm-btn {
+  background: linear-gradient(135deg, #F9AB00, #e09600);
+  color: #1a0a00; border: none; border-radius: 8px;
+  padding: 8px 16px; font-size: 12px; font-weight: 800;
+  cursor: pointer; flex-shrink: 0;
+  display: none; white-space: nowrap;
+  transition: transform .15s, opacity .2s;
+}
+.vcb-confirm-btn:hover { transform: translateY(-1px); opacity: .9; }
+.vcb-confirm-btn.ready { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Mark Complete button locked state */
+.module-complete-btn.eaw-locked {
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ─── QUIZ GATE BLOCK ──────────────────────────────────── */
+.eaw-quiz-gate {
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 4px;
+  border: 1px solid #e5e7eb;
+}
+.eqg-header {
+  background: linear-gradient(135deg, #0d1b2a, #1e3a5f);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.eqg-icon {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: rgba(249,171,0,.12);
+  border: 1.5px solid rgba(249,171,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+.eqg-text { flex: 1; }
+.eqg-title { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 3px; }
+.eqg-sub   { font-size: 12px; color: rgba(255,255,255,.5); }
+.eqg-bar-track {
+  height: 6px; border-radius: 99px;
+  background: rgba(255,255,255,.1);
+  margin-top: 10px; overflow: hidden;
+}
+.eqg-bar-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #F9AB00, #ffd54f);
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.eqg-body {
+  background: #f9fafb;
+  padding: 16px 20px 20px;
+}
+.eqg-checklist { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.eqg-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 14px; border-radius: 10px;
+  border: 1px solid #e5e7eb; background: #fff;
+  font-size: 13px; font-weight: 600;
+  transition: background .25s, border-color .25s;
+}
+.eqg-item.done   { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+.eqg-item.pending{ color: #6b7280; }
+.eqg-dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; flex-shrink: 0; transition: all .25s;
+}
+.eqg-item.done .eqg-dot { background: #22c55e; border-color: #22c55e; color: #fff; }
+.eqg-name   { flex: 1; }
+.eqg-status { font-size: 11px; font-weight: 500; }
+.eqg-item.done    .eqg-status { color: #16a34a; }
+.eqg-item.pending .eqg-status { color: #9ca3af; }
+
+/* The unlockable quiz button */
+.eqg-btn {
+  width: 100%; padding: 15px 20px; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all .3s; letter-spacing: .2px;
+}
+.eqg-btn.locked   { background: linear-gradient(135deg, #d1d5db, #9ca3af); color: #6b7280; cursor: not-allowed; }
+.eqg-btn.unlocked { background: linear-gradient(135deg, #F9AB00, #e09600); color: #1a0a00; box-shadow: 0 4px 18px rgba(249,171,0,.35); }
+.eqg-btn.unlocked:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,171,0,.45); }
+.eqg-hint { text-align: center; font-size: 11px; margin-top: 8px; }
+.eqg-hint.locked   { color: #9ca3af; }
+.eqg-hint.unlocked { color: #059669; font-weight: 700; }
+
+/* ─── BLOCK TOAST ──────────────────────────────────────── */
+.eaw-toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, #111827, #1f2937);
+  border: 1px solid rgba(249,171,0,.3);
+  border-radius: 16px; padding: 16px 20px;
+  min-width: 320px; max-width: 90vw;
+  display: flex; align-items: flex-start; gap: 14px;
+  box-shadow: 0 24px 48px rgba(0,0,0,.5);
+  z-index: 9999; opacity: 0;
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+  pointer-events: none;
+}
+.eaw-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: all; }
+.et-icon { font-size: 26px; flex-shrink: 0; line-height: 1; }
+.et-body { flex: 1; }
+.et-title { font-weight: 800; font-size: 14px; color: #f9fafb; margin-bottom: 3px; }
+.et-msg   { font-size: 12px; color: rgba(255,255,255,.6); line-height: 1.5; }
+.et-close { background: none; border: none; color: rgba(255,255,255,.4); font-size: 22px; cursor: pointer; padding: 0; flex-shrink: 0; align-self: flex-start; line-height: 1; }
+.et-bar {
+  position: absolute; bottom: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, #F9AB00, #ffd54f);
+  border-radius: 0 0 16px 16px;
+  animation: et-drain 6s linear forwards;
+}
+@keyframes et-drain { from { width:100%; } to { width:0%; } }
+</style>
+<!-- COURSE HERO -->
+<div class="course-hero">
+  <div class="course-hero-inner">
+    <div>
+      <div class="breadcrumb"><a href="courses.html">Courses</a> › Business Skills</div>
+      <span class="cc-badge badge-free" style="position:static;margin-bottom:12px;display:inline-block;">Free Course</span>
+      <h1>Social &amp; Business Etiquette for Professionals</h1>
+      <p>Launched on EAW's second anniversary. Taught by image consultant and business etiquette expert Oluchi Arinze, MD of South and Sttes Properties Ltd, with years of experience in Nigerian banking and business.</p>
+      <div class="course-meta-row">
+        <span>⭐ 4.9 rating</span>
+        <span>💼 10 Modules</span>
+        <span>🎓 Certificate</span>
+        <span>✅ Free to Enrol</span>
+      </div>
+      <div style="margin-top:20px;">
+        <div style="background:rgba(255,255,255,.1);border-radius:var(--r-lg);padding:16px 20px;display:flex;gap:12px;align-items:center;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffd700);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">👩‍💼</div>
+          <div>
+            <div style="font-family:'Source Serif 4',serif;font-weight:700;color:#fff;">Oluchi Arinze</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.75);">Image Consultant &amp; Business Etiquette Coach · MD, South and Sttes Properties Ltd · Director, Kirkwood Properties Ltd</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="course-card-box">
+      <div class="course-price"><span class="free-tag">Free</span></div>
+      <button onclick="enrollFree()" class="enrol-btn">Enrol Now, It's Free</button>
+      <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:8px;">No payment required · Free certificate · Lifetime access</p>
+      <div class="course-includes">
+        <h4>This course includes:</h4>
+        <div class="ci-item">💼 10 professional modules</div>
+        <div class="ci-item">🎥 Video introduction by Oluchi Arinze</div>
+        <div class="ci-item">🤝 Boardroom &amp; meeting etiquette</div>
+        <div class="ci-item">🍽️ Dining &amp; social etiquette</div>
+        <div class="ci-item">🌐 Cross-cultural communication</div>
+        <div class="ci-item">📱 Digital professionalism</div>
+        <div class="ci-item">🎓 Certificate on completion</div>
+        <div class="ci-item">♾️ Lifetime access</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TUTOR VIDEO -->
+<section style="background:var(--gray-50);padding:48px 24px;">
+  <div style="max-width:860px;margin:0 auto;">
+    <h2 style="font-family:'Source Serif 4',serif;font-size:22px;font-weight:700;margin-bottom:8px;">Meet Your Instructor, Oluchi Arinze</h2>
+    <p style="color:var(--text-mid);margin-bottom:20px;">Watch Oluchi's introduction to the course.</p>
+    <div style="border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-lg);background:#000;">
+      <video width="100%" controls style="display:block;max-height:480px;">
+        <source src="Video_courses/Introduction_To_Etiquette.mp4" type="video/mp4">
+        Your browser does not support the video player. Please update your browser.
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- TUTOR BIO -->
+<section class="section">
+  <div style="max-width:860px;">
+    <div class="tutor-card">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffd700);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;">👩‍💼</div>
+      <div>
+        <div class="tutor-name">Oluchi Arinze</div>
+        <div class="tutor-title">Image Consultant &amp; Business Etiquette Coach</div>
+        <p class="tutor-bio">Oluchi Arinze is an image consultant and business etiquette coach focused on improving business performance and professional growth. She has a track record of helping professionals improve their social and business skills to build strong personal and corporate reputations. With several years of experience managing top banks' products in Nigeria, she brings real-world expertise to every lesson.</p>
+        <p class="tutor-bio" style="margin-top:8px;">She currently serves as <strong>Managing Director of South and Sttes Properties Ltd</strong>, Managing Director of South and Sttes Services Ltd, and <strong>Director of Kirkwood Properties Ltd</strong>.</p>
+      </div>
+    </div>
+
+    <!-- COURSE MODULES -->
+    <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:24px;">Course Content, 10 Modules</h2>
+    <!-- PROGRESS BAR -->
+    <div id="progressBar" style="display:none;background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--r-lg);padding:16px;margin-bottom:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-weight:700;font-size:15px;color:var(--blue);">Your Progress</span>
+        <span id="courseProgressText" style="font-size:13px;color:var(--text-mid);">0% complete</span>
+      </div>
+      <div style="background:var(--gray-200);border-radius:99px;height:8px;overflow:hidden;">
+        <div id="courseProgressBar" style="height:100%;background:var(--gold);border-radius:99px;width:0%;transition:width .5s;"></div>
+      </div>
+    </div>
+    <div class="accordion">
+
+      <div class="accordion-item" id="module-1">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 1: Introduction to Business Etiquette
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">📌 What is business etiquette and why it matters</div>
+          <div class="lesson-item">🌍 Etiquette in the Nigerian and African business context</div>
+          <div class="lesson-item">🤝 First impressions, you never get a second chance</div>
+          <div class="lesson-item">💼 How etiquette affects career advancement</div>
+          <!-- ═══════════════════════════════════════════════════════
+               🎬 VIDEO PLACEHOLDER, MODULE 1
+               
+               ═══════════════════════════════════════════════════════ -->
+          <!--
+		  <div class="video-placeholder">
+            <iframe src="https://www.youtube.com/embed/PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE"
+              title="Module 1 Video" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+            
+          </div>
+		  -->
+          <!-- PPT DOWNLOAD -->
+          <a href="module1-introduction-to-business-etiquette.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 1 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-1" onclick="completeModule(1)" class="module-complete-btn">
+            Mark Module 1 Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-2">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 2: Professional Dressing &amp; Personal Image
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">👗 Dress codes, formal, business casual, smart casual</div>
+          <div class="lesson-item">🎨 Colours and what they communicate</div>
+          <div class="lesson-item">💅 Grooming standards for professional women</div>
+          <div class="lesson-item">👜 Accessories, choosing appropriately for context</div>
+          <div class="lesson-item">📸 Building your professional visual brand</div>
+          <!-- ═══════════════════════════════════════════════════════
+               🎬 VIDEO PLACEHOLDER, MODULE 2
+               
+               ═══════════════════════════════════════════════════════ -->
+          
+		  <!--
+		  <div class="video-placeholder">
+            <iframe src="https://www.youtube.com/embed/PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE"
+              title="Module 2 Video" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+            
+          </div>
+		  -->
+          <!-- PPT DOWNLOAD -->
+          <a href="module2-professional-dressing-personal-image.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 2 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-2" onclick="completeModule(2)" class="module-complete-btn">
+            Mark Module 2 Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-3">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 3: Communication Skills &amp; Body Language
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">🗣️ Professional verbal communication, tone, vocabulary</div>
+          <div class="lesson-item">✉️ Written communication, emails, letters, formal messages</div>
+          <div class="lesson-item">🤝 Handshakes, eye contact, and posture</div>
+          <div class="lesson-item">👂 Active listening, the underrated skill</div>
+          <div class="lesson-item">📱 Phone and voicemail etiquette</div>
+          <!-- ═══════════════════════════════════════════════════════
+               🎬 VIDEO PLACEHOLDER, MODULE 3
+               
+               ═══════════════════════════════════════════════════════ -->
+          <!--
+		  <div class="video-placeholder">
+            <iframe src="https://www.youtube.com/embed/PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE"
+              title="Module 3 Video" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+
+          </div>
+		  -->
+          <!-- PPT DOWNLOAD -->
+          <a href="module3-communication-skills-body-language.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 3 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-3" onclick="completeModule(3)" class="module-complete-btn">
+            Mark Module 3 Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-4">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 4: Boardroom &amp; Meeting Etiquette
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">📅 Meeting preparation, agenda, punctuality, materials</div>
+          <div class="lesson-item">🪑 Seating protocols in formal meetings</div>
+          <div class="lesson-item">🙋 How to contribute confidently in meetings</div>
+          <div class="lesson-item">🤫 Interruptions, disagreements, and how to handle them professionally</div>
+          <div class="lesson-item">📝 Taking minutes and following up</div>
+          <!-- ═══════════════════════════════════════════════════════
+               🎬 VIDEO PLACEHOLDER, MODULE 4
+               
+               ═══════════════════════════════════════════════════════ -->
+          <!--
+		  <div class="video-placeholder">
+            <iframe src="https://www.youtube.com/embed/PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE"
+              title="Module 4 Video" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+            
+          </div>
+		  -->
+          <!-- PPT DOWNLOAD -->
+          <a href="module4-boardroom-meeting-etiquette.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 4 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-4" onclick="completeModule(4)" class="module-complete-btn">
+            Mark Module 4 Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-5">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 5: Dining &amp; Social Etiquette
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">🍽️ Business dining, formal table settings</div>
+          <div class="lesson-item">🥂 Toasting, ordering, and hosting etiquette</div>
+          <div class="lesson-item">🍴 Cutlery use, the European and American styles</div>
+          <div class="lesson-item">🗓️ Corporate events, networking, cocktail parties</div>
+          <!-- ═══════════════════════════════════════════════════════
+               🎬 VIDEO PLACEHOLDER, MODULE 5
+               
+               ═══════════════════════════════════════════════════════ -->
+          <!--
+		  <div class="video-placeholder">
+            <iframe src="https://www.youtube.com/embed/PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE"
+              title="Module 5 Video" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+            
+          </div>
+		  -->
+          <!-- PPT DOWNLOAD -->
+          <a href="module5-dining-social-etiquette.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Module 5 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-5" onclick="completeModule(5)" class="module-complete-btn">
+            Mark Module 5 Complete ✓
+          </button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-6">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Modules 6–10: Client Relations, Cross-Cultural, Digital, Reputation &amp; Certificate
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">🤝 Module 6: Client Relations, building trust, managing expectations</div>
+          <div class="lesson-item">🌍 Module 7: Cross-Cultural Etiquette, global business norms</div>
+          <div class="lesson-item">💻 Module 8: Digital Professionalism, LinkedIn, email, virtual meetings</div>
+          <div class="lesson-item">⭐ Module 9: Building Your Professional Reputation</div>
+          <div class="lesson-item">📝 Module 10: Final Assessment &amp; Certificate of Completion</div>
+          <!-- ═══════════════════════════════════════════════════════
+               🎬 VIDEO PLACEHOLDER, MODULE 6
+               
+               ═══════════════════════════════════════════════════════ -->
+          <!--
+		  <div class="video-placeholder">
+            <iframe src="https://www.youtube.com/embed/PASTE_YOUR_YOUTUBE_VIDEO_ID_HERE"
+              title="Module 6 Video" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
+		  -->
+          <!-- PPT DOWNLOAD -->
+          <a href="module6-client-relations-cross-cultural-digital-reputation-certificate.pptx" download class="module-ppt-link">
+            📊 Click Here to Download the Modules 6–10 Slide Deck (PowerPoint)
+          </a>
+          <button id="complete-btn-10" onclick="goToQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;">
+            📝 Take Final Assessment →
+          </button>
+          <p style="text-align:center;font-size:13px;color:var(--text-mid);margin-top:8px;">Score 70% or above to unlock your Certificate of Completion</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:32px;background:linear-gradient(135deg,var(--blue-dark),var(--blue));border-radius:var(--r-xl);padding:36px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+      <h3 style="font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;margin-bottom:10px;color:#fff;">Earn Your Business Etiquette Certificate</h3>
+      <p style="color:rgba(255,255,255,.85);margin-bottom:20px;">Complete all 10 modules and pass the final assessment to receive your EAW Certificate in Social &amp; Business Etiquette, signed by the EAW Admin and Oluchi Arinze.</p>
+      <button onclick="enrollFree()" class="btn btn-white btn-lg">Start Learning Free →</button>
+    </div>
+
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="display:inline-flex;">
+        <img src="eaw_icon.png" alt="EAW" style="height:40px;filter:brightness(0) invert(1);">
+        <span class="logo-text" style="color:#fff;">Empowering<br>African Women</span>
+      </div>
+      <p>A digital platform empowering young African women through vocational training, business education, and community mentorship. Registered as DBTWTEi, Nigeria.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Courses</h4>
+      <a href="course-mechanic.html">Female Mechanic Incubator</a>
+      <a href="course-baking.html">Baking & Cooking</a>
+      <a href="course-etiquette.html">Business Etiquette</a>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="about.html">About EAW</a>
+      <a href="stories.html">Student Stories</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="login.html">Sign In</a>
+      <a href="signup.html">Join for Free</a>
+      <a href="student-dashboard.html">Dashboard</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <span>Km 22 LEKKI Epe Expressway, Ajah, Lagos</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('hamburger')?.addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+
+const COURSE_ID = 'etiquette';
+const TOTAL_MODULES = 10;
+const QUIZ_URL = 'quiz-etiquette.html';
+
+function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || 'null'); }
+function saveUser(u) {
+  localStorage.setItem('eaw_user', JSON.stringify(u));
+  // Sync enrollment progress back to eaw_users registry
+  const _users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+  const _idx = _users.findIndex(x => x.email === u.email);
+  if (_idx >= 0) {
+    const _pw = _users[_idx].password;
+    _users[_idx] = Object.assign({}, u, { password: _pw });
+    localStorage.setItem('eaw_users', JSON.stringify(_users));
+  }
+}
+
+function toggleAcc(header) {
+  header.classList.toggle('active');
+  header.nextElementSibling.classList.toggle('open');
+}
+
+function enrollFree() {
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
+  if (!enrol) {
+    enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() };
+    user.enrollments.push(enrol);
+    saveUser(user);
+    fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})});
+  }
+  updateEnrolBtn();
+  document.getElementById('progressBar').style.display = 'block';
+  updateModuleUI();
+  const firstAcc = document.querySelector('.accordion-header');
+  if (firstAcc && !firstAcc.classList.contains('active')) {
+    firstAcc.classList.add('active');
+    firstAcc.nextElementSibling.classList.add('open');
+  }
+  window.scrollTo({ top: document.getElementById('progressBar').offsetTop - 100, behavior: 'smooth' });
+}
+
+function updateEnrolBtn() {
+  const user = getUser();
+  const enrolled = user && (user.enrollments || []).find(e => e.courseId === COURSE_ID);
+  document.querySelectorAll('.enrol-btn').forEach(btn => {
+    if (enrolled) {
+      btn.textContent = '✓ Enrolled, Start Learning →';
+      btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
+      btn.style.cursor = 'default';
+      btn.onclick = function() {
+        const first = document.querySelector('.accordion-header');
+        if (first) { if (!first.classList.contains('active')) first.click(); first.scrollIntoView({ behavior:'smooth', block:'start' }); }
+      };
+    } else {
+      btn.textContent = 'Enrol Now, It\'s Free!';
+      btn.style.background = '';
+      btn.onclick = enrollFree;
+    }
+  });
+}
+
+function completeModule(moduleNum) {
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
+  if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); }
+  if (!enrol.completedModules) enrol.completedModules = [];
+  if (!enrol.completedModules.includes(moduleNum)) enrol.completedModules.push(moduleNum);
+  if (!_completedModules.includes(moduleNum)) _completedModules.push(moduleNum);
+  const _progKey = 'eaw_prog_' + (user.email||'') + '_' + COURSE_ID;
+  localStorage.setItem(_progKey, JSON.stringify(_completedModules));
+  // 5 module sections tracked; progress max 80% before quiz
+  enrol.progress = Math.min(80, Math.round((enrol.completedModules.length / 6) * 80));
+  saveUser(user);
+  // Save progress to server (non-blocking, best-effort)
+  fetch('api/progress.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    credentials: 'include',
+    body: JSON.stringify({course: COURSE_ID, lesson: 'module-' + moduleNum})
+  }).catch(function(){});
+  updateModuleUI();
+  _refreshQuizGate();
+}
+
+function goToQuiz() {
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
+  if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); saveUser(user); }
+  window.location.href = QUIZ_URL;
+}
+
+function updateModuleUI() {
+  const user = getUser();
+  if (!user) return;
+  const enrol = (user.enrollments || []).find(e => e.courseId === COURSE_ID);
+  const completed = _completedModules.length > 0 ? _completedModules : (enrol ? (enrol.completedModules || []) : []);
+  const hasCert = user && (user.certificates || []).some(c => c.id === COURSE_ID);
+  const quizPassed = hasCert || (enrol ? !!enrol.quizPassed : false);
+  const pct = quizPassed ? 100 : (_completedModules.length > 0 ? Math.round(_completedModules.filter(n => CONTENT_MODULES.includes(n)).length / CONTENT_MODULES.length * 80) : (enrol ? (enrol.progress || 0) : 0));
+
+  const pbar = document.getElementById('courseProgressBar');
+  const ptext = document.getElementById('courseProgressText');
+  if (pbar) pbar.style.width = pct + '%';
+  if (ptext) ptext.textContent = pct + '% complete' + (quizPassed ? ', Certificate Earned! 🎓' : '');
+
+  [1,2,3,4,5].forEach(n => {
+    const btn = document.getElementById('complete-btn-' + n);
+    if (btn && completed.includes(n)) { btn.textContent = '✅ Module Complete!'; btn.style.background = 'var(--green)'; btn.disabled = true; }
+  });
+
+  const quizBtn = document.getElementById('complete-btn-10');
+  if (quizBtn) {
+    if (quizPassed) {
+      quizBtn.textContent = '🎓 View Your Certificate';
+      quizBtn.style.background = 'var(--green)';
+      quizBtn.style.color = '#fff';
+      quizBtn.onclick = issueCertificate;
+    } else {
+      const attempts = user ? ((user.quizAttempts || {})[COURSE_ID] || []) : [];
+      if (attempts.length > 0) {
+        const last = attempts[attempts.length - 1];
+        quizBtn.textContent = `📝 Retake Quiz (Last: ${last.score}/${last.total}) →`;
+      }
+    }
+  }
+}
+
+function issueCertificate() {
+  const user = getUser();
+  if (!user) return;
+  if (!user.certificates) user.certificates = [];
+  if (!user.certificates.find(c => c.id === COURSE_ID)) {
+    user.certificates.push({ id: COURSE_ID, title: 'Social & Business Etiquette for Professionals', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() });
+    saveUser(user);
+    fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: COURSE_ID, title: 'Social & Business Etiquette for Professionals', score: '' }) }).catch(()=>{});
+  }
+  const m = document.getElementById('certModal');
+  if (m) {
+    m.classList.add('open');
+    document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || '');
+    document.getElementById('certDate').textContent = new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+}
+
+// ── EAW Gate constants ────────────────────────────────────────
+const CONTENT_MODULES   = [1, 2, 3, 4, 5];
+const QUIZ_BTN_ID       = 'complete-btn-10';
+const HAS_VIDEO_MODULES = [1, 2, 3, 4, 5];
+const MODULE_NAMES = {
+  1: 'Module 1, Introduction to Business Etiquette',
+  2: 'Module 2, Professional Dressing & Personal Image',
+  3: 'Module 3, Communication Skills & Body Language',
+  4: 'Module 4, Boardroom & Meeting Etiquette',
+  5: 'Module 5, Dining & Social Etiquette'
+};
+
+// ── EAW COURSE GATE ENGINE ────────────────────────────────────────
+// Requires these constants defined above: COURSE_ID, CONTENT_MODULES,
+// QUIZ_BTN_ID, MODULE_NAMES, HAS_VIDEO_MODULES
+
+let _toastTimer = null;
+function _showToast(title, msg, icon) {
+  const t = document.getElementById('eawToast');
+  const bar = t.querySelector('.et-bar');
+  document.getElementById('eawToastTitle').textContent = title;
+  document.getElementById('eawToastMsg').textContent   = msg;
+  document.getElementById('eawToastIcon').textContent  = icon || '📋';
+  bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = '';
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 6000);
+}
+
+// ── DB-BACKED PROGRESS ─────────────────────────────────────────
+let _completedModules = [];
+let _certified = false;
+
+async function loadProgressFromDB() {
+  _certified = false;
+  const _serverNums = new Set();
+  try {
+    const res = await fetch('api/progress.php?course=' + COURSE_ID, { credentials: 'include' });
+    const data = await res.json();
+    if (data.completed) { _completedModules = data.completed.map(function(id){ var n=parseInt(String(id).replace('module-',''),10); return isNaN(n)?null:n; }).filter(function(n){return n!==null;}); _completedModules.forEach(function(n){_serverNums.add(n);}); }
+    if (data.certified) _certified = true;
+  } catch(e) {}
+  // Merge localStorage as fallback
+  const u = getUser();
+  const enrol = u ? (u.enrollments || []).find(x => x.courseId === COURSE_ID) : null;
+  if (enrol && enrol.completedModules) {
+    enrol.completedModules.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
+  }
+  const _u2 = getUser();
+  const _progKey2 = 'eaw_prog_' + (_u2 ? (_u2.email||'') : '') + '_' + COURSE_ID;
+  const _savedProg = JSON.parse(localStorage.getItem(_progKey2) || '[]');
+  _savedProg.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
+  // Push enrollment + any local-only completions up to server (one-way sync, idempotent)
+  fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+  _completedModules.forEach(function(n){if(!isNaN(n)&&!_serverNums.has(n)){fetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}});
+  // Sync merged progress + cert status back to localStorage
+  const _syncUser = getUser();
+  if (_syncUser) {
+    if (!_syncUser.enrollments) _syncUser.enrollments = [];
+    let _syncEnrol = _syncUser.enrollments.find(e => e.courseId === COURSE_ID);
+    if (!_syncEnrol) { _syncEnrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; _syncUser.enrollments.push(_syncEnrol); }
+    if (_completedModules.length > 0) {
+      _syncEnrol.completedModules = [..._completedModules];
+      _syncEnrol.progress = Math.round(_completedModules.filter(n => CONTENT_MODULES.includes(n)).length / CONTENT_MODULES.length * 80);
+    }
+    if (_certified || _syncEnrol.quizPassed) { _syncEnrol.quizPassed = true; _syncEnrol.progress = 100; }
+    saveUser(_syncUser);
+    localStorage.setItem('eaw_prog_' + (_syncUser.email||'') + '_' + COURSE_ID, JSON.stringify(_completedModules));
+  }
+}
+
+function _allDone()      { return CONTENT_MODULES.every(n => _completedModules.includes(n)); }
+function _doneCount()    { return _completedModules.filter(n => CONTENT_MODULES.includes(n)).length; }
+function _isCompleted(n) { return _completedModules.includes(n); }
+
+// ── Quiz Gate Block ──────────────────────────────────────────────
+function _buildQuizGate() {
+  const btn = document.getElementById(QUIZ_BTN_ID);
+  if (!btn) return;
+  const _u = getUser();
+  const _enrol = _u ? (_u.enrollments||[]).find(e => e.courseId === COURSE_ID) : null;
+  const quizPassed = (_u && (_u.certificates||[]).some(c => c.id === COURSE_ID)) || (_enrol && !!_enrol.quizPassed) || !!_certified;
+  const done = _allDone();
+  const count = _doneCount();
+  const total = CONTENT_MODULES.length;
+  const pct = quizPassed ? 100 : (total ? Math.round(count/total*100) : 0);
+
+  const items = CONTENT_MODULES.map(n => {
+    const ok = _isCompleted(n);
+    return `<div class="eqg-item ${ok?'done':'pending'}" id="eqg-item-${n}">
+      <div class="eqg-dot">${ok ? '✓' : ''}</div>
+      <div class="eqg-name">${MODULE_NAMES[n] || 'Module '+n}</div>
+      <div class="eqg-status">${ok ? 'Complete ✓' : 'Not yet done'}</div>
+    </div>`;
+  }).join('');
+
+  const html = `<div class="eaw-quiz-gate" id="eawQuizGate">
+    <div class="eqg-header">
+      <div class="eqg-icon" id="eqgIcon">${quizPassed?'🏆':(done?'🎓':'🔒')}</div>
+      <div class="eqg-text">
+        <div class="eqg-title" id="eqgTitle">${quizPassed ? 'Course Completed!' : (done ? 'Ready for Your Assessment' : 'Assessment Locked')}</div>
+        <div class="eqg-sub"   id="eqgSub">${quizPassed ? 'Congratulations! You have earned your EAW Certificate.' : (done ? 'All modules verified. Your assessment is now unlocked.' : 'Finish every module below to unlock your final assessment.')}</div>
+        <div class="eqg-bar-track"><div class="eqg-bar-fill" id="eqgBarFill" style="width:${pct}%"></div></div>
+      </div>
+    </div>
+    <div class="eqg-body">
+      <div class="eqg-checklist" id="eqgChecklist">${items}</div>
+      <button class="eqg-btn ${(done||quizPassed)?'unlocked':'locked'}" id="${QUIZ_BTN_ID}" onclick="${quizPassed?'issueCertificate()':'_guardQuiz()'}">
+        ${quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock')}
+      </button>
+      <div class="eqg-hint ${(done||quizPassed)?'unlocked':'locked'}" id="eqgHint">
+        ${quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`)}
+      </div>
+    </div>
+  </div>`;
+
+  btn.outerHTML = html;
+  // Hide the old hint paragraph
+  const gate = document.getElementById('eawQuizGate');
+  const p = gate && gate.nextElementSibling;
+  if (p && p.tagName === 'P' && p.textContent.includes('70%')) p.style.display = 'none';
+}
+
+function _refreshQuizGate() {
+  if (!document.getElementById('eawQuizGate')) { _buildQuizGate(); return; }
+  const _u = getUser();
+  const _enrol = _u ? (_u.enrollments||[]).find(e => e.courseId === COURSE_ID) : null;
+  const quizPassed = (_u && (_u.certificates||[]).some(c => c.id === COURSE_ID)) || (_enrol && !!_enrol.quizPassed) || !!_certified;
+  const done = _allDone();
+  const count = _doneCount();
+  const total = CONTENT_MODULES.length;
+  const pct = quizPassed ? 100 : (total ? Math.round(count/total*100) : 0);
+
+  CONTENT_MODULES.forEach(n => {
+    const item = document.getElementById('eqg-item-'+n);
+    if (!item) return;
+    const ok = _isCompleted(n);
+    item.className = 'eqg-item '+(ok?'done':'pending');
+    item.querySelector('.eqg-dot').textContent = ok ? '✓' : '';
+    item.querySelector('.eqg-status').textContent = ok ? 'Complete ✓' : 'Not yet done';
+  });
+
+  const fill  = document.getElementById('eqgBarFill');
+  const icon  = document.getElementById('eqgIcon');
+  const title = document.getElementById('eqgTitle');
+  const sub   = document.getElementById('eqgSub');
+  const btn   = document.getElementById(QUIZ_BTN_ID);
+  const hint  = document.getElementById('eqgHint');
+
+  if (fill)  fill.style.width = pct+'%';
+  if (icon)  icon.textContent = quizPassed ? '🏆' : (done ? '🎓' : '🔒');
+  if (title) title.textContent = quizPassed ? 'Course Completed!' : (done ? 'Ready for Your Assessment' : 'Assessment Locked');
+  if (sub)   sub.textContent   = quizPassed ? 'Congratulations! You have earned your EAW Certificate.' : (done ? 'All modules verified. Your assessment is now unlocked.' : 'Finish every module below to unlock your final assessment.');
+  if (btn) {
+    btn.className = 'eqg-btn '+((done||quizPassed)?'unlocked':'locked');
+    btn.onclick = quizPassed ? issueCertificate : _guardQuiz;
+    btn.innerHTML = quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock');
+  }
+  if (hint) {
+    hint.className = 'eqg-hint '+((done||quizPassed)?'unlocked':'locked');
+    hint.textContent = quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`);
+  }
+}
+
+function _guardQuiz() {
+  if (!_allDone()) {
+    const remaining = CONTENT_MODULES.filter(n => !_isCompleted(n)).map(n => MODULE_NAMES[n] || 'Module '+n);
+    _showToast(
+      '🔒 Assessment Not Yet Available',
+      'Please complete: ' + remaining.join(', ') + ' before taking the assessment.',
+      '📚'
+    );
+    return;
+  }
+  goToQuiz();
+}
+
+// ── Video Watch Gate ─────────────────────────────────────────────
+const _vtimers = {};
+const _vwatched = {};
+
+function _initVideoGate(n) {
+  if (!HAS_VIDEO_MODULES.includes(n)) return;
+  if (_isCompleted(n)) return;
+  const btn = document.getElementById('complete-btn-'+n);
+  if (!btn || document.getElementById('vcb-'+n)) return;
+  btn.classList.add('eaw-locked');
+  btn.disabled = true;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'vcb-wrap'; wrap.id = 'vcb-'+n;
+  wrap.innerHTML = `
+    <div class="vcb-icon">▶️</div>
+    <div class="vcb-body">
+      <div class="vcb-title">Study this powerpoint file to continue</div>
+      <div class="vcb-sub">A confirmation button appears once you've had time to watch</div>
+    </div>
+    <div class="vcb-pill" id="vcbpill-${n}">⏳ studying…</div>
+    <button class="vcb-confirm-btn" id="vcbbtn-${n}" onclick="_confirmWatched(${n})">
+      ✅ Mark Done
+    </button>`;
+  btn.insertAdjacentElement('beforebegin', wrap);
+}
+
+function _startVideoTimer(n) {
+  if (!HAS_VIDEO_MODULES.includes(n)) return;
+  if (_vwatched[n] || _vtimers[n] || _isCompleted(n)) return;
+  let secs = 15;
+  const pill = document.getElementById('vcbpill-'+n);
+  const cbtn = document.getElementById('vcbbtn-'+n);
+  _vtimers[n] = setInterval(() => {
+    secs--;
+    if (pill) pill.textContent = secs > 0 ? `⏳ ${secs}s remaining` : '✅ Ready!';
+    if (secs <= 0) {
+      clearInterval(_vtimers[n]); _vtimers[n] = null;
+      if (cbtn) cbtn.classList.add('ready');
+    }
+  }, 1000);
+}
+
+function _confirmWatched(n) {
+  _vwatched[n] = true;
+  const wrap = document.getElementById('vcb-'+n);
+  if (wrap) wrap.style.display = 'none';
+  const btn = document.getElementById('complete-btn-'+n);
+  if (btn) { btn.classList.remove('eaw-locked'); btn.disabled = false; }
+}
+
+function _attachLocalVideo(n) {
+  const mod = document.getElementById('module-'+n);
+  if (!mod) return;
+  const video = mod.querySelector('video');
+  if (!video) return;
+  video.addEventListener('ended', () => _confirmWatched(n));
+  video.addEventListener('timeupdate', () => {
+    if (!_vwatched[n] && video.duration && video.currentTime/video.duration >= 0.8)
+      _confirmWatched(n);
+  });
+}
+
+// ── Accordion patch, fires video timer when module opens ────────
+function _patchAccordions() {
+  document.querySelectorAll('.accordion-header').forEach(h => {
+    const orig = h.getAttribute('onclick') || '';
+    h.setAttribute('onclick', '');
+    h.addEventListener('click', function() {
+      // Call the original toggle function by name
+      const fnName = orig.includes('toggleAccordion') ? 'toggleAccordion' : 'toggleAcc';
+      if (typeof window[fnName] === 'function') window[fnName](this);
+      if (this.classList.contains('active')) {
+        CONTENT_MODULES.forEach(n => {
+          const mod = document.getElementById('module-'+n);
+          if (mod && mod.contains(this)) _startVideoTimer(n);
+        });
+      }
+    });
+  });
+}
+// ── END EAW COURSE GATE ENGINE ────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProgressFromDB();
+  updateModuleUI();
+  _buildQuizGate();
+  CONTENT_MODULES.forEach(n => _initVideoGate(n));
+  _patchAccordions();
+  const user = getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  // Enrollment gate, user must have explicitly enrolled
+  // Auto-enroll if not already enrolled
+  if (!(user.enrollments || []).find(e => e.courseId === COURSE_ID)) {
+    if (!user.enrollments) user.enrollments = [];
+    user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
+    saveUser(user);
+    fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+  }
+  if (user) {
+    const navCta = document.querySelector('.nav-cta');
+    if (navCta) navCta.innerHTML = `<a href="student-dashboard.html" class="btn btn-blue btn-sm">My Dashboard →</a>`;
+  }
+  const enrol = user ? (user.enrollments || []).find(e => e.courseId === COURSE_ID) : null;
+  if (enrol) document.getElementById('progressBar').style.display = 'block';
+  updateEnrolBtn();
+});
+</script>
+
+
+
+<!-- EAW Course Gate Toast -->
+<div class="eaw-toast" id="eawToast">
+  <div class="et-icon" id="eawToastIcon">📋</div>
+  <div class="et-body">
+    <div class="et-title" id="eawToastTitle">Complete Your Modules First</div>
+    <div class="et-msg"   id="eawToastMsg">Please finish all course modules before taking the assessment.</div>
+  </div>
+  <button class="et-close" onclick="document.getElementById('eawToast').classList.remove('show')">×</button>
+  <div class="et-bar"></div>
+</div>
+<script src="eaw-common.js"></script>
+</body>
+</html>

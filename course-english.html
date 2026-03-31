@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>English Language &amp; Communication | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="stories.html">Stories</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<style>
+.module-complete-btn.eaw-locked{background:#e5e7eb!important;color:#9ca3af!important;cursor:not-allowed!important;box-shadow:none!important;transform:none!important;}
+.eaw-quiz-gate{border-radius:16px;overflow:hidden;margin-top:4px;border:1px solid #e5e7eb;}
+.eqg-header{background:linear-gradient(135deg,#0d1b2a,#1e3a5f);padding:18px 20px;display:flex;align-items:center;gap:16px;}
+.eqg-icon{width:50px;height:50px;border-radius:50%;background:rgba(249,171,0,.12);border:1.5px solid rgba(249,171,0,.3);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.eqg-text{flex:1;}.eqg-title{font-family:'Source Serif 4',serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:3px;}.eqg-sub{font-size:12px;color:rgba(255,255,255,.5);}
+.eqg-bar-track{height:6px;border-radius:99px;background:rgba(255,255,255,.1);margin-top:10px;overflow:hidden;}
+.eqg-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#F9AB00,#ffd54f);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.eqg-body{background:#f9fafb;padding:16px 20px 20px;}
+.eqg-checklist{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.eqg-item{display:flex;align-items:center;gap:11px;padding:9px 14px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-size:13px;font-weight:600;transition:background .25s,border-color .25s;}
+.eqg-item.done{background:#f0fdf4;border-color:#86efac;color:#15803d;}.eqg-item.pending{color:#6b7280;}
+.eqg-dot{width:20px;height:20px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all .25s;}
+.eqg-item.done .eqg-dot{background:#22c55e;border-color:#22c55e;color:#fff;}
+.eqg-name{flex:1;}.eqg-status{font-size:11px;font-weight:500;}
+.eqg-item.done .eqg-status{color:#16a34a;}.eqg-item.pending .eqg-status{color:#9ca3af;}
+.eqg-btn{width:100%;padding:15px 20px;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s;letter-spacing:.2px;}
+.eqg-btn.locked{background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#6b7280;cursor:not-allowed;}
+.eqg-btn.unlocked{background:linear-gradient(135deg,#F9AB00,#e09600);color:#1a0a00;box-shadow:0 4px 18px rgba(249,171,0,.35);}
+.eqg-btn.unlocked:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(249,171,0,.45);}
+.eqg-hint{text-align:center;font-size:11px;margin-top:8px;}.eqg-hint.locked{color:#9ca3af;}.eqg-hint.unlocked{color:#059669;font-weight:700;}
+.eaw-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg,#111827,#1f2937);border:1px solid rgba(249,171,0,.3);border-radius:16px;padding:16px 20px;min-width:320px;max-width:90vw;display:flex;align-items:flex-start;gap:14px;box-shadow:0 24px 48px rgba(0,0,0,.5);z-index:9999;opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;pointer-events:none;}
+.eaw-toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all;}
+.et-icon{font-size:26px;flex-shrink:0;line-height:1;}.et-body{flex:1;}.et-title{font-weight:800;font-size:14px;color:#f9fafb;margin-bottom:3px;}.et-msg{font-size:12px;color:rgba(255,255,255,.6);line-height:1.5;}
+.et-close{background:none;border:none;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;padding:0;flex-shrink:0;align-self:flex-start;line-height:1;}
+.et-bar{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,#F9AB00,#ffd54f);border-radius:0 0 16px 16px;animation:et-drain 6s linear forwards;}
+@keyframes et-drain{from{width:100%;}to{width:0%;}}
+.yt-player{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;margin:12px 0;}
+.yt-player iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.yt-thumb{display:block;position:relative;border-radius:10px;overflow:hidden;cursor:pointer;background:#000;margin:12px 0;}
+.yt-thumb img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;}
+.yt-thumb-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(0,0,0,.35);transition:background .2s;}
+.yt-thumb:hover .yt-thumb-overlay{background:rgba(0,0,0,.55);}
+.yt-thumb-play{filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));}
+.yt-thumb-overlay span{color:#fff;font-size:14px;font-weight:700;letter-spacing:.3px;text-shadow:0 1px 4px rgba(0,0,0,.7);}
+</style>
+
+<!-- COURSE HERO -->
+<div style="padding-top:72px;background:linear-gradient(145deg,#1e3a5f,#2563eb);color:#fff;padding-bottom:0;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(37,99,235,.3) 0%,transparent 65%);pointer-events:none;"></div>
+  <div class="course-hero-inner" style="max-width:1280px;margin:0 auto;padding:56px 24px 48px;position:relative;z-index:1;">
+    <div>
+      <div class="breadcrumb"><a href="courses.html">Courses</a> › Language</div>
+      <span class="cc-badge badge-free" style="position:static;margin-bottom:12px;display:inline-block;">Free Course</span>
+      <h1 style="font-family:'Source Serif 4',serif;font-size:clamp(30px,3.2vw,42px);font-weight:900;margin-bottom:18px;color:#fff;line-height:1.15;">🗣️ English Language &amp; Communication</h1>
+      <p style="font-size:17px;color:rgba(255,255,255,.85);margin-bottom:22px;line-height:1.7;">Improve your spoken and written English for work, education, and everyday life. This course curates the best free English-learning resources from BBC Learning English, mmmEnglish, and other trusted YouTube channels, all in one place.</p>
+      <div class="course-meta-row">
+        <span>⭐ 4.8 rating</span>
+        <span>🗣️ 4 Modules</span>
+        <span>🎓 Certificate</span>
+        <span>✅ Free to Enrol</span>
+        <span>📊 Beginner, All Levels</span>
+      </div>
+      <div style="margin-top:20px;">
+        <div style="background:rgba(255,255,255,.1);border-radius:var(--r-lg);padding:16px 20px;display:flex;gap:12px;align-items:center;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffd700);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">🗣️</div>
+          <div>
+            <div style="font-family:'Source Serif 4',serif;font-weight:700;color:#fff;">BBC Learning English &amp; mmmEnglish</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.75);">YouTube (Free)</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:8px;">Video tutorials freely available on YouTube, links and search tips provided in each module</div>
+    </div>
+    <div class="course-card-box">
+      <div class="course-price"><span class="free-tag">Free</span></div>
+      <button onclick="enrollFree()" class="enrol-btn">Enrol Now, It's Free</button>
+      <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:8px;">No payment required · Free certificate · Lifetime access</p>
+      <div class="course-includes">
+        <h4>This course includes:</h4>
+        <div class="ci-item">🗣️ 4 English modules</div>
+        <div class="ci-item">🎥 Expert YouTube video lessons</div>
+        <div class="ci-item">📢 Speaking confidence</div>
+        <div class="ci-item">📝 Writing &amp; grammar</div>
+        <div class="ci-item">🎧 Listening &amp; comprehension</div>
+        <div class="ci-item">💼 Professional English</div>
+        <div class="ci-item">🎓 Certificate on completion</div>
+        <div class="ci-item">♾️ Lifetime access</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COURSE MODULES -->
+<section class="section">
+  <div style="max-width:860px;">
+    <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:24px;">Course Content, 4 Modules</h2>
+
+    <div id="progressBar" style="display:none;background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--r-lg);padding:16px;margin-bottom:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-weight:700;font-size:15px;color:var(--blue);">Your Progress</span>
+        <span id="courseProgressText" style="font-size:13px;color:var(--text-mid);">0% complete</span>
+      </div>
+      <div style="background:var(--gray-200);border-radius:99px;height:8px;overflow:hidden;">
+        <div id="courseProgressBar" style="height:100%;background:var(--blue);border-radius:99px;width:0%;transition:width .5s;"></div>
+      </div>
+    </div>
+
+    <div class="accordion">
+
+      <div class="accordion-item" id="module-1">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 1: Everyday English Speaking
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">🗣️ How to introduce yourself confidently in English</div>
+          <div class="lesson-item">🤝 Greetings, small talk and everyday conversations</div>
+          <div class="lesson-item">📞 English for phone calls and messaging</div>
+          <div class="lesson-item">🌍 Common expressions used in African and international English</div>
+          <div style="background:linear-gradient(135deg,#0d1b2a,#1b3a5c);border-radius:12px;padding:18px 20px;margin:12px 0;border:1px solid rgba(255,255,255,.12);">
+            <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: BBC Learning English on YouTube</p>
+            <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">BBC Learning English (9.5M+ subscribers) publishes free English lessons every week covering grammar, vocabulary, pronunciation and real conversations. Visit <strong>youtube.com/@bbclearningenglish</strong> and start with their <em>"English in a Minute"</em> and <em>"6 Minute English"</em> series.</p>
+          </div>
+          <button onclick="completeModule(1)" id="complete-btn-1" class="module-complete-btn">Mark Module 1 Complete ✓</button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-2">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 2: Grammar &amp; Vocabulary
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">📖 The most important English tenses explained simply</div>
+          <div class="lesson-item">🔤 Essential vocabulary for work and business</div>
+          <div class="lesson-item">🔑 Phrasal verbs you need to know</div>
+          <div class="lesson-item">❓ Common mistakes to avoid</div>
+          <div style="background:linear-gradient(135deg,#0d1b2a,#1b3a5c);border-radius:12px;padding:18px 20px;margin:12px 0;border:1px solid rgba(255,255,255,.12);">
+            <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: mmmEnglish on YouTube</p>
+            <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">With over 5 million subscribers, mmmEnglish (Emma) teaches pronunciation, vocabulary, phrasal verbs, idioms and grammar in a friendly, practical style. Visit <strong>youtube.com/@mmmEnglish</strong> and search <em>"beginner English"</em> to start.</p>
+          </div>
+          <button onclick="completeModule(2)" id="complete-btn-2" class="module-complete-btn">Mark Module 2 Complete ✓</button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-3">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 3: Professional English
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">💼 Writing professional emails in English</div>
+          <div class="lesson-item">📊 Presenting and speaking in meetings</div>
+          <div class="lesson-item">🤝 English for job interviews</div>
+          <div class="lesson-item">📱 Digital communication, WhatsApp, LinkedIn, and professional messaging</div>
+          <div style="background:linear-gradient(135deg,#0d1b2a,#1b3a5c);border-radius:12px;padding:18px 20px;margin:12px 0;border:1px solid rgba(255,255,255,.12);">
+            <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: Speak English With Mr. Duncan on YouTube</p>
+            <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">Mr. Duncan offers engaging, fun lessons focused on practical professional English. Visit his channel and look for his <em>"Business English"</em> and <em>"English for Work"</em> series.</p>
+          </div>
+          <button onclick="completeModule(3)" id="complete-btn-3" class="module-complete-btn">Mark Module 3 Complete ✓</button>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="module-4">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          Module 4: Pronunciation &amp; Confidence
+          <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="lesson-item">🎤 English pronunciation tips for African English speakers</div>
+          <div class="lesson-item">🔊 How to improve your listening comprehension</div>
+          <div class="lesson-item">📚 How to build your vocabulary fast</div>
+          <div class="lesson-item">🌟 Tips for speaking English confidently every day</div>
+          <div style="background:linear-gradient(135deg,#0d1b2a,#1b3a5c);border-radius:12px;padding:18px 20px;margin:12px 0;border:1px solid rgba(255,255,255,.12);">
+            <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: English with Vanessa on YouTube</p>
+            <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">Vanessa teaches real-life American English with a focus on pronunciation and natural expression. Her clear, encouraging style is perfect for building confidence. Search <strong>"English with Vanessa pronunciation"</strong> on YouTube.</p>
+          </div>
+          <button onclick="completeModule(4)" id="complete-btn-4" class="module-complete-btn">Mark Module 4 Complete ✓</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:32px;background:linear-gradient(135deg,#1e3a5f,#2563eb);border-radius:var(--r-xl);padding:36px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+      <h3 style="font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;margin-bottom:10px;color:#fff;">Earn Your English Language Certificate</h3>
+      <p style="color:rgba(255,255,255,.85);margin-bottom:20px;">Complete all 4 modules to receive your EAW Certificate in English Language &amp; Communication.</p>
+      <div style="margin-top:8px;">
+        <button id="takeQuizBtn" onclick="_guardQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;width:100%;font-size:16px;padding:16px;">📝 Take Final Assessment →</button>
+        <p style="text-align:center;font-size:13px;color:rgba(255,255,255,.7);margin-top:8px;">Complete all modules first, then score 70%+ to earn your certificate</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="display:inline-flex;">
+        <img src="eaw_icon.png" alt="EAW" style="height:40px;filter:brightness(0) invert(1);">
+        <span class="logo-text" style="color:#fff;">Empowering<br>African Women</span>
+      </div>
+      <p>A digital platform empowering young African women through vocational training, business education, and community mentorship. Registered as DBTWTEi, Nigeria.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Courses</h4>
+      <a href="courses.html">All Courses →</a>
+      <a href="course-mechanic.html">Female Mechanic Incubator</a>
+      <a href="course-baking.html">Baking &amp; Cooking</a>
+      <a href="course-etiquette.html">Business Etiquette</a>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="about.html">About EAW</a>
+      <a href="stories.html">Student Stories</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="login.html">Sign In</a>
+      <a href="signup.html">Join for Free</a>
+      <a href="student-dashboard.html">Dashboard</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <span>Km 22 LEKKI Epe Expressway, Ajah, Lagos</span>
+  </div>
+</footer>
+
+<div class="cert-modal-overlay" id="certModal">
+  <div class="cert-modal">
+    <div class="cert-frame">
+      <div class="cert-title">Empowering African Women · EAW</div>
+      <div class="cert-of">Certificate of Completion</div>
+      <div class="cert-awarded">This is to certify that</div>
+      <div class="cert-student-name" id="certName">Student Name</div>
+      <div class="cert-awarded">has successfully completed</div>
+      <div class="cert-course-name">English Language &amp; Communication</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate">Date</span></div>
+      <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px;" id="certScoreDisplay"></div>
+      <div class="cert-sigs">
+        <div class="cert-sig-line">EAW Administration<br>EAW Founder &amp; Director</div>
+        <div class="cert-sig-line">BBC Learning English &amp; mmmEnglish<br>Course Providers</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
+      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+<div class="eaw-toast" id="eawToast">
+  <div class="et-icon" id="eawToastIcon">📋</div>
+  <div class="et-body">
+    <div class="et-title" id="eawToastTitle">Complete Your Modules First</div>
+    <div class="et-msg" id="eawToastMsg">Please finish all course modules before taking the assessment.</div>
+  </div>
+  <button class="et-close" onclick="document.getElementById('eawToast').classList.remove('show')">×</button>
+  <div class="et-bar"></div>
+</div>
+
+<script>
+document.getElementById('hamburger')?.addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+const COURSE_ID = 'english';
+const TOTAL_MODULES = 4;
+const QUIZ_URL = 'quiz-english.html';
+const CONTENT_MODULES = [1,2,3,4];
+const QUIZ_BTN_ID = 'takeQuizBtn';
+const MODULE_NAMES = {1:'Module 1, Everyday English Speaking',2:'Module 2, Grammar & Vocabulary',3:'Module 3, Professional English',4:'Module 4, Pronunciation & Confidence'};
+function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || 'null'); }
+function saveUser(u) {
+  localStorage.setItem('eaw_user', JSON.stringify(u));
+  // Sync enrollment progress back to eaw_users registry
+  const _users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+  const _idx = _users.findIndex(x => x.email === u.email);
+  if (_idx >= 0) {
+    const _pw = _users[_idx].password;
+    _users[_idx] = Object.assign({}, u, { password: _pw });
+    localStorage.setItem('eaw_users', JSON.stringify(_users));
+  }
+}
+function toggleAcc(header) { header.classList.toggle('active'); header.nextElementSibling.classList.toggle('open'); }
+function enrollCourse() {
+  const user = getUser(); if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  if (!user.enrollments.find(e => e.courseId === COURSE_ID)) { user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }); saveUser(user); fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}); }
+  updateEnrolBtn();
+  const first = document.querySelector('.accordion-header'); if (first && !first.classList.contains('active')) first.click(); first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('progressBar').style.display = 'block'; updateModuleUI();
+}
+
+function updateEnrolBtn() {
+  const user = getUser();
+  const enrolled = user && (user.enrollments || []).find(e => e.courseId === COURSE_ID);
+  document.querySelectorAll('.enrol-btn').forEach(btn => {
+    if (enrolled) {
+      btn.textContent = '✓ Enrolled, Start Learning →';
+      btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
+      btn.style.cursor = 'default';
+      btn.onclick = function() {
+        const first = document.querySelector('.accordion-header');
+        if (first) { if (!first.classList.contains('active')) first.click(); first.scrollIntoView({ behavior:'smooth', block:'start' }); }
+      };
+    } else {
+      btn.textContent = 'Enrol Now, It\'s Free!';
+      btn.style.background = '';
+      btn.onclick = enrollCourse;
+    }
+  });
+}
+
+function enrollFree() { enrollCourse(); }
+function completeModule(moduleNum) {
+  const user = getUser(); if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
+  if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); }
+  if (!enrol.completedModules) enrol.completedModules = [];
+  if (!enrol.completedModules.includes(moduleNum)) enrol.completedModules.push(moduleNum);
+  if (!_completedModules.includes(moduleNum)) _completedModules.push(moduleNum);
+  const _progKey = 'eaw_prog_' + (user.email||'') + '_' + COURSE_ID;
+  localStorage.setItem(_progKey, JSON.stringify(_completedModules));
+  enrol.progress = Math.min(84, Math.round(enrol.completedModules.length / 4 * 84)); saveUser(user);
+  // Save progress to server (non-blocking, best-effort)
+  fetch('api/progress.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    credentials: 'include',
+    body: JSON.stringify({course: COURSE_ID, lesson: 'module-' + moduleNum})
+  }).catch(function(){});
+  updateModuleUI(); _refreshQuizGate();
+  const next = document.getElementById('module-' + (moduleNum + 1));
+  if (next) { const h = next.querySelector('.accordion-header'); if (h && !h.classList.contains('active')) h.click(); setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300); }
+}
+function goToQuiz() {
+  const user = getUser(); if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user.enrollments) user.enrollments = [];
+  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
+  if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); saveUser(user); }
+  window.location.href = QUIZ_URL;
+}
+function updateModuleUI() {
+  const user = getUser(); if (!user) return;
+  const enrol = (user.enrollments || []).find(e => e.courseId === COURSE_ID);
+  const completed = _completedModules.length > 0 ? _completedModules : (enrol ? (enrol.completedModules || []) : []); const hasCert = user && (user.certificates || []).some(c => c.id === COURSE_ID); const quizPassed = hasCert || (enrol ? !!enrol.quizPassed : false); const pct = quizPassed ? 100 : (_completedModules.length > 0 ? Math.round(_completedModules.filter(n => CONTENT_MODULES.includes(n)).length / CONTENT_MODULES.length * 80) : (enrol ? (enrol.progress || 0) : 0));
+  const pbar = document.getElementById('courseProgressBar'); const ptext = document.getElementById('courseProgressText');
+  if (pbar) pbar.style.width = pct + '%';
+  if (ptext) ptext.textContent = pct + '% complete' + (quizPassed ? ', Certificate Earned! 🎓' : ', ' + completed.filter(n => CONTENT_MODULES.includes(n)).length + ' of ' + CONTENT_MODULES.length + ' modules + quiz');
+  for (let i = 1; i <= TOTAL_MODULES; i++) { const btn = document.getElementById('complete-btn-' + i); if (btn && completed.includes(i)) { btn.textContent = '✅ Module Complete!'; btn.style.background = 'var(--green)'; btn.disabled = true; } }
+  const quizBtn = document.getElementById(QUIZ_BTN_ID);
+  if (quizBtn && quizPassed) { quizBtn.textContent = '🎓 View Your Certificate'; quizBtn.style.background = 'var(--green)'; quizBtn.style.color = '#fff'; quizBtn.onclick = issueCertificate; }
+}
+function issueCertificate() {
+  const user = getUser(); if (!user) return;
+  const enrol = (user.enrollments||[]).find(e => e.courseId === COURSE_ID);
+  if (!enrol || !enrol.quizPassed) { window.location.href = QUIZ_URL; return; }
+  if (!user.certificates) user.certificates = [];
+  let cert = user.certificates.find(c => c.id === COURSE_ID);
+  if (!cert) { cert = { id: COURSE_ID, title: 'English Language & Communication', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() }; user.certificates.push(cert); saveUser(user); fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{}); }
+  const m = document.getElementById('certModal'); if (m) { m.classList.add('open'); document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || ''); document.getElementById('certDate').textContent = cert.date; }
+}
+let _toastTimer = null;
+function _showToast(title, msg, icon) { const t=document.getElementById('eawToast');const bar=t.querySelector('.et-bar');document.getElementById('eawToastTitle').textContent=title;document.getElementById('eawToastMsg').textContent=msg;document.getElementById('eawToastIcon').textContent=icon||'📋';bar.style.animation='none';bar.offsetHeight;bar.style.animation='';t.classList.add('show');clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),6000); }
+// ── DB-BACKED PROGRESS ─────────────────────────────────────────
+let _completedModules = [];
+let _certified = false;
+
+async function loadProgressFromDB() {
+  _certified = false;
+  const _serverNums = new Set();
+  try {
+    const res = await fetch('api/progress.php?course=' + COURSE_ID, { credentials: 'include' });
+    const data = await res.json();
+    if (data.completed) { _completedModules = data.completed.map(function(id){ var n=parseInt(String(id).replace('module-',''),10); return isNaN(n)?null:n; }).filter(function(n){return n!==null;}); _completedModules.forEach(function(n){_serverNums.add(n);}); }
+    if (data.certified) _certified = true;
+  } catch(e) {}
+  // Merge localStorage as fallback
+  const u = getUser();
+  const enrol = u ? (u.enrollments || []).find(x => x.courseId === COURSE_ID) : null;
+  if (enrol && enrol.completedModules) {
+    enrol.completedModules.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
+  }
+  const _u2 = getUser();
+  const _progKey2 = 'eaw_prog_' + (_u2 ? (_u2.email||'') : '') + '_' + COURSE_ID;
+  const _savedProg = JSON.parse(localStorage.getItem(_progKey2) || '[]');
+  _savedProg.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
+  // Push enrollment + any local-only completions up to server (one-way sync, idempotent)
+  fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+  _completedModules.forEach(function(n){if(!isNaN(n)&&!_serverNums.has(n)){fetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}});
+  // Sync merged progress + cert status back to localStorage
+  const _syncUser = getUser();
+  if (_syncUser) {
+    if (!_syncUser.enrollments) _syncUser.enrollments = [];
+    let _syncEnrol = _syncUser.enrollments.find(e => e.courseId === COURSE_ID);
+    if (!_syncEnrol) { _syncEnrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; _syncUser.enrollments.push(_syncEnrol); }
+    if (_completedModules.length > 0) {
+      _syncEnrol.completedModules = [..._completedModules];
+      _syncEnrol.progress = Math.round(_completedModules.filter(n => CONTENT_MODULES.includes(n)).length / CONTENT_MODULES.length * 80);
+    }
+    if (_certified || _syncEnrol.quizPassed) { _syncEnrol.quizPassed = true; _syncEnrol.progress = 100; }
+    saveUser(_syncUser);
+    localStorage.setItem('eaw_prog_' + (_syncUser.email||'') + '_' + COURSE_ID, JSON.stringify(_completedModules));
+  }
+}
+
+function _allDone()      { return CONTENT_MODULES.every(n => _completedModules.includes(n)); }
+function _doneCount()    { return _completedModules.filter(n => CONTENT_MODULES.includes(n)).length; }
+function _isCompleted(n) { return _completedModules.includes(n); }
+function _buildQuizGate() {
+  const btn = document.getElementById(QUIZ_BTN_ID);
+  if (!btn) return;
+  const _u = getUser();
+  const _enrol = _u ? (_u.enrollments||[]).find(e => e.courseId === COURSE_ID) : null;
+  const quizPassed = (_u && (_u.certificates||[]).some(c => c.id === COURSE_ID)) || (_enrol && !!_enrol.quizPassed) || !!_certified;
+  const done = _allDone();
+  const count = _doneCount();
+  const total = CONTENT_MODULES.length;
+  const pct = quizPassed ? 100 : (total ? Math.round(count/total*100) : 0);
+
+  const items = CONTENT_MODULES.map(n => {
+    const ok = _isCompleted(n);
+    return `<div class="eqg-item ${ok?'done':'pending'}" id="eqg-item-${n}">
+      <div class="eqg-dot">${ok ? '✓' : ''}</div>
+      <div class="eqg-name">${MODULE_NAMES[n] || 'Module '+n}</div>
+      <div class="eqg-status">${ok ? 'Complete ✓' : 'Not yet done'}</div>
+    </div>`;
+  }).join('');
+
+  const html = `<div class="eaw-quiz-gate" id="eawQuizGate">
+    <div class="eqg-header">
+      <div class="eqg-icon" id="eqgIcon">${quizPassed?'🏆':(done?'🎓':'🔒')}</div>
+      <div class="eqg-text">
+        <div class="eqg-title" id="eqgTitle">${quizPassed ? 'Course Completed!' : (done ? 'Ready for Your Assessment' : 'Assessment Locked')}</div>
+        <div class="eqg-sub"   id="eqgSub">${quizPassed ? 'Congratulations! You have earned your EAW Certificate.' : (done ? 'All modules verified. Your assessment is now unlocked.' : 'Finish every module below to unlock your final assessment.')}</div>
+        <div class="eqg-bar-track"><div class="eqg-bar-fill" id="eqgBarFill" style="width:${pct}%"></div></div>
+      </div>
+    </div>
+    <div class="eqg-body">
+      <div class="eqg-checklist" id="eqgChecklist">${items}</div>
+      <button class="eqg-btn ${(done||quizPassed)?'unlocked':'locked'}" id="${QUIZ_BTN_ID}" onclick="${quizPassed?'issueCertificate()':'_guardQuiz()'}">
+        ${quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock')}
+      </button>
+      <div class="eqg-hint ${(done||quizPassed)?'unlocked':'locked'}" id="eqgHint">
+        ${quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`)}
+      </div>
+    </div>
+  </div>`;
+
+  btn.outerHTML = html;
+  const gate = document.getElementById('eawQuizGate');
+  const p = gate && gate.nextElementSibling;
+  if (p && p.tagName === 'P' && p.textContent.includes('70%')) p.style.display = 'none';
+}
+function _refreshQuizGate() {
+  if (!document.getElementById('eawQuizGate')) { _buildQuizGate(); return; }
+  const _u = getUser();
+  const _enrol = _u ? (_u.enrollments||[]).find(e => e.courseId === COURSE_ID) : null;
+  const quizPassed = (_u && (_u.certificates||[]).some(c => c.id === COURSE_ID)) || (_enrol && !!_enrol.quizPassed) || !!_certified;
+  const done = _allDone();
+  const count = _doneCount();
+  const total = CONTENT_MODULES.length;
+  const pct = quizPassed ? 100 : (total ? Math.round(count/total*100) : 0);
+
+  CONTENT_MODULES.forEach(n => {
+    const item = document.getElementById('eqg-item-'+n);
+    if (!item) return;
+    const ok = _isCompleted(n);
+    item.className = 'eqg-item '+(ok?'done':'pending');
+    item.querySelector('.eqg-dot').textContent = ok ? '✓' : '';
+    item.querySelector('.eqg-status').textContent = ok ? 'Complete ✓' : 'Not yet done';
+  });
+
+  const fill  = document.getElementById('eqgBarFill');
+  const icon  = document.getElementById('eqgIcon');
+  const title = document.getElementById('eqgTitle');
+  const sub   = document.getElementById('eqgSub');
+  const btn   = document.getElementById(QUIZ_BTN_ID);
+  const hint  = document.getElementById('eqgHint');
+
+  if (fill)  fill.style.width = pct+'%';
+  if (icon)  icon.textContent = quizPassed ? '🏆' : (done ? '🎓' : '🔒');
+  if (title) title.textContent = quizPassed ? 'Course Completed!' : (done ? 'Ready for Your Assessment' : 'Assessment Locked');
+  if (sub)   sub.textContent   = quizPassed ? 'Congratulations! You have earned your EAW Certificate.' : (done ? 'All modules verified. Your assessment is now unlocked.' : 'Finish every module below to unlock your final assessment.');
+  if (btn) {
+    btn.className = 'eqg-btn '+((done||quizPassed)?'unlocked':'locked');
+    btn.onclick = quizPassed ? issueCertificate : _guardQuiz;
+    btn.innerHTML = quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock');
+  }
+  if (hint) {
+    hint.className = 'eqg-hint '+((done||quizPassed)?'unlocked':'locked');
+    hint.textContent = quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`);
+  }
+}
+function _guardQuiz() {
+  if(!_allDone()){const remaining=CONTENT_MODULES.filter(n=>!_isCompleted(n)).map(n=>MODULE_NAMES[n]||'Module '+n);_showToast('🔒 Assessment Not Yet Available','Please complete: '+remaining.join(', ')+' before taking the assessment.','📚');return;}
+  goToQuiz();
+}
+document.addEventListener('DOMContentLoaded', async () => {
+  updateModuleUI(); _buildQuizGate();
+  document.querySelectorAll('.accordion-header').forEach(h => {
+    h.setAttribute('onclick', '');
+    h.addEventListener('click', function() { if (typeof toggleAcc === 'function') toggleAcc(this); });
+  });
+  const user=getUser();
+  if (!user) { window.location.href = 'signup.html'; return; }
+  // Enrollment gate, user must have explicitly enrolled
+  // Auto-enroll if not already enrolled
+  if (!(user.enrollments || []).find(e => e.courseId === COURSE_ID)) {
+    if (!user.enrollments) user.enrollments = [];
+    user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
+    saveUser(user);
+    fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+  }
+  const enrol=user?(user.enrollments||[]).find(e=>e.courseId===COURSE_ID):null;
+  if(enrol)document.getElementById('progressBar').style.display='block';
+  updateEnrolBtn();
+  if(user&&user.firstName){const navCta=document.querySelector('.nav-cta');if(navCta){const dashLink=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard.html':'student-dashboard.html';navCta.innerHTML=`<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;}}
+});
+</script>
+<script src="eaw-common.js"></script>
+</body>
+</html>

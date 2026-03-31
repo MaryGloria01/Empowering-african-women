@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Final Assessment, Business & Entrepreneurship | EAW</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .quiz-wrap{max-width:780px;margin:0 auto;padding:40px 24px 60px;}
+    .quiz-hero{background:linear-gradient(135deg,#78350f,#b45309);color:#fff;padding:48px 24px 36px;text-align:center;}
+    .quiz-hero h1{color:#fff;font-size:clamp(22px,3vw,32px);margin-bottom:10px;}
+    .quiz-hero p{color:rgba(255,255,255,.88);font-size:16px;max-width:560px;margin:0 auto 20px;}
+    .quiz-meta{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.8);}
+    .quiz-meta span{background:rgba(255,255,255,.15);padding:6px 14px;border-radius:99px;}
+    .quiz-progress-bar{background:var(--gray-200);height:8px;border-radius:99px;margin-bottom:32px;overflow:hidden;}
+    .quiz-progress-fill{height:100%;background:var(--blue);border-radius:99px;transition:width .4s ease;}
+    .quiz-progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--text-mid);margin-bottom:6px;}
+    .question-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:20px;padding:32px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:none;}
+    .question-card.active{display:block;}
+    .question-num{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--blue);margin-bottom:8px;}
+    .question-text{font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:var(--gray-900);margin-bottom:24px;line-height:1.4;}
+    .options{display:flex;flex-direction:column;gap:12px;}
+    .option-btn{display:flex;align-items:center;gap:14px;padding:16px 20px;border:2px solid var(--gray-200);border-radius:14px;background:#fff;cursor:pointer;font-size:15px;font-family:'Source Sans 3',sans-serif;color:var(--text);text-align:left;transition:all .2s;}
+    .option-btn:hover:not(:disabled){border-color:var(--blue);background:var(--blue-pale);}
+    .option-btn .opt-letter{width:32px;height:32px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;color:var(--gray-700);}
+    .option-btn.correct{border-color:var(--green);background:var(--green-pale);}
+    .option-btn.correct .opt-letter{background:var(--green);color:#fff;}
+    .option-btn.wrong{border-color:var(--red);background:#fdf2f2;}
+    .option-btn.wrong .opt-letter{background:var(--red);color:#fff;}
+    .option-btn:disabled{cursor:default;}
+    .feedback{display:none;margin-top:16px;padding:14px 18px;border-radius:12px;font-size:14px;line-height:1.6;}
+    .feedback.show{display:block;}
+    .feedback.correct-fb{background:var(--green-pale);border:1px solid var(--green);color:#0a6644;}
+    .feedback.wrong-fb{background:#fdf2f2;border:1px solid var(--red);color:#7a1c1c;}
+    .quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;}
+    .quiz-nav-dots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+    .q-dot{width:10px;height:10px;border-radius:50%;background:var(--gray-300);transition:background .2s;cursor:pointer;}
+    .q-dot.answered-correct{background:var(--green);}.q-dot.answered-wrong{background:var(--red);}.q-dot.current{background:var(--blue);transform:scale(1.3);}
+    #resultsScreen{display:none;}
+    .result-circle{width:160px;height:160px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 24px;border:8px solid;}
+    .result-circle.pass{border-color:var(--green);background:var(--green-pale);}.result-circle.fail{border-color:var(--red);background:#fdf2f2;}
+    .result-score{font-family:'Source Serif 4',serif;font-size:48px;font-weight:700;line-height:1;}
+    .result-circle.pass .result-score{color:var(--green);}.result-circle.fail .result-score{color:var(--red);}
+    .result-label{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+    .result-circle.pass .result-label{color:var(--green);}.result-circle.fail .result-label{color:var(--red);}
+    .review-item{background:#fff;border:1.5px solid var(--gray-200);border-radius:14px;padding:20px 24px;margin-bottom:14px;}
+    .review-item.r-correct{border-color:var(--green);}.review-item.r-wrong{border-color:var(--red);}
+    .review-q{font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);}
+    .review-your{font-size:13px;color:var(--red);}.review-correct-ans{font-size:13px;color:var(--green);font-weight:700;}
+    .review-explain{font-size:13px;color:var(--text-mid);margin-top:6px;font-style:italic;}
+  </style>
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo"><img src="eaw_icon.png" alt="EAW" class="logo-img"><span class="logo-text">Empowering<br>African Women</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li><li><a href="courses.html" class="active">Courses</a></li><li><a href="about.html">About</a></li><li><a href="stories.html">Stories</a></li><li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta"><a href="login.html" class="btn btn-ghost btn-sm">Sign In</a><a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a></div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="quiz-hero">
+  <div style="font-size:56px;margin-bottom:12px;">🚀</div>
+  <h1>Business & Entrepreneurship, Final Assessment</h1>
+  <p>Test your knowledge of entrepreneurial thinking, business planning, marketing, finance, and growth strategy.</p>
+  <div class="quiz-meta"><span>📋 10 Questions</span><span>🎯 Pass Mark: 7/10</span><span>🔁 Unlimited Retakes</span><span>🎓 Certificate on Pass</span></div>
+</div>
+
+<div class="quiz-wrap">
+  <div id="startScreen" style="text-align:center;padding:40px 0;">
+    <div style="font-size:72px;margin-bottom:20px;">🚀</div>
+    <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
+    <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 6 modules: Entrepreneurship Foundations, Business Planning, Marketing, Finance & Funding, Operations, and Growth & Scale.</p>
+    <div style="background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;">
+      <div style="font-weight:700;margin-bottom:10px;color:var(--blue);">Before you start:</div>
+      <div style="font-size:14px;color:var(--text-mid);line-height:2;">✅ Answer all 10 questions<br>✅ One correct answer per question<br>✅ Explanations shown after each answer<br>✅ Score 7+ to unlock your certificate<br>✅ Unlimited retakes</div>
+    </div>
+    <button onclick="startQuiz()" class="btn btn-blue btn-lg">Start Assessment →</button>
+  </div>
+
+  <div id="quizScreen" style="display:none;">
+    <div class="quiz-progress-label"><span id="progressLabel">Question 1 of 10</span><span id="scoreLabel">Score: 0</span></div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="questionsContainer"></div>
+    <div class="quiz-nav"><div class="quiz-nav-dots" id="navDots"></div><button id="nextBtn" onclick="nextQuestion()" class="btn btn-blue" style="display:none;">Next Question →</button></div>
+  </div>
+
+  <div id="resultsScreen">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="result-circle" id="resultCircle"><div class="result-score" id="resultScore">0/10</div><div class="result-label" id="resultLabel">Score</div></div>
+      <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:8px;" id="resultHeading">Assessment Complete</h2>
+      <p style="color:var(--text-mid);font-size:16px;max-width:500px;margin:0 auto;" id="resultMessage"></p>
+      <div id="certBtnWrap" style="display:none;margin-top:28px;">
+        <div style="background:linear-gradient(135deg,#0F172A,#1E3A8A);border-radius:20px;padding:28px 32px;max-width:480px;margin:0 auto 20px;text-align:center;border:2px solid #D97706;box-shadow:0 8px 32px rgba(15,23,42,.35);">
+          <div style="font-size:40px;margin-bottom:8px;">🎓</div>
+          <div style="font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:#ffffff;margin-bottom:6px;">Certificate Unlocked!</div>
+          <div style="font-size:14px;color:#ffffff;margin-bottom:16px;">You've earned your EAW Business & Entrepreneurship Certificate!</div>
+          <button onclick="issueCertificate()" class="btn btn-blue btn-lg" style="background:#0d3f9a;">🎓 Claim Your Certificate →</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+        <button onclick="retakeQuiz()" class="btn btn-outline">↩ Retake Quiz</button>
+        <a href="course-entrepreneurship.html" class="btn btn-ghost">← Back to Course</a>
+      </div>
+    </div>
+    <div style="border-top:2px solid var(--gray-200);padding-top:32px;">
+      <h3 style="font-family:'Source Serif 4',serif;font-size:22px;font-weight:700;margin-bottom:20px;">📋 Review Your Answers</h3>
+      <div id="reviewContainer"></div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-modal-overlay" id="certModal">
+  <div class="cert-modal">
+    <div class="cert-frame">
+      <div class="cert-title">Empowering African Women · EAW</div>
+      <div class="cert-of">Certificate of Completion</div>
+      <div class="cert-awarded">This is to certify that</div>
+      <div class="cert-student-name" id="certName">Student Name</div>
+      <div class="cert-awarded">has successfully completed</div>
+      <div class="cert-course-name">Business & Entrepreneurship</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate"></span></div>
+      <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px;" id="certScoreDisplay"></div>
+      <div class="cert-sigs">
+        <div class="cert-sig-line">EAW Administration<br>EAW Founder &amp; Director</div>
+        <div class="cert-sig-line">Course Instructor</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
+      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer style="background:var(--navy);color:#fff;padding:28px 24px;border-top:1px solid rgba(255,255,255,.07);">
+  <div style="max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:13px;color:rgba(255,255,255,.4);">© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <a href="course-entrepreneurship.html" style="font-size:13px;color:rgba(255,255,255,.5);">← Back to Course</a>
+  </div>
+</footer>
+
+<script>
+const QUIZ = {
+  courseId: 'entrepreneurship',
+  courseTitle: 'Business & Entrepreneurship',
+  passMark: 0.7,
+  questions: [
+    { module:1, text:"What is the core difference between an entrepreneur and an employee?", options:["Entrepreneurs earn more money than employees","Entrepreneurs identify opportunities, take calculated risks, and create value by building something new","Entrepreneurs work fewer hours than employees","Entrepreneurs never face failure or financial loss"], correct:1, explanation:"Entrepreneurship is fundamentally about identifying unmet needs or opportunities and taking calculated risks to create value, building a business, product, or service that didn't exist before. Unlike employees who exchange time for a salary, entrepreneurs bear risk in exchange for the potential reward of ownership." },
+    { module:1, text:"What is a 'value proposition'?", options:["The price you charge for your product or service","A clear statement of the specific benefit your product/service delivers and why customers should choose you over competitors","A summary of your company's financial projections","The legal structure of your business"], correct:1, explanation:"Your value proposition is the single most important message you communicate: what problem you solve, for whom, and why you're the best choice. A strong value proposition is specific ('We cut your accounting time by 50%') not generic ('We provide great service')." },
+    { module:2, text:"What is the PRIMARY purpose of a business plan?", options:["To impress investors with a long, detailed document","To provide a structured roadmap, clarifying your strategy, target market, financial projections, and how you'll achieve your goals","To register your business with the government","To list all the products you plan to sell"], correct:1, explanation:"A business plan forces you to think through every aspect of your business systematically: the problem you solve, who your customers are, how you'll reach them, what it will cost, and how you'll make money. It's a living document, a plan, not a contract, that helps you stay focused and attract investment." },
+    { module:2, text:"What is 'market segmentation'?", options:["Dividing your product into smaller pieces for sale","The process of dividing a broad market into distinct subgroups of consumers with similar needs, so you can target them more effectively","Splitting your company into multiple departments","Setting different prices for different customers"], correct:1, explanation:"No business can serve everyone equally well. Market segmentation means identifying specific groups of customers who share common characteristics (age, income, location, needs) so you can tailor your product, pricing, and marketing to be more relevant and effective for that segment." },
+    { module:3, text:"What is a 'Unique Selling Proposition' (USP)?", options:["The highest price you can charge for your product","The specific feature or benefit that makes your business distinctly better than competitors in the eyes of your target customer","Your business registration number","A government certificate for small businesses"], correct:1, explanation:"Your USP is what makes you different, and better, than alternatives. It answers the customer's question: 'Why should I buy from you instead of your competitor?' A strong USP is specific, meaningful to customers, and hard to copy. 'We deliver in 30 minutes or it's free' is a USP; 'We have great quality' is not." },
+    { module:3, text:"In marketing, what does 'target audience' mean?", options:["The total number of people in the world who could buy your product","The specific group of people most likely to want your product/service, defined by their demographics, interests, and behaviours","Your social media followers","The journalists who write about your industry"], correct:1, explanation:"Trying to market to everyone wastes money and produces weak results. Defining your target audience, their age, gender, income, location, interests, problems, allows you to create messages that resonate deeply and choose channels where they actually spend time." },
+    { module:4, text:"What is 'cash flow' and why is it critical for a business?", options:["Cash flow is the total profit a business makes in a year","Cash flow is the movement of money in and out of your business; it's critical because running out of cash, even if you're profitable, can cause a business to fail","Cash flow is how much money you have in your bank account at startup","Cash flow only matters for large corporations, not small businesses"], correct:1, explanation:"A business can be profitable on paper but still fail if it runs out of cash. Cash flow tracks when money actually arrives (from customers) vs when it goes out (salaries, rent, suppliers). Many businesses fail in their growth phase because sales outpace cash collection. Understanding and managing cash flow is a core entrepreneurial survival skill." },
+    { module:4, text:"What is 'bootstrapping' a business?", options:["Borrowing as much money as possible from banks at the start","Building and growing a business using your own savings, personal resources, and reinvested revenue, without external investment","Getting a government grant to start your business","Hiring as many employees as possible at launch"], correct:1, explanation:"Bootstrapping means funding your business yourself, starting lean, keeping costs low, earning revenue early, and reinvesting profits to grow. It preserves ownership (no equity given away) and forces financial discipline. Many successful businesses, including several Nigerian tech companies, were bootstrapped from small savings." },
+    { module:5, text:"What is an 'MVP' (Minimum Viable Product)?", options:["The most expensive version of your product","The version of a product with just enough features to satisfy early customers and gather validated learning, without over-building before knowing if the market wants it","A government certification for viable businesses","The final, fully-featured version of your product ready for mass market"], correct:1, explanation:"The MVP concept, popularised by the Lean Startup methodology, says: don't spend years building a perfect product, build the simplest version that delivers core value, launch it, get real customer feedback, and improve from there. This reduces the risk of building something nobody wants." },
+    { module:6, text:"What is the key principle behind 'scaling' a business?", options:["Scaling means hiring as many staff as possible","Scaling means growing revenue significantly while keeping costs from growing at the same rate, so profit margins improve as the business gets bigger","Scaling means expanding to as many countries as possible immediately","Scaling means increasing the price of your product every year"], correct:1, explanation:"Scalability is about building systems and processes that allow growth without proportional cost increases. A business that requires doubling staff for every doubling of revenue is hard to scale. A business with strong systems, digital delivery, or network effects can grow revenue far faster than costs, this is what investors look for." }
+  ]
+};
+
+let currentQ=0,score=0,answers=[];
+function getUser(){return JSON.parse(localStorage.getItem('eaw_user')||'null');}
+function saveUser(u){localStorage.setItem('eaw_user',JSON.stringify(u));}
+function startQuiz(){document.getElementById('startScreen').style.display='none';document.getElementById('quizScreen').style.display='block';currentQ=0;score=0;answers=new Array(QUIZ.questions.length).fill(null);buildNavDots();renderQuestion(0);}
+function buildNavDots(){const c=document.getElementById('navDots');c.innerHTML='';QUIZ.questions.forEach((_,i)=>{const d=document.createElement('div');d.className='q-dot'+(i===0?' current':'');d.onclick=()=>goToQuestion(i);c.appendChild(d);});}
+function renderQuestion(idx){const q=QUIZ.questions[idx];const L=['A','B','C','D'];const html=`<div class="question-card active" id="qcard-${idx}"><div class="question-num">Question ${idx+1} of ${QUIZ.questions.length}</div><div class="question-text">${q.text}</div><div class="options">${q.options.map((o,i)=>`<button class="option-btn" onclick="selectOption(${idx},${i})" id="opt-${idx}-${i}"><div class="opt-letter">${L[i]}</div>${o}</button>`).join('')}</div><div class="feedback" id="fb-${idx}"></div></div>`;document.getElementById('questionsContainer').innerHTML=html;document.getElementById('progressLabel').textContent=`Question ${idx+1} of ${QUIZ.questions.length}`;document.getElementById('progressFill').style.width=((idx/QUIZ.questions.length)*100)+'%';document.getElementById('nextBtn').style.display='none';updateDots(idx);}
+function selectOption(qIdx,optIdx){if(answers[qIdx]!==null)return;answers[qIdx]=optIdx;const q=QUIZ.questions[qIdx];const correct=optIdx===q.correct;if(correct)score++;document.getElementById('scoreLabel').textContent='Score: '+score;const L=['A','B','C','D'];q.options.forEach((_,i)=>{const btn=document.getElementById(`opt-${qIdx}-${i}`);btn.disabled=true;if(i===q.correct)btn.classList.add('correct');else if(i===optIdx&&!correct)btn.classList.add('wrong');});const fb=document.getElementById(`fb-${qIdx}`);fb.className='feedback show '+(correct?'correct-fb':'wrong-fb');fb.innerHTML=(correct?'✅ <strong>Correct!</strong> ':'❌ <strong>Incorrect.</strong> ')+q.explanation;const dot=document.getElementById('navDots').children[qIdx];if(dot)dot.className='q-dot '+(correct?'answered-correct':'answered-wrong');const nb=document.getElementById('nextBtn');nb.style.display='block';nb.textContent=qIdx<QUIZ.questions.length-1?'Next Question →':'See Results →';}
+function nextQuestion(){if(currentQ<QUIZ.questions.length-1){currentQ++;renderQuestion(currentQ);}else{showResults();}}
+function goToQuestion(idx){if(answers[idx]!==null||idx===currentQ){currentQ=idx;renderQuestion(idx);}}
+function updateDots(idx){const dots=document.getElementById('navDots').children;for(let i=0;i<dots.length;i++){dots[i].classList.remove('current');if(i===idx)dots[i].classList.add('current');}}
+function showResults(){document.getElementById('quizScreen').style.display='none';document.getElementById('resultsScreen').style.display='block';const total=QUIZ.questions.length;const passed=score/total>=QUIZ.passMark;const circle=document.getElementById('resultCircle');circle.className='result-circle '+(passed?'pass':'fail');document.getElementById('resultScore').textContent=score+'/'+total;document.getElementById('resultLabel').textContent=passed?'PASSED':'TRY AGAIN';document.getElementById('resultHeading').textContent=passed?'🎉 Congratulations!':'Keep Studying!';document.getElementById('resultMessage').textContent=passed?`You scored ${score} out of ${total}, you've passed the Entrepreneurship assessment!`:`You scored ${score} out of ${total}. You need ${Math.ceil(total*QUIZ.passMark)} to pass. Review the course and try again!`;if(passed){document.getElementById('certBtnWrap').style.display='block';saveQuizResult(true);}else{saveQuizResult(false);}buildReview();}
+function saveQuizResult(passed){try{const user=getUser();if(!user)return;if(!user.quizAttempts)user.quizAttempts={};if(!user.quizAttempts[QUIZ.courseId])user.quizAttempts[QUIZ.courseId]=[];user.quizAttempts[QUIZ.courseId].push({score,total:QUIZ.questions.length,passed,date:new Date().toISOString()});if(passed){if(!user.enrollments)user.enrollments=[];let enrol=user.enrollments.find(e=>e.courseId===QUIZ.courseId);if(!enrol){enrol={courseId:QUIZ.courseId,progress:0,completedModules:[]};user.enrollments.push(enrol);}enrol.quizPassed=true;enrol.progress=100;}saveUser(user);}catch(e){}}
+function buildReview(){const c=document.getElementById('reviewContainer');c.innerHTML='';const L=['A','B','C','D'];QUIZ.questions.forEach((q,i)=>{const ua=answers[i];const correct=ua===q.correct;c.innerHTML+=`<div class="review-item ${correct?'r-correct':'r-wrong'}"><div class="review-q">${i+1}. ${q.text}</div>${!correct&&ua!==null?`<div class="review-your">Your answer: ${L[ua]}. ${q.options[ua]}</div>`:''}<div class="review-correct-ans">✓ Correct: ${L[q.correct]}. ${q.options[q.correct]}</div><div class="review-explain">${q.explanation}</div></div>`;});}
+function retakeQuiz(){document.getElementById('resultsScreen').style.display='none';document.getElementById('startScreen').style.display='block';}
+function issueCertificate(){try{const user=getUser();if(!user)return;if(!user.certificates)user.certificates=[];let cert=user.certificates.find(c=>c.id===QUIZ.courseId);if(!cert){cert={id:QUIZ.courseId,title:QUIZ.courseTitle,score:score+'/'+QUIZ.questions.length,date:new Date().toLocaleDateString('en-NG',{year:'numeric',month:'long',day:'numeric'}),issuedAt:new Date().toISOString()};user.certificates.push(cert);saveUser(user);
+      fetch('api/certificate.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:cert.id,title:cert.title,score:cert.score||''})}).catch(function(){});}const m=document.getElementById('certModal');if(m){m.classList.add('open');document.getElementById('certName').textContent=user.firstName+' '+(user.lastName||'');document.getElementById('certDate').textContent=cert.date;document.getElementById('certScoreDisplay').textContent='Score: '+cert.score;}}catch(e){}}
+document.getElementById('hamburger')?.addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
+(function(){try{const user=getUser();if(user&&user.firstName){document.addEventListener('DOMContentLoaded',function(){const navCta=document.querySelector('.nav-cta');if(navCta){const dl=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard.html':'student-dashboard.html';navCta.innerHTML=`<a href="${dl}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;}});}}catch(e){}})();
+</script>
+</body>
+</html>

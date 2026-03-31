@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Final Assessment, Female Mechanic Incubator | EAW</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    /* ── Quiz-specific styles ── */
+    .quiz-wrap { max-width: 780px; margin: 0 auto; padding: 40px 24px 60px; }
+    .quiz-hero { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: #fff; padding: 48px 24px 36px; text-align: center; }
+    .quiz-hero h1 { color: #fff; font-size: clamp(22px,3vw,32px); margin-bottom: 10px; }
+    .quiz-hero p { color: rgba(255,255,255,.88); font-size: 16px; max-width: 560px; margin: 0 auto 20px; }
+    .quiz-meta { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,.8); }
+    .quiz-meta span { background: rgba(255,255,255,.15); padding: 6px 14px; border-radius: 99px; }
+
+    /* Progress */
+    .quiz-progress-bar { background: var(--gray-200); height: 8px; border-radius: 99px; margin-bottom: 32px; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: var(--blue); border-radius: 99px; transition: width .4s ease; }
+    .quiz-progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-mid); margin-bottom: 6px; }
+
+    /* Question card */
+    .question-card { background: #fff; border: 1.5px solid var(--gray-200); border-radius: 20px; padding: 32px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.06); display: none; }
+    .question-card.active { display: block; }
+    .question-num { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--blue); margin-bottom: 8px; }
+    .question-text { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 24px; line-height: 1.4; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option-btn { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border: 2px solid var(--gray-200); border-radius: 14px; background: #fff; cursor: pointer; font-size: 15px; font-family: 'Source Sans 3', sans-serif; color: var(--text); text-align: left; transition: all .2s; }
+    .option-btn:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-pale); }
+    .option-btn .opt-letter { width: 32px; height: 32px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; color: var(--gray-700); }
+    .option-btn.selected { border-color: var(--blue); background: var(--blue-light); }
+    .option-btn.selected .opt-letter { background: var(--blue); color: #fff; }
+    .option-btn.correct { border-color: var(--green); background: var(--green-pale); }
+    .option-btn.correct .opt-letter { background: var(--green); color: #fff; }
+    .option-btn.wrong { border-color: var(--red); background: #fdf2f2; }
+    .option-btn.wrong .opt-letter { background: var(--red); color: #fff; }
+    .option-btn:disabled { cursor: default; }
+
+    /* Feedback */
+    .feedback { display: none; margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
+    .feedback.show { display: block; }
+    .feedback.correct-fb { background: var(--green-pale); border: 1px solid var(--green); color: #0a6644; }
+    .feedback.wrong-fb { background: #fdf2f2; border: 1px solid var(--red); color: #7a1c1c; }
+
+    /* Navigation */
+    .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+    .quiz-nav-dots { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .q-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-300); transition: background .2s; cursor: pointer; }
+    .q-dot.answered-correct { background: var(--green); }
+    .q-dot.answered-wrong { background: var(--red); }
+    .q-dot.current { background: var(--blue); transform: scale(1.3); }
+
+    /* Results screen */
+    #resultsScreen { display: none; }
+    .result-circle { width: 160px; height: 160px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 24px; border: 8px solid; }
+    .result-circle.pass { border-color: var(--green); background: var(--green-pale); }
+    .result-circle.fail { border-color: var(--red); background: #fdf2f2; }
+    .result-score { font-family: 'Source Serif 4', serif; font-size: 48px; font-weight: 700; line-height: 1; }
+    .result-circle.pass .result-score { color: var(--green); }
+    .result-circle.fail .result-score { color: var(--red); }
+    .result-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .result-circle.pass .result-label { color: var(--green); }
+    .result-circle.fail .result-label { color: var(--red); }
+
+    /* Review */
+    .review-item { background: #fff; border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 20px 24px; margin-bottom: 14px; }
+    .review-item.r-correct { border-color: var(--green); }
+    .review-item.r-wrong { border-color: var(--red); }
+    .review-q { font-weight: 700; font-size: 15px; margin-bottom: 8px; color: var(--gray-900); }
+    .review-your { font-size: 13px; color: var(--red); }
+    .review-correct-ans { font-size: 13px; color: var(--green); font-weight: 700; }
+    .review-explain { font-size: 13px; color: var(--text-mid); margin-top: 6px; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <img src="eaw_icon.png" alt="EAW" class="logo-img">
+      <span class="logo-text">Empowering<br>African Women</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="course-mechanic.html">← Back to Course</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- QUIZ HERO -->
+<div class="quiz-hero">
+  <div class="breadcrumb"><a href="course-mechanic.html">Female Mechanic Incubator</a> › Final Assessment</div>
+  <h1>📝 Final Assessment</h1>
+  <p>Test your knowledge from all 4 modules. Score 7/10 (70%) or above to earn your official EAW Certificate.</p>
+  <div class="quiz-meta">
+    <span>🔟 10 Questions</span>
+    <span>⏱ ~10 minutes</span>
+    <span>🎯 Pass mark: 70%</span>
+    <span>♻️ Unlimited retakes</span>
+  </div>
+</div>
+
+<!-- QUIZ BODY -->
+<div class="quiz-wrap">
+
+  <!-- START SCREEN -->
+  <div id="startScreen" style="text-align:center;padding:40px 0;">
+    <div style="font-size:72px;margin-bottom:20px;">🔧</div>
+    <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
+    <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 4 modules: Kitchen Essentials, AutoCare, Fire Safety, and Skills in Practice. Read each question carefully before answering.</p>
+    <div style="background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;">
+      <div style="font-weight:700;margin-bottom:10px;color:var(--blue);">Before you start:</div>
+      <div style="font-size:14px;color:var(--text-mid);line-height:2;">
+        ✅ Answer all 10 questions<br>
+        ✅ Each question has one correct answer<br>
+        ✅ You'll see explanations after each answer<br>
+        ✅ Score 7+ to unlock your certificate<br>
+        ✅ You can retake as many times as needed
+      </div>
+    </div>
+    <button onclick="startQuiz()" class="btn btn-blue btn-lg">Start Assessment →</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" style="display:none;">
+    <div class="quiz-progress-label">
+      <span id="progressLabel">Question 1 of 10</span>
+      <span id="scoreLabel">Score: 0</span>
+    </div>
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div class="quiz-nav">
+      <div class="quiz-nav-dots" id="navDots"></div>
+      <button id="nextBtn" onclick="nextQuestion()" class="btn btn-blue" style="display:none;">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="resultsScreen">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="result-circle" id="resultCircle">
+        <div class="result-score" id="resultScore">0/10</div>
+        <div class="result-label" id="resultLabel">Score</div>
+      </div>
+      <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:8px;" id="resultHeading">Assessment Complete</h2>
+      <p style="color:var(--text-mid);font-size:16px;max-width:500px;margin:0 auto;" id="resultMessage"></p>
+
+      <div id="certBtnWrap" style="display:none;margin-top:28px;">
+        <div style="background:linear-gradient(135deg,#0F172A,#1E3A8A);border-radius:20px;padding:28px 32px;max-width:480px;margin:0 auto 20px;text-align:center;border:2px solid #D97706;box-shadow:0 8px 32px rgba(15,23,42,.35);">
+          <div style="font-size:40px;margin-bottom:8px;">🎓</div>
+          <div style="font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:#ffffff;margin-bottom:6px;">Certificate Unlocked!</div>
+          <div style="font-size:14px;color:#ffffff;margin-bottom:16px;">Congratulations, you've earned your EAW Certificate of Completion!</div>
+          <button onclick="issueCertificate()" class="btn btn-blue btn-lg" style="background:#0d3f9a;">🎓 Claim Your Certificate →</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+        <button onclick="retakeQuiz()" class="btn btn-outline">↩ Retake Quiz</button>
+        <a href="course-mechanic.html" class="btn btn-ghost">← Back to Course</a>
+      </div>
+    </div>
+
+    <!-- Review section -->
+    <div style="border-top:2px solid var(--gray-200);padding-top:32px;">
+      <h3 style="font-family:'Source Serif 4',serif;font-size:22px;font-weight:700;margin-bottom:20px;">📋 Review Your Answers</h3>
+      <div id="reviewContainer"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="cert-modal-overlay" id="certModal">
+  <div class="cert-modal">
+    <div class="cert-frame">
+      <div class="cert-title">Empowering African Women · EAW</div>
+      <div class="cert-of">Certificate of Completion</div>
+      <div class="cert-awarded">This is to certify that</div>
+      <div class="cert-student-name" id="certName">Student Name</div>
+      <div class="cert-awarded">has successfully completed</div>
+      <div class="cert-course-name">Female Mechanic Incubator</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate"></span></div>
+      <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px;" id="certScoreDisplay"></div>
+      <div class="cert-sigs">
+        <div class="cert-sig-line">EAW Administration<br>EAW Founder & Director</div>
+        <div class="cert-sig-line">Course Instructor</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
+      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer style="background:var(--navy);color:#fff;padding:28px 24px;border-top:1px solid rgba(255,255,255,.07);">
+  <div style="max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:13px;color:rgba(255,255,255,.4);">© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <a href="course-mechanic.html" style="font-size:13px;color:rgba(255,255,255,.5);transition:color .2s;" onmouseover="this.style.color='#F59E0B'" onmouseout="this.style.color='rgba(255,255,255,.5)'">← Back to Course</a>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// QUIZ DATA, 10 questions covering all 4 modules
+// ══════════════════════════════════════════════════════════════
+const QUIZ = {
+  courseId: 'mechanic',
+  courseTitle: 'Female Mechanic Incubator',
+  instructor: 'Iria Florence',
+  passMark: 0.7,
+  questions: [
+    // Module 1: Unemployment & Florence's Story
+    {
+      module: 1,
+      text: "What is the primary reason EAW partnered with DT Autocafe Ltd for the Female Mechanic Incubator programme?",
+      options: [
+        "To sell car parts to EAW students",
+        "To provide hands-on auto mechanics training and real workshop experience for women",
+        "To offer free car repairs to EAW staff",
+        "To produce an advertisement for DT Autocafe"
+      ],
+      correct: 1,
+      explanation: "DT Autocafe Ltd, located at Km 22 LEKKI, is EAW's founding partner for this programme, providing practical workshop training, mentorship, and internship opportunities for female mechanics."
+    },
+    // Module 2: AutoCare 101
+    {
+      module: 2,
+      text: "Florence checks her engine oil and sees the dipstick reading is below the MIN mark. What should she do?",
+      options: [
+        "Drive on, the engine can handle it until the next service",
+        "Top up the oil immediately using the grade specified in the owner's manual",
+        "Add any type of oil available since all oils are the same",
+        "Take the car to a mechanic without checking further"
+      ],
+      correct: 1,
+      explanation: "When engine oil is below MIN, it must be topped up immediately with the correct grade specified in the owner's manual. Using the wrong grade can damage the engine."
+    },
+    {
+      module: 2,
+      text: "A car's coolant/radiator fluid should only be checked when:",
+      options: [
+        "The engine is at full operating temperature",
+        "The car has been running for at least 20 minutes",
+        "The engine is completely cold",
+        "The car is moving"
+      ],
+      correct: 2,
+      explanation: "Coolant expands when hot and the system is pressurised. Checking or opening the radiator cap when hot can cause dangerous steam burns. Always check when the engine is COLD."
+    },
+    // Module 3: Car Fire Prevention
+    {
+      module: 3,
+      text: "Which of the following is the MOST common cause of car fires according to Module 3?",
+      options: [
+        "Tyres overheating from driving",
+        "Electrical faults, faulty wiring and short circuits",
+        "Air conditioning failure",
+        "Sunlight heating the dashboard"
+      ],
+      correct: 1,
+      explanation: "Electrical faults (faulty wiring, short circuits, and damaged insulation) are the most common cause of car fires. Regular electrical system inspections are Prevention Method #1."
+    },
+    {
+      module: 3,
+      text: "If your car catches fire while driving, what is the FIRST thing you should do?",
+      options: [
+        "Open the bonnet immediately to check the engine",
+        "Continue driving to find the nearest mechanic",
+        "Pull over safely, turn off the engine, get everyone out, and move away from the vehicle",
+        "Call a friend for advice before doing anything"
+      ],
+      correct: 2,
+      explanation: "Safety first: pull over, switch off the engine (cuts fuel flow), evacuate all passengers, move at least 30 metres away, then call emergency services. Never open the bonnet, it feeds oxygen to the fire."
+    },
+    {
+      module: 3,
+      text: "Which of these is Prevention Method #2 for car fires as taught in Module 3?",
+      options: [
+        "Checking tyre pressure every week",
+        "Regular electrical system inspection by a certified mechanic",
+        "Regular fuel system and hose checks for leaks",
+        "Keeping the car clean and wax-polished"
+      ],
+      correct: 2,
+      explanation: "Prevention Method #2 is regular fuel system and hose checks. Fuel leaks near hot engine parts are extremely dangerous. Cracked hoses and loose connections should be replaced immediately."
+    },
+    // Module 4: Skills in Practice
+    {
+      module: 4,
+      text: "When starting an auto care business, what does EAW recommend as the most important first step?",
+      options: [
+        "Buying expensive tools and equipment before anything else",
+        "Renting a large workshop in a prime location",
+        "Getting certified (EAW + DT Autocafe training) and obtaining proper registration",
+        "Creating a social media account"
+      ],
+      correct: 2,
+      explanation: "Certification and legal registration are the foundation. Your EAW certificate plus NADDC/state transport registration give you credibility and legitimacy that customers trust."
+    },
+    {
+      module: 4,
+      text: "According to Module 4, what is the approximate cost to register a sole proprietor business with the CAC in Nigeria?",
+      options: [
+        "₦500 – ₦1,000",
+        "₦10,000 – ₦25,000",
+        "₦100,000 – ₦200,000",
+        "₦1,000,000 or more"
+      ],
+      correct: 1,
+      explanation: "CAC (Corporate Affairs Commission) sole proprietor registration typically costs ₦10,000–₦25,000. This is an affordable and important step to legitimise your business from day one."
+    },
+    {
+      module: 4,
+      text: "EAW is registered in Nigeria as:",
+      options: [
+        "A private limited company (Ltd)",
+        "A public listed company",
+        "DBTWTEi, Digital Business Tutelage for Women Empowerment Initiative, Incorporated Trustees",
+        "A government agency under the Ministry of Women Affairs"
+      ],
+      correct: 2,
+      explanation: "EAW is officially registered as DBTWTEi, Digital Business Tutelage for Women Empowerment Initiative, as Incorporated Trustees in Nigeria. This registration allows EAW to access government grants and operate officially."
+    },
+    {
+      module: 4,
+      text: "What is the BEST FREE marketing tool for a new female mechanic starting her business, according to Module 4?",
+      options: [
+        "Expensive newspaper advertising",
+        "Hiring a marketing agency immediately",
+        "WhatsApp Business profile, offer free first checks and ask for referrals",
+        "Waiting for customers to find you naturally"
+      ],
+      correct: 2,
+      explanation: "WhatsApp Business is free, widely used in Nigeria, and highly effective for local service businesses. Combined with free first checks and asking satisfied clients for referrals, it can rapidly build your client base."
+    }
+  ]
+};
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let currentQ = 0;
+let answers = [];   // { selected, correct }
+let answered = [];  // bool per question
+
+function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || 'null'); }
+function saveUser(u) { localStorage.setItem('eaw_user', JSON.stringify(u)); }
+
+// ══════════════════════════════════════════════════════════════
+// BUILD QUIZ UI
+// ══════════════════════════════════════════════════════════════
+function startQuiz() {
+  currentQ = 0;
+  answers = new Array(QUIZ.questions.length).fill(null);
+  answered = new Array(QUIZ.questions.length).fill(false);
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  buildQuestions();
+  buildDots();
+  showQuestion(0);
+}
+
+function buildQuestions() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = '';
+  QUIZ.questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `q-${i}`;
+    const letters = ['A','B','C','D'];
+    card.innerHTML = `
+      <div class="question-num">Question ${i+1} of ${QUIZ.questions.length} · Module ${q.module}</div>
+      <div class="question-text">${q.text}</div>
+      <div class="options" id="opts-${i}">
+        ${q.options.map((opt, j) => `
+          <button class="option-btn" id="opt-${i}-${j}" onclick="selectAnswer(${i},${j})">
+            <span class="opt-letter">${letters[j]}</span>
+            <span>${opt}</span>
+          </button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback-${i}"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function buildDots() {
+  const dotsEl = document.getElementById('navDots');
+  dotsEl.innerHTML = '';
+  QUIZ.questions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'q-dot' + (i === 0 ? ' current' : '');
+    dot.id = `dot-${i}`;
+    dot.title = `Question ${i+1}`;
+    dotsEl.appendChild(dot);
+  });
+}
+
+function showQuestion(idx) {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(`q-${idx}`)?.classList.add('active');
+  document.querySelectorAll('.q-dot').forEach((d, i) => {
+    d.classList.remove('current');
+    if (i === idx) d.classList.add('current');
+  });
+  const pct = ((idx + 1) / QUIZ.questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Question ${idx+1} of ${QUIZ.questions.length}`;
+  const correct = answers.filter(a => a !== null && a.isCorrect).length;
+  document.getElementById('scoreLabel').textContent = `Score: ${correct}`;
+  document.getElementById('nextBtn').style.display = answered[idx] ? 'inline-flex' : 'none';
+  currentQ = idx;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ANSWER HANDLING
+// ══════════════════════════════════════════════════════════════
+function selectAnswer(qIdx, optIdx) {
+  if (answered[qIdx]) return;
+  answered[qIdx] = true;
+  const q = QUIZ.questions[qIdx];
+  const isCorrect = optIdx === q.correct;
+  answers[qIdx] = { selected: optIdx, isCorrect };
+
+  // Style all options
+  const optBtns = document.querySelectorAll(`#opts-${qIdx} .option-btn`);
+  optBtns.forEach((btn, j) => {
+    btn.disabled = true;
+    if (j === q.correct) btn.classList.add('correct');
+    else if (j === optIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Feedback
+  const fb = document.getElementById(`feedback-${qIdx}`);
+  if (isCorrect) {
+    fb.className = 'feedback show correct-fb';
+    fb.innerHTML = `✅ <strong>Correct!</strong> ${q.explanation}`;
+  } else {
+    const letters = ['A','B','C','D'];
+    fb.className = 'feedback show wrong-fb';
+    fb.innerHTML = `❌ <strong>Not quite.</strong> The correct answer is <strong>${letters[q.correct]}</strong>. ${q.explanation}`;
+  }
+
+  // Update dot
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+  }
+
+  // Show next button
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+  const correct = answers.filter(a => a !== null && a.isCorrect).length;
+  document.getElementById('scoreLabel').textContent = `Score: ${correct}`;
+}
+
+function nextQuestion() {
+  if (currentQ < QUIZ.questions.length - 1) {
+    showQuestion(currentQ + 1);
+  } else {
+    showResults();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════════════════════════
+function showResults() {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const correctCount = answers.filter(a => a && a.isCorrect).length;
+  const total = QUIZ.questions.length;
+  const pct = correctCount / total;
+  const passed = pct >= QUIZ.passMark;
+
+  // Circle
+  const circle = document.getElementById('resultCircle');
+  circle.className = 'result-circle ' + (passed ? 'pass' : 'fail');
+  document.getElementById('resultScore').textContent = `${correctCount}/${total}`;
+  document.getElementById('resultLabel').textContent = passed ? '✅ PASSED' : '❌ TRY AGAIN';
+
+  document.getElementById('resultHeading').textContent = passed
+    ? '🎉 Congratulations, You Passed!'
+    : '📚 Keep Studying, You Can Do It!';
+
+  document.getElementById('resultMessage').textContent = passed
+    ? `Excellent work! You scored ${correctCount} out of ${total} (${Math.round(pct*100)}%). Your certificate is ready.`
+    : `You scored ${correctCount} out of ${total} (${Math.round(pct*100)}%). You need 7/10 to pass. Review the course and try again, there's no limit on retakes!`;
+
+  document.getElementById('certBtnWrap').style.display = passed ? 'block' : 'none';
+
+  // Build review
+  const rev = document.getElementById('reviewContainer');
+  rev.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  QUIZ.questions.forEach((q, i) => {
+    const a = answers[i];
+    const isC = a && a.isCorrect;
+    rev.innerHTML += `
+      <div class="review-item ${isC ? 'r-correct' : 'r-wrong'}">
+        <div class="question-num">Question ${i+1} · Module ${q.module}</div>
+        <div class="review-q">${q.text}</div>
+        ${a ? `<div class="review-your">${isC ? '✅' : '❌'} Your answer: ${letters[a.selected]}. ${q.options[a.selected]}</div>` : '<div class="review-your">⚪ Not answered</div>'}
+        ${!isC ? `<div class="review-correct-ans">✅ Correct answer: ${letters[q.correct]}. ${q.options[q.correct]}</div>` : ''}
+        <div class="review-explain">💡 ${q.explanation}</div>
+      </div>`;
+  });
+
+  // Save quiz attempt to localStorage
+  const user = getUser();
+  if (user) {
+    if (!user.quizAttempts) user.quizAttempts = {};
+    if (!user.quizAttempts[QUIZ.courseId]) user.quizAttempts[QUIZ.courseId] = [];
+    user.quizAttempts[QUIZ.courseId].push({
+      score: correctCount,
+      total,
+      passed,
+      date: new Date().toISOString()
+    });
+    if (passed) {
+      if (!user.enrollments) user.enrollments = [];
+      let enrol = user.enrollments.find(e => e.courseId === QUIZ.courseId);
+      if (!enrol) {
+        enrol = { courseId: QUIZ.courseId, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() };
+        user.enrollments.push(enrol);
+      }
+      enrol.progress = 100;
+      enrol.quizPassed = true;
+      enrol.quizScore = correctCount;
+    }
+    saveUser(user);
+  }
+}
+
+function retakeQuiz() {
+  document.getElementById('resultsScreen').style.display = 'none';
+  startQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════════════════════
+// CERTIFICATE
+// ══════════════════════════════════════════════════════════════
+function issueCertificate() {
+  const user = getUser();
+  if (!user) { window.location.href = 'login.html'; return; }
+
+  const correctCount = answers.filter(a => a && a.isCorrect).length;
+
+  if (!user.certificates) user.certificates = [];
+  // Preserve original issue date, never overwrite with a new date
+  let cert = user.certificates.find(c => c.id === QUIZ.courseId);
+  if (!cert) {
+    cert = {
+      id: QUIZ.courseId,
+      title: QUIZ.courseTitle,
+      date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }),
+      score: `${correctCount}/${QUIZ.questions.length}`,
+      issuedAt: new Date().toISOString()
+    };
+    user.certificates.push(cert);
+    saveUser(user);
+    // Sync certificate to server (non-blocking)
+    fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(function(){});
+  }
+
+  document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || '');
+  document.getElementById('certDate').textContent = cert.date;
+  document.getElementById('certScoreDisplay').textContent = `Final Assessment Score: ${correctCount}/${QUIZ.questions.length} (${Math.round(correctCount/QUIZ.questions.length*100)}%)`;
+  document.getElementById('certModal').classList.add('open');
+}
+
+// ── Init ──
+document.getElementById('hamburger')?.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+});
+
+// Update nav if logged in
+const user = getUser();
+if (user) {
+  const navCta = document.querySelector('.nav-cta');
+  if (navCta) navCta.innerHTML = `<a href="student-dashboard.html" class="btn btn-blue btn-sm">My Dashboard →</a>`;
+}
+</script>
+</body>
+</html>

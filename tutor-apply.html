@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apply as Tutor | Empowering African Women</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .pw-wrap { position: relative; }
+    .pw-wrap .form-input { padding-right: 44px; }
+    .pw-eye { position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);padding:4px;display:flex;align-items:center;justify-content:center; }
+    .pw-eye:hover { color:var(--blue); }
+    .pw-eye svg { display:block;pointer-events:none; }
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear { display:none; }
+    .pw-rules { font-size:13px;color:var(--text-light);margin-top:6px;line-height:1.7; }
+    .pw-rules .rule { display:flex;align-items:center;gap:6px; }
+    .pw-rules .rule.ok { color:#22c55e; }
+    .pw-rules .rule.ok::before { content:'✓'; }
+    .pw-rules .rule:not(.ok)::before { content:'○'; }
+
+    /* OTP Step */
+    #otpStep { display:none; }
+    .otp-box { background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--r-lg);padding:24px;text-align:center;margin-bottom:20px; }
+    .otp-title { font-family:'Source Serif 4',serif;font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px; }
+    .otp-sub { font-size:14px;color:var(--text-mid);margin-bottom:20px; }
+    .otp-inputs { display:flex;gap:10px;justify-content:center;margin-bottom:16px; }
+    .otp-inputs input { width:48px;height:52px;text-align:center;font-size:22px;font-weight:700;border:2px solid var(--blue-light);border-radius:var(--r-md);outline:none;transition:.2s; }
+    .otp-inputs input:focus { border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.15); }
+    .otp-resend { font-size:14px;color:var(--text-light);margin-top:8px; }
+    .otp-resend button { background:none;border:none;color:var(--blue);font-weight:600;cursor:pointer;font-size:13px;padding:0; }
+  </style>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-left">
+    <img src="eaw_icon.png" alt="EAW" class="auth-left-logo">
+    <h2>Share your knowledge. Empower African women.</h2>
+    <p>Join EAW as a tutor and help the next generation of young African women gain practical, life-changing skills. All tutors are volunteer experts subject to admin approval.</p>
+    <img src="training2.jpg" alt="EAW Training" class="auth-img">
+    <div style="background:rgba(255,255,255,.1);border-radius:var(--r-lg);padding:20px;margin-top:16px;">
+      <h3 style="font-family:'Source Serif 4',serif;font-size:19px;margin-bottom:12px;">Why teach with EAW?</h3>
+      <div style="font-size:15px;color:rgba(255,255,255,.88);display:flex;flex-direction:column;gap:8px;">
+        <div>✅ Reach hundreds of young women across Nigeria</div>
+        <div>✅ Share your professional expertise</div>
+        <div>✅ Flexible, teach at your own schedule</div>
+        <div>✅ Be part of a registered, recognised platform</div>
+        <div>✅ Students earn certificates you help design</div>
+      </div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <a href="index.html"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
+    <h1>Apply as a Tutor</h1>
+    <p class="auth-subtitle">Already have an account? <a href="login.html">Sign in here</a> · Are you a student? <a href="signup.html">Sign up here</a></p>
+
+    <div class="notice-box show" style="margin-bottom:20px;">
+      ⏳ <strong>Applications are reviewed by the EAW Admin.</strong> You'll receive an email once your application is approved. Tutor accounts allow you to add and edit course materials.
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    <div id="successMsg" style="display:none;background:var(--green-pale);border:1px solid var(--green);border-radius:var(--r-lg);padding:20px;text-align:center;margin-bottom:20px;">
+      <div style="font-size:36px;margin-bottom:10px;">🎉</div>
+      <h3 style="font-family:'Source Serif 4',serif;color:var(--green);margin-bottom:8px;">Application Submitted!</h3>
+      <p style="font-size:15px;color:var(--text-mid);">Thank you for applying to be an EAW tutor. Your email has been verified. The EAW Admin will review your application and contact you via email. In the meantime, you can <a href="courses.html" style="color:var(--blue);">browse our courses</a>.</p>
+    </div>
+
+    <!-- TUTOR FORM -->
+    <form id="tutorForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input type="text" id="tFirstName" class="form-input" required maxlength="60">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input type="text" id="tLastName" class="form-input" required maxlength="60">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input type="email" id="tEmail" class="form-input" placeholder="you@example.com" required maxlength="254">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number *</label>
+        <div style="display:flex;gap:8px;">
+          <select id="tPhoneCode" class="form-input" style="width:130px;flex-shrink:0;">
+            <option value="+234">🇳🇬 +234</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+27">🇿🇦 +27</option>
+            <option value="+233">🇬🇭 +233</option>
+            <option value="+254">🇰🇪 +254</option>
+            <option value="+256">🇺🇬 +256</option>
+            <option value="+255">🇹🇿 +255</option>
+            <option value="+251">🇪🇹 +251</option>
+            <option value="+212">🇲🇦 +212</option>
+            <option value="+20">🇪🇬 +20</option>
+            <option value="+225">🇨🇮 +225</option>
+            <option value="+221">🇸🇳 +221</option>
+            <option value="+237">🇨🇲 +237</option>
+            <option value="+249">🇸🇩 +249</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+other">🌍 Other</option>
+          </select>
+          <input type="tel" id="tPhone" class="form-input" placeholder="800 000 0000" required style="flex:1;" maxlength="20">
+        </div>
+        <div id="tOtherCodeWrap" style="display:none;margin-top:6px;">
+          <input type="text" id="tOtherCode" class="form-input" placeholder="Enter country code e.g. +60" style="width:160px;" maxlength="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Area of Expertise *</label>
+        <select id="tExpertise" class="form-input" required>
+          <option value="">Select a category</option>
+          <option>Auto Mechanics / Automotive</option>
+          <option>Baking &amp; Culinary Arts</option>
+          <option>Business Etiquette &amp; Image</option>
+          <option>Entrepreneurship &amp; Business</option>
+          <option>Digital Skills &amp; Technology</option>
+          <option>Health &amp; Wellness</option>
+          <option>Fashion &amp; Design</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Professional Bio *</label>
+        <textarea id="tBio" class="form-input" style="min-height:100px;resize:vertical;" placeholder="Briefly describe your professional background, qualifications, and relevant experience." required maxlength="1000"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Proposed Course or Topic *</label>
+        <input type="text" id="tCourse" class="form-input" placeholder="e.g. Digital Marketing for Small Businesses" required maxlength="100">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password *</label>
+        <div class="pw-wrap">
+          <input type="password" id="tPassword" class="form-input" placeholder="Create a password for your account" required oninput="checkStrength(this.value)" maxlength="128">
+          <button type="button" class="pw-eye" onclick="togglePw('tPassword',this)" title="Show/hide password"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="pw-rules" id="pwRules">
+          <div class="rule" id="r-len">At least 8 characters</div>
+          <div class="rule" id="r-upper">At least 1 uppercase letter</div>
+          <div class="rule" id="r-digit">At least 1 number</div>
+          <div class="rule" id="r-special">At least 1 special character (!@#$%^&amp;*)</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;font-size:15px;color:var(--text-mid);">
+        <input type="checkbox" id="tTerms" required style="margin-top:3px;width:auto;flex-shrink:0;">
+        <span>I agree to the <a href="#" class="terms-link">Terms of Service</a> and understand that my application requires admin approval before I can publish content.</span>
+      </div>
+      <div id="tError" style="display:none;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:14px;margin-bottom:12px;"></div>
+      <button type="button" onclick="startVerification()" id="submitBtn" class="btn-auth" ">Submit Tutor Application →</button>
+    </form>
+
+    <!-- OTP STEP -->
+    <div id="otpStep">
+      <div class="otp-box">
+        <div class="otp-title">✉️ Verify Your Email</div>
+        <div class="otp-sub" id="otpSubText">We sent a 6-digit code to your email.<br>Enter it below to confirm your application.</div>
+        <div class="otp-inputs">
+          <input type="text" maxlength="1" class="otp-digit" id="d1" oninput="otpNext(this,'d2')" onkeydown="otpBack(event,this,'')">
+          <input type="text" maxlength="1" class="otp-digit" id="d2" oninput="otpNext(this,'d3')" onkeydown="otpBack(event,this,'d1')">
+          <input type="text" maxlength="1" class="otp-digit" id="d3" oninput="otpNext(this,'d4')" onkeydown="otpBack(event,this,'d2')">
+          <input type="text" maxlength="1" class="otp-digit" id="d4" oninput="otpNext(this,'d5')" onkeydown="otpBack(event,this,'d3')">
+          <input type="text" maxlength="1" class="otp-digit" id="d5" oninput="otpNext(this,'d6')" onkeydown="otpBack(event,this,'d4')">
+          <input type="text" maxlength="1" class="otp-digit" id="d6" oninput="otpNext(this,'')"   onkeydown="otpBack(event,this,'d5')">
+        </div>
+        <div id="otpError" style="display:none;color:var(--red);font-size:14px;margin-bottom:10px;"></div>
+        <button type="button" onclick="verifyOTP()" class="btn-auth" style="width:100%;background:var(--gold);color:var(--gray-900);">Verify &amp; Submit Application →</button>
+        <div class="otp-resend">Didn't get the code? <button onclick="resendOTP()">Resend</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Country code "Other" toggle ─────────────────────────────────────────────
+document.getElementById('tPhoneCode').addEventListener('change', function() {
+  document.getElementById('tOtherCodeWrap').style.display = this.value === '+other' ? 'block' : 'none';
+});
+
+// ─── OTP Worker Config ────────────────────────────────────────────────────────
+// After deploying your Cloudflare Worker, replace the URL below.
+const EAW_WORKER_URL = 'https://eaw-otp-worker.empoweringafricanwomen.workers.dev';
+
+let _pendingApp = null;
+
+// ─── UI Helpers ───────────────────────────────────────────────────────────────
+const EYE_ON  = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+function togglePw(fieldId, btn) {
+  const f = document.getElementById(fieldId);
+  if (f.type === 'password') { f.type = 'text'; btn.innerHTML = EYE_OFF; }
+  else { f.type = 'password'; btn.innerHTML = EYE_ON; }
+}
+
+function showTErr(msg) {
+  const el = document.getElementById('tError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ─── Password Strength ────────────────────────────────────────────────────────
+function checkStrength(pw) {
+  const rules = {
+    len:     pw.length >= 8,
+    upper:   /[A-Z]/.test(pw),
+    digit:   /[0-9]/.test(pw),
+    special: /[!@#$%^&*()\-_=+\[\]{};:'",.<>?\/\\|`~]/.test(pw)
+  };
+  setRule('r-len',     rules.len);
+  setRule('r-upper',   rules.upper);
+  setRule('r-digit',   rules.digit);
+  setRule('r-special', rules.special);
+}
+
+function setRule(id, ok) {
+  const el = document.getElementById(id);
+  if (ok) el.classList.add('ok'); else el.classList.remove('ok');
+}
+
+function validatePassword(pw) {
+  if (pw.length < 8)                                                       return 'Password must be at least 8 characters.';
+  if (!/[A-Z]/.test(pw))                                                   return 'Password must contain at least 1 uppercase letter.';
+  if (!/[0-9]/.test(pw))                                                   return 'Password must contain at least 1 number.';
+  if (!/[!@#$%^&*()\-_=+\[\]{};:'",.<>?\/\\|`~]/.test(pw))               return 'Password must contain at least 1 special character (e.g. !@#$%).';
+  return null;
+}
+
+// ─── OTP Input Helpers ────────────────────────────────────────────────────────
+function otpNext(el, nextId) {
+  el.value = el.value.replace(/\D/,'');
+  if (el.value && nextId) document.getElementById(nextId).focus();
+}
+function otpBack(e, el, prevId) {
+  if (e.key === 'Backspace' && !el.value && prevId) document.getElementById(prevId).focus();
+}
+function getOTPValue() {
+  return ['d1','d2','d3','d4','d5','d6'].map(id => document.getElementById(id).value).join('');
+}
+
+// ─── Send OTP ─────────────────────────────────────────────────────────────────
+async function sendOTP(email, name) {
+  try {
+    const res = await fetch(EAW_WORKER_URL + '/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.error || 'Failed to send');
+    return true;
+  } catch (err) {
+    console.error('OTP send error:', err);
+    return false;
+  }
+}
+
+// ─── Admin Data Helpers ───────────────────────────────────────────────────────
+function getAdminData() {
+  return JSON.parse(localStorage.getItem('eaw_admin_data') || '{"tutorApplications":[],"courseSubmissions":[],"payments":[],"students":[]}');
+}
+function saveAdminData(d) {
+  localStorage.setItem('eaw_admin_data', JSON.stringify(d));
+}
+
+// ─── Application Flow ─────────────────────────────────────────────────────────
+async function startVerification() {
+  const firstName = document.getElementById('tFirstName').value.trim();
+  const lastName  = document.getElementById('tLastName').value.trim();
+  const email     = document.getElementById('tEmail').value.trim().toLowerCase();
+  const _tCode = document.getElementById('tPhoneCode').value === '+other' ? document.getElementById('tOtherCode').value.trim() : document.getElementById('tPhoneCode').value;
+  const phone = _tCode + document.getElementById('tPhone').value.trim();
+  const expertise = document.getElementById('tExpertise').value;
+  const bio       = document.getElementById('tBio').value.trim();
+  const course    = document.getElementById('tCourse').value.trim();
+  const password  = document.getElementById('tPassword').value;
+  const terms     = document.getElementById('tTerms').checked;
+
+  if (!firstName || !lastName || !email || !phone || !expertise || !bio || !course || !password) {
+    showTErr('Please fill in all required fields.'); return;
+  }
+  if (!terms) { showTErr('Please accept the Terms of Service.'); return; }
+
+  const pwErr = validatePassword(password);
+  if (pwErr) { showTErr(pwErr); return; }
+
+  // Check if email already registered as a user
+  const users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
+  if (users.find(u => u.email.toLowerCase() === email)) {
+    showTErr('An account with this email already exists. Please sign in.'); return;
+  }
+
+  // Block reapplication: reject if any prior application exists (pending, approved, or rejected)
+  const adminData = getAdminData();
+  const priorApp = (adminData.tutorApplications || []).find(a => a.email && a.email.toLowerCase() === email);
+  if (priorApp) {
+    const status = priorApp.status || 'pending';
+    if (status === 'approved') {
+      showTErr('An approved tutor account already exists for this email. Please sign in.');
+    } else if (status === 'rejected') {
+      showTErr('A previous application from this email was reviewed and is not eligible for resubmission. Please contact EAW for assistance.');
+    } else {
+      showTErr('An application for this email is already pending review. You will be contacted once a decision is made.');
+    }
+    return;
+  }
+
+  _pendingApp = { firstName, lastName, email, phone, expertise, bio, proposedCourse: course, password, role: 'tutor-pending', approved: false, emailVerified: false, phoneVerified: false, enrollments: [], certificates: [], createdAt: new Date().toISOString() };
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Sending code…';
+  btn.disabled = true;
+
+  const sent = await sendOTP(email, firstName);
+  btn.textContent = 'Submit Tutor Application →';
+  btn.disabled = false;
+
+  if (!sent) { showTErr('Failed to send verification code. Please try again.'); return; }
+
+  document.getElementById('tutorForm').style.display = 'none';
+  document.getElementById('otpStep').style.display = 'block';
+  document.getElementById('d1').focus();
+}
+
+async function verifyOTP() {
+  const entered = getOTPValue();
+  if (entered.length < 6) { showOTPErr('Please enter all 6 digits.'); return; }
+  const verifyBtn = document.querySelector('#otpStep .btn-auth');
+  if (verifyBtn) { verifyBtn.textContent = 'Verifying…'; verifyBtn.disabled = true; }
+  try {
+    const res = await fetch(EAW_WORKER_URL + '/verify-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: _pendingApp.email, otp: entered })
+    });
+    const data = await res.json();
+    if (!data.valid) {
+      showOTPErr(data.error || 'Incorrect code. Please try again.');
+      if (verifyBtn) { verifyBtn.textContent = 'Verify & Submit Application →'; verifyBtn.disabled = false; }
+      return;
+    }
+  } catch {
+    showOTPErr('Verification failed. Please try again.');
+    if (verifyBtn) { verifyBtn.textContent = 'Verify & Submit Application →'; verifyBtn.disabled = false; }
+    return;
+  }
+
+  // 1. Register user account via PHP API
+  try {
+    const regRes = await fetch('api/signup.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        firstName: _pendingApp.firstName,
+        lastName:  _pendingApp.lastName,
+        email:     _pendingApp.email,
+        phone:     _pendingApp.phone,
+        password:  _pendingApp.password,
+        role:      'tutor-pending'
+      })
+    });
+    const regData = await regRes.json();
+    if (regData.success) localStorage.setItem('eaw_user', JSON.stringify(regData.user));
+  } catch (e) { /* continue */ }
+
+  // 2. Submit tutor application to API
+  try {
+    await fetch('api/tutor-apply.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        firstName:  _pendingApp.firstName,
+        lastName:   _pendingApp.lastName,
+        email:      _pendingApp.email,
+        phone:      _pendingApp.phone,
+        expertise:  _pendingApp.expertise,
+        bio:        _pendingApp.bio
+      })
+    });
+  } catch (e) { /* continue */ }
+
+  document.getElementById('otpStep').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
+
+async function resendOTP() {
+  if (!_pendingApp) return;
+  const sent = await sendOTP(_pendingApp.email, _pendingApp.firstName);
+  if (sent) {
+    ['d1','d2','d3','d4','d5','d6'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('d1').focus();
+    document.getElementById('otpError').style.display = 'none';
+  }
+}
+
+function showOTPErr(msg) {
+  const el = document.getElementById('otpError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+</script>
+<script src="eaw-common.js"></script>
+</body>
+</html>

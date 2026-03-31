@@ -1,0 +1,22 @@
+# Claude Code local config — do not expose
+.claude/
+
+# Admin management portal — contains sensitive credentials, not for public repo
+portal-management-eaw2024.html
+
+# Reference/design assets — not needed in deployment
+Reference_theme/
+
+# Large video files — too big for GitHub (>100MB), host externally or upload to Hostinger directly
+Video_courses/Auto_Care_101.mp4
+"Video_courses/3_Ways_to_prevent_Car_Fires _Auto_care_101.mp4"
+Pictures/20190723_134844.mp4
+
+# Database credentials — NEVER commit
+api/config.php
+
+# Windows system files
+Thumbs.db
+desktop.ini
+*.tmp
+.DS_Store

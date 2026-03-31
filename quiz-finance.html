@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+  <link rel="shortcut icon" href="eaw_icon.png">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Final Assessment, Financial Literacy & Economics | EAW</title>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="preloader.js"></script>
+  <style>
+    .quiz-wrap{max-width:780px;margin:0 auto;padding:40px 24px 60px;}
+    .quiz-hero{background:linear-gradient(135deg,#064e3b,#059669);color:#fff;padding:48px 24px 36px;text-align:center;}
+    .quiz-hero h1{color:#fff;font-size:clamp(22px,3vw,32px);margin-bottom:10px;}
+    .quiz-hero p{color:rgba(255,255,255,.88);font-size:16px;max-width:560px;margin:0 auto 20px;}
+    .quiz-meta{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.8);}
+    .quiz-meta span{background:rgba(255,255,255,.15);padding:6px 14px;border-radius:99px;}
+    .quiz-progress-bar{background:var(--gray-200);height:8px;border-radius:99px;margin-bottom:32px;overflow:hidden;}
+    .quiz-progress-fill{height:100%;background:var(--blue);border-radius:99px;transition:width .4s ease;}
+    .quiz-progress-label{display:flex;justify-content:space-between;font-size:13px;color:var(--text-mid);margin-bottom:6px;}
+    .question-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:20px;padding:32px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:none;}
+    .question-card.active{display:block;}
+    .question-num{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--blue);margin-bottom:8px;}
+    .question-text{font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:var(--gray-900);margin-bottom:24px;line-height:1.4;}
+    .options{display:flex;flex-direction:column;gap:12px;}
+    .option-btn{display:flex;align-items:center;gap:14px;padding:16px 20px;border:2px solid var(--gray-200);border-radius:14px;background:#fff;cursor:pointer;font-size:15px;font-family:'Source Sans 3',sans-serif;color:var(--text);text-align:left;transition:all .2s;}
+    .option-btn:hover:not(:disabled){border-color:var(--blue);background:var(--blue-pale);}
+    .option-btn .opt-letter{width:32px;height:32px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;color:var(--gray-700);}
+    .option-btn.correct{border-color:var(--green);background:var(--green-pale);}
+    .option-btn.correct .opt-letter{background:var(--green);color:#fff;}
+    .option-btn.wrong{border-color:var(--red);background:#fdf2f2;}
+    .option-btn.wrong .opt-letter{background:var(--red);color:#fff;}
+    .option-btn:disabled{cursor:default;}
+    .feedback{display:none;margin-top:16px;padding:14px 18px;border-radius:12px;font-size:14px;line-height:1.6;}
+    .feedback.show{display:block;}
+    .feedback.correct-fb{background:var(--green-pale);border:1px solid var(--green);color:#0a6644;}
+    .feedback.wrong-fb{background:#fdf2f2;border:1px solid var(--red);color:#7a1c1c;}
+    .quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;}
+    .quiz-nav-dots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+    .q-dot{width:10px;height:10px;border-radius:50%;background:var(--gray-300);transition:background .2s;cursor:pointer;}
+    .q-dot.answered-correct{background:var(--green);}.q-dot.answered-wrong{background:var(--red);}.q-dot.current{background:var(--blue);transform:scale(1.3);}
+    #resultsScreen{display:none;}
+    .result-circle{width:160px;height:160px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 24px;border:8px solid;}
+    .result-circle.pass{border-color:var(--green);background:var(--green-pale);}.result-circle.fail{border-color:var(--red);background:#fdf2f2;}
+    .result-score{font-family:'Source Serif 4',serif;font-size:48px;font-weight:700;line-height:1;}
+    .result-circle.pass .result-score{color:var(--green);}.result-circle.fail .result-score{color:var(--red);}
+    .result-label{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+    .result-circle.pass .result-label{color:var(--green);}.result-circle.fail .result-label{color:var(--red);}
+    .review-item{background:#fff;border:1.5px solid var(--gray-200);border-radius:14px;padding:20px 24px;margin-bottom:14px;}
+    .review-item.r-correct{border-color:var(--green);}.review-item.r-wrong{border-color:var(--red);}
+    .review-q{font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);}
+    .review-your{font-size:13px;color:var(--red);}.review-correct-ans{font-size:13px;color:var(--green);font-weight:700;}
+    .review-explain{font-size:13px;color:var(--text-mid);margin-top:6px;font-style:italic;}
+  </style>
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo"><img src="eaw_icon.png" alt="EAW" class="logo-img"><span class="logo-text">Empowering<br>African Women</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li><li><a href="courses.html" class="active">Courses</a></li><li><a href="about.html">About</a></li><li><a href="stories.html">Stories</a></li><li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta"><a href="login.html" class="btn btn-ghost btn-sm">Sign In</a><a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a></div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="quiz-hero">
+  <div style="font-size:56px;margin-bottom:12px;">💰</div>
+  <h1>Financial Literacy & Economics, Final Assessment</h1>
+  <p>Test your knowledge of personal finance, economics, budgeting, investing, and how money works in the real world.</p>
+  <div class="quiz-meta"><span>📋 10 Questions</span><span>🎯 Pass Mark: 7/10</span><span>🔁 Unlimited Retakes</span><span>🎓 Certificate on Pass</span></div>
+</div>
+
+<div class="quiz-wrap">
+  <div id="startScreen" style="text-align:center;padding:40px 0;">
+    <div style="font-size:72px;margin-bottom:20px;">💰</div>
+    <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
+    <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 5 modules: Economics Fundamentals, Personal Finance, Saving & Investing, Debt & Credit, and Economic Systems & Policy.</p>
+    <div style="background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;">
+      <div style="font-weight:700;margin-bottom:10px;color:var(--blue);">Before you start:</div>
+      <div style="font-size:14px;color:var(--text-mid);line-height:2;">✅ Answer all 10 questions<br>✅ One correct answer per question<br>✅ Explanations shown after each answer<br>✅ Score 7+ to unlock your certificate<br>✅ Unlimited retakes</div>
+    </div>
+    <button onclick="startQuiz()" class="btn btn-blue btn-lg">Start Assessment →</button>
+  </div>
+
+  <div id="quizScreen" style="display:none;">
+    <div class="quiz-progress-label"><span id="progressLabel">Question 1 of 10</span><span id="scoreLabel">Score: 0</span></div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="questionsContainer"></div>
+    <div class="quiz-nav"><div class="quiz-nav-dots" id="navDots"></div><button id="nextBtn" onclick="nextQuestion()" class="btn btn-blue" style="display:none;">Next Question →</button></div>
+  </div>
+
+  <div id="resultsScreen">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="result-circle" id="resultCircle"><div class="result-score" id="resultScore">0/10</div><div class="result-label" id="resultLabel">Score</div></div>
+      <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:8px;" id="resultHeading">Assessment Complete</h2>
+      <p style="color:var(--text-mid);font-size:16px;max-width:500px;margin:0 auto;" id="resultMessage"></p>
+      <div id="certBtnWrap" style="display:none;margin-top:28px;">
+        <div style="background:linear-gradient(135deg,#0F172A,#1E3A8A);border-radius:20px;padding:28px 32px;max-width:480px;margin:0 auto 20px;text-align:center;border:2px solid #D97706;box-shadow:0 8px 32px rgba(15,23,42,.35);">
+          <div style="font-size:40px;margin-bottom:8px;">🎓</div>
+          <div style="font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:#ffffff;margin-bottom:6px;">Certificate Unlocked!</div>
+          <div style="font-size:14px;color:#ffffff;margin-bottom:16px;">You've earned your EAW Financial Literacy Certificate!</div>
+          <button onclick="issueCertificate()" class="btn btn-blue btn-lg" style="background:#0d3f9a;">🎓 Claim Your Certificate →</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+        <button onclick="retakeQuiz()" class="btn btn-outline">↩ Retake Quiz</button>
+        <a href="course-finance.html" class="btn btn-ghost">← Back to Course</a>
+      </div>
+    </div>
+    <div style="border-top:2px solid var(--gray-200);padding-top:32px;">
+      <h3 style="font-family:'Source Serif 4',serif;font-size:22px;font-weight:700;margin-bottom:20px;">📋 Review Your Answers</h3>
+      <div id="reviewContainer"></div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-modal-overlay" id="certModal">
+  <div class="cert-modal">
+    <div class="cert-frame">
+      <div class="cert-title">Empowering African Women · EAW</div>
+      <div class="cert-of">Certificate of Completion</div>
+      <div class="cert-awarded">This is to certify that</div>
+      <div class="cert-student-name" id="certName">Student Name</div>
+      <div class="cert-awarded">has successfully completed</div>
+      <div class="cert-course-name">Financial Literacy & Economics</div>
+      <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate"></span></div>
+      <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px;" id="certScoreDisplay"></div>
+      <div class="cert-sigs">
+        <div class="cert-sig-line">EAW Administration<br>EAW Founder &amp; Director</div>
+        <div class="cert-sig-line">Course Instructor</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
+      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer style="background:var(--navy);color:#fff;padding:28px 24px;border-top:1px solid rgba(255,255,255,.07);">
+  <div style="max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:13px;color:rgba(255,255,255,.4);">© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
+    <a href="course-finance.html" style="font-size:13px;color:rgba(255,255,255,.5);">← Back to Course</a>
+  </div>
+</footer>
+
+<script>
+const QUIZ = {
+  courseId: 'finance',
+  courseTitle: 'Financial Literacy & Economics',
+  passMark: 0.7,
+  questions: [
+    { module:1, text:"What does GDP (Gross Domestic Product) measure?", options:["The total amount of money in a country's banks","The total monetary value of all goods and services produced in a country within a specific time period","The government's total annual tax revenue","The total value of a country's exports"], correct:1, explanation:"GDP is the broadest measure of a country's economic output. It counts the total value of all goods (cars, food, phones) and services (education, banking, healthcare) produced within a country's borders in a given period, usually one year or one quarter. Rising GDP generally signals a growing economy." },
+    { module:1, text:"What is INFLATION?", options:["When a country's economy shrinks","The general increase in prices over time, which reduces the purchasing power of money","When a country produces more goods than it can sell","When the government reduces taxes to stimulate the economy"], correct:1, explanation:"Inflation means your money buys less over time. If inflation is 10% per year and a bag of rice costs ₦5,000 today, it will cost ₦5,500 next year. Moderate inflation (2–3%) is normal and expected. Hyperinflation, like Nigeria experienced in certain periods, erodes savings rapidly, which is why keeping money under a mattress loses value." },
+    { module:1, text:"The Law of Supply and Demand states that when the price of a good rises (all else equal), what typically happens?", options:["Demand rises and supply falls","Demand falls and supply rises","Both demand and supply rise","Both demand and supply fall"], correct:1, explanation:"Higher prices discourage buyers (demand falls) while encouraging producers to make more (supply rises). This dynamic drives prices toward equilibrium, the point where supply and demand balance. Understanding this helps you predict price changes: if demand for a product spikes (like during a shortage), prices rise until equilibrium is restored." },
+    { module:2, text:"What is COMPOUND INTEREST and why is it powerful for saving?", options:["Interest paid only on your original deposit amount","Interest earned on both your original deposit AND previously earned interest, meaning your money grows exponentially over time","A fixed monthly fee charged by banks","A type of government bond for young savers"], correct:1, explanation:"Compound interest is sometimes called 'the eighth wonder of the world.' Instead of earning interest only on your principal (simple interest), compound interest earns interest on interest. A ₦100,000 investment at 10% annually becomes ₦110,000 after year 1, then ₦121,000 after year 2 (not ₦120,000), because year 2 earns interest on ₦110,000, not just ₦100,000." },
+    { module:2, text:"What is the 50/30/20 budgeting rule?", options:["Save 50%, spend 30% on needs, spend 20% on wants","Allocate 50% of income to needs, 30% to wants, and 20% to savings and debt repayment","Spend 50% on food, 30% on housing, and 20% on everything else","Invest 50% in stocks, 30% in bonds, and 20% in cash"], correct:1, explanation:"The 50/30/20 rule is a simple budgeting framework: 50% of your take-home pay covers essentials (rent, food, transport, utilities), 30% covers wants (entertainment, dining out, subscriptions), and 20% goes to savings and paying off debt. It's a starting point, not a rigid rule, but it provides structure for people building their first budget." },
+    { module:3, text:"What is 'diversification' in investing?", options:["Putting all your money into the single best-performing investment","Spreading investments across different asset types, industries, or regions to reduce the risk that any single loss destroys your portfolio","Investing only in government bonds for maximum safety","Withdrawing your investments whenever markets drop"], correct:1, explanation:"'Don't put all your eggs in one basket' is the core principle of diversification. If you invest all your money in one company and it collapses, you lose everything. But if you spread across stocks, bonds, real estate, and different sectors/countries, a loss in one area is offset by gains elsewhere. Diversification doesn't eliminate risk, it manages it." },
+    { module:3, text:"What is 'opportunity cost'?", options:["The total cost of producing a product including all expenses","The value of the next best alternative you give up when making a choice","A hidden fee charged by financial institutions","The cost of missing a business opportunity due to lack of capital"], correct:1, explanation:"Every choice has an opportunity cost, what you sacrifice by choosing one option over another. If you spend ₦50,000 on a new phone, the opportunity cost might be the savings you could have invested. If you watch TV for 2 hours, the opportunity cost is what else you could have done with that time. Economists use opportunity cost to evaluate true costs of decisions." },
+    { module:4, text:"What does a CREDIT SCORE measure?", options:["The total amount of money in your bank account","Your creditworthiness, how likely you are to repay debts on time, based on your borrowing history","Your annual income and net worth","How many bank accounts you have opened"], correct:1, explanation:"A credit score is a numerical summary of your credit history that lenders use to decide whether to give you a loan and at what interest rate. Factors include: payment history (most important), amount owed, length of credit history, new credit applications, and types of credit used. A strong credit score unlocks better loan terms and lower interest rates." },
+    { module:5, text:"What is FISCAL POLICY?", options:["The Central Bank's decisions about interest rates and money supply","The government's use of taxation and public spending to influence the economy","A company's internal financial planning and budgeting process","The set of rules governing international trade between countries"], correct:1, explanation:"Fiscal policy is how governments manage the economy through two main tools: taxation (how much to collect) and government spending (how much to spend on infrastructure, salaries, services). During recessions, governments may cut taxes or increase spending (expansionary policy) to stimulate growth. During booms, they may do the opposite to control inflation." },
+    { module:5, text:"What is the role of a Central Bank (like the Central Bank of Nigeria)?", options:["To provide loans directly to individual citizens","To manage a country's money supply, set interest rates, regulate commercial banks, and maintain price stability","To collect taxes on behalf of the government","To manage the country's stock exchange and securities market"], correct:1, explanation:"A central bank is the 'bank of banks.' The Central Bank of Nigeria (CBN) controls the naira money supply, sets the benchmark interest rate (which influences all other rates), regulates and supervises commercial banks, manages foreign exchange reserves, and works to keep inflation and the currency stable. It does NOT lend directly to individuals." }
+  ]
+};
+
+let currentQ=0,score=0,answers=[];
+function getUser(){return JSON.parse(localStorage.getItem('eaw_user')||'null');}
+function saveUser(u){localStorage.setItem('eaw_user',JSON.stringify(u));}
+function startQuiz(){document.getElementById('startScreen').style.display='none';document.getElementById('quizScreen').style.display='block';currentQ=0;score=0;answers=new Array(QUIZ.questions.length).fill(null);buildNavDots();renderQuestion(0);}
+function buildNavDots(){const c=document.getElementById('navDots');c.innerHTML='';QUIZ.questions.forEach((_,i)=>{const d=document.createElement('div');d.className='q-dot'+(i===0?' current':'');d.onclick=()=>goToQuestion(i);c.appendChild(d);});}
+function renderQuestion(idx){const q=QUIZ.questions[idx];const L=['A','B','C','D'];const html=`<div class="question-card active" id="qcard-${idx}"><div class="question-num">Question ${idx+1} of ${QUIZ.questions.length}</div><div class="question-text">${q.text}</div><div class="options">${q.options.map((o,i)=>`<button class="option-btn" onclick="selectOption(${idx},${i})" id="opt-${idx}-${i}"><div class="opt-letter">${L[i]}</div>${o}</button>`).join('')}</div><div class="feedback" id="fb-${idx}"></div></div>`;document.getElementById('questionsContainer').innerHTML=html;document.getElementById('progressLabel').textContent=`Question ${idx+1} of ${QUIZ.questions.length}`;document.getElementById('progressFill').style.width=((idx/QUIZ.questions.length)*100)+'%';document.getElementById('nextBtn').style.display='none';updateDots(idx);}
+function selectOption(qIdx,optIdx){if(answers[qIdx]!==null)return;answers[qIdx]=optIdx;const q=QUIZ.questions[qIdx];const correct=optIdx===q.correct;if(correct)score++;document.getElementById('scoreLabel').textContent='Score: '+score;const L=['A','B','C','D'];q.options.forEach((_,i)=>{const btn=document.getElementById(`opt-${qIdx}-${i}`);btn.disabled=true;if(i===q.correct)btn.classList.add('correct');else if(i===optIdx&&!correct)btn.classList.add('wrong');});const fb=document.getElementById(`fb-${qIdx}`);fb.className='feedback show '+(correct?'correct-fb':'wrong-fb');fb.innerHTML=(correct?'✅ <strong>Correct!</strong> ':'❌ <strong>Incorrect.</strong> ')+q.explanation;const dot=document.getElementById('navDots').children[qIdx];if(dot)dot.className='q-dot '+(correct?'answered-correct':'answered-wrong');const nb=document.getElementById('nextBtn');nb.style.display='block';nb.textContent=qIdx<QUIZ.questions.length-1?'Next Question →':'See Results →';}
+function nextQuestion(){if(currentQ<QUIZ.questions.length-1){currentQ++;renderQuestion(currentQ);}else{showResults();}}
+function goToQuestion(idx){if(answers[idx]!==null||idx===currentQ){currentQ=idx;renderQuestion(idx);}}
+function updateDots(idx){const dots=document.getElementById('navDots').children;for(let i=0;i<dots.length;i++){dots[i].classList.remove('current');if(i===idx)dots[i].classList.add('current');}}
+function showResults(){document.getElementById('quizScreen').style.display='none';document.getElementById('resultsScreen').style.display='block';const total=QUIZ.questions.length;const passed=score/total>=QUIZ.passMark;const circle=document.getElementById('resultCircle');circle.className='result-circle '+(passed?'pass':'fail');document.getElementById('resultScore').textContent=score+'/'+total;document.getElementById('resultLabel').textContent=passed?'PASSED':'TRY AGAIN';document.getElementById('resultHeading').textContent=passed?'🎉 Congratulations!':'Keep Studying!';document.getElementById('resultMessage').textContent=passed?`You scored ${score} out of ${total}, you've passed the Financial Literacy assessment!`:`You scored ${score} out of ${total}. You need ${Math.ceil(total*QUIZ.passMark)} to pass. Review the course and try again!`;if(passed){document.getElementById('certBtnWrap').style.display='block';saveQuizResult(true);}else{saveQuizResult(false);}buildReview();}
+function saveQuizResult(passed){try{const user=getUser();if(!user)return;if(!user.quizAttempts)user.quizAttempts={};if(!user.quizAttempts[QUIZ.courseId])user.quizAttempts[QUIZ.courseId]=[];user.quizAttempts[QUIZ.courseId].push({score,total:QUIZ.questions.length,passed,date:new Date().toISOString()});if(passed){if(!user.enrollments)user.enrollments=[];let enrol=user.enrollments.find(e=>e.courseId===QUIZ.courseId);if(!enrol){enrol={courseId:QUIZ.courseId,progress:0,completedModules:[]};user.enrollments.push(enrol);}enrol.quizPassed=true;enrol.progress=100;}saveUser(user);}catch(e){}}
+function buildReview(){const c=document.getElementById('reviewContainer');c.innerHTML='';const L=['A','B','C','D'];QUIZ.questions.forEach((q,i)=>{const ua=answers[i];const correct=ua===q.correct;c.innerHTML+=`<div class="review-item ${correct?'r-correct':'r-wrong'}"><div class="review-q">${i+1}. ${q.text}</div>${!correct&&ua!==null?`<div class="review-your">Your answer: ${L[ua]}. ${q.options[ua]}</div>`:''}<div class="review-correct-ans">✓ Correct: ${L[q.correct]}. ${q.options[q.correct]}</div><div class="review-explain">${q.explanation}</div></div>`;});}
+function retakeQuiz(){document.getElementById('resultsScreen').style.display='none';document.getElementById('startScreen').style.display='block';}
+function issueCertificate(){try{const user=getUser();if(!user)return;if(!user.certificates)user.certificates=[];let cert=user.certificates.find(c=>c.id===QUIZ.courseId);if(!cert){cert={id:QUIZ.courseId,title:QUIZ.courseTitle,score:score+'/'+QUIZ.questions.length,date:new Date().toLocaleDateString('en-NG',{year:'numeric',month:'long',day:'numeric'}),issuedAt:new Date().toISOString()};user.certificates.push(cert);saveUser(user);
+      fetch('api/certificate.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:cert.id,title:cert.title,score:cert.score||''})}).catch(function(){});}const m=document.getElementById('certModal');if(m){m.classList.add('open');document.getElementById('certName').textContent=user.firstName+' '+(user.lastName||'');document.getElementById('certDate').textContent=cert.date;document.getElementById('certScoreDisplay').textContent='Score: '+cert.score;}}catch(e){}}
+document.getElementById('hamburger')?.addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
+(function(){try{const user=getUser();if(user&&user.firstName){document.addEventListener('DOMContentLoaded',function(){const navCta=document.querySelector('.nav-cta');if(navCta){const dl=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard.html':'student-dashboard.html';navCta.innerHTML=`<a href="${dl}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;}});}}catch(e){}})();
+</script>
+</body>
+</html>
