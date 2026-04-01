@@ -505,7 +505,8 @@ function updateModuleUI() {
 function issueCertificate() {
   const user = getUser(); if (!user) return;
   const enrol = (user.enrollments||[]).find(e => e.courseId === COURSE_ID);
-  if (!enrol || !enrol.quizPassed) { window.location.href = QUIZ_URL; return; }
+  const _hasCert = (user.certificates||[]).some(c => c.id === COURSE_ID);
+  if (!((enrol && enrol.quizPassed) || _hasCert || !!_certified)) { window.location.href = QUIZ_URL; return; }
   if (!user.certificates) user.certificates = [];
   let cert = user.certificates.find(c => c.id === COURSE_ID);
   if (!cert) { cert = { id: COURSE_ID, title: 'Health & Body Awareness', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() }; user.certificates.push(cert); saveUser(user); fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{}); }

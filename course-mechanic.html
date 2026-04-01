@@ -686,10 +686,9 @@ function issueCertificate() {
   const user = getUser();
   if (!user) return;
   const enrol = (user.enrollments||[]).find(e => e.courseId === COURSE_ID);
-  if (!enrol || !enrol.quizPassed) {
-    alert('Please complete and pass the final assessment (70%+) first.');
-    window.location.href = QUIZ_URL;
-    return;
+  const _hasCert = (user.certificates||[]).some(c => c.id === COURSE_ID);
+  if (!((enrol && enrol.quizPassed) || _hasCert || !!_certified)) { window.location.href = QUIZ_URL; return; }
+
   }
   if (!user.certificates) user.certificates = [];
   // Store cert with original issue date once, reuse it forever

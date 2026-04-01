@@ -578,7 +578,8 @@ function issueCertificate() {
   const user = getUser();
   if (!user) return;
   const enrol = (user.enrollments||[]).find(e => e.courseId === COURSE_ID);
-  if (!enrol || !enrol.quizPassed) { window.location.href = QUIZ_URL; return; }
+  const _hasCert = (user.certificates||[]).some(c => c.id === COURSE_ID);
+  if (!((enrol && enrol.quizPassed) || _hasCert || !!_certified)) { window.location.href = QUIZ_URL; return; }
   if (!user.certificates) user.certificates = [];
   let cert = user.certificates.find(c => c.id === COURSE_ID);
   if (!cert) {
