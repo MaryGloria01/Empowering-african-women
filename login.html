@@ -135,21 +135,30 @@ async function doLogin() {
     const allEnrollmentSlugs = new Set(serverEnrollmentSlugs);
     const localEnrollmentsToSync = [];
     try {
+      // Read from eaw_user (primary — kept up to date by saveUser on all course pages)
+      const currentLocal = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+      if (currentLocal && currentLocal.email && currentLocal.email.toLowerCase() === sessionUser.email.toLowerCase()) {
+        if (currentLocal.enrollments && currentLocal.enrollments.length) {
+          currentLocal.enrollments.forEach(function(e) {
+            const slug = e.courseId || e;
+            if (!allEnrollmentSlugs.has(slug)) { allEnrollmentSlugs.add(slug); localEnrollmentsToSync.push(slug); }
+          });
+          sessionUser.enrollments = currentLocal.enrollments;
+        }
+        if (currentLocal.certificates && currentLocal.certificates.length) sessionUser.certificates = currentLocal.certificates;
+      }
+      // Also check eaw_users registry as fallback
       const users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
       const saved = users.find(u => u.email && u.email.toLowerCase() === sessionUser.email.toLowerCase());
       if (saved) {
-        // Collect local-only enrollments to push to server
         if (saved.enrollments && saved.enrollments.length) {
           saved.enrollments.forEach(function(e) {
             const slug = e.courseId || e;
-            if (!allEnrollmentSlugs.has(slug)) {
-              allEnrollmentSlugs.add(slug);
-              localEnrollmentsToSync.push(slug);
-            }
+            if (!allEnrollmentSlugs.has(slug)) { allEnrollmentSlugs.add(slug); localEnrollmentsToSync.push(slug); }
           });
-          sessionUser.enrollments = saved.enrollments;
+          if (!sessionUser.enrollments || !sessionUser.enrollments.length) sessionUser.enrollments = saved.enrollments;
         }
-        if (saved.certificates && saved.certificates.length) sessionUser.certificates = saved.certificates;
+        if (!sessionUser.certificates && saved.certificates && saved.certificates.length) sessionUser.certificates = saved.certificates;
       }
     } catch(e) {}
     // Build merged enrollments array in localStorage format

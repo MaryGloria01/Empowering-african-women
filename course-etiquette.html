@@ -734,8 +734,8 @@ async function loadProgressFromDB() {
   const _savedProg = JSON.parse(localStorage.getItem(_progKey2) || '[]');
   _savedProg.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
   // Push enrollment + any local-only completions up to server (one-way sync, idempotent)
-  fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
-  _completedModules.forEach(function(n){if(!isNaN(n)&&!_serverNums.has(n)){fetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}});
+  await fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+  await Promise.all(_completedModules.filter(function(n){return !isNaN(n)&&!_serverNums.has(n);}).map(function(n){return fetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}));
   // Sync merged progress + cert status back to localStorage
   const _syncUser = getUser();
   if (_syncUser) {
