@@ -161,15 +161,18 @@ async function doLogin() {
     });
     // Cache user in localStorage for frontend state (no password stored)
     localStorage.setItem('eaw_user', JSON.stringify(sessionUser));
-    // Push any local-only enrollments to DB now (session is freshly established)
-    localEnrollmentsToSync.forEach(function(slug) {
-      fetch('api/enroll.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ course: slug })
-      }).catch(function(){});
-    });
+    // Push any local-only enrollments to DB — await all before redirecting
+    // (fire-and-forget fetches get cancelled by the redirect otherwise)
+    if (localEnrollmentsToSync.length) {
+      await Promise.all(localEnrollmentsToSync.map(function(slug) {
+        return fetch('api/enroll.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ course: slug })
+        }).catch(function(){});
+      }));
+    }
 
     const role = data.user.role;
     if (role === 'admin') {
