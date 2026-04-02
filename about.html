@@ -16,20 +16,20 @@
 
 <nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo">
       <img src="eaw_icon.png" alt="EAW" class="logo-img">
       <span class="logo-text">Empowering<br>African Women</span>
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="courses.html">Courses</a></li>
-      <li><a href="about.html" class="active">About</a></li>
-      <li><a href="stories.html">Stories</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="courses">Courses</a></li>
+      <li><a href="about" class="active">About</a></li>
+      <li><a href="stories">Stories</a></li>
+      <li><a href="contact">Contact</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+      <a href="login" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup" class="btn btn-blue btn-sm">Join for Free →</a>
     </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </div>
@@ -134,8 +134,8 @@
     <h2 style="font-family:'Source Serif 4',serif;font-size:36px;font-weight:700;margin-bottom:16px;color:#fff;">Join the Movement</h2>
     <p style="font-size:18px;color:rgba(255,255,255,.88);margin-bottom:24px;line-height:1.7;">Whether you want to learn, teach, or support, there is a place for you in the EAW community.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <a href="signup.html" class="btn btn-white btn-lg">Join as Student</a>
-      <a href="tutor-apply.html" class="btn btn-lg" style="border:2px solid rgba(255,255,255,.5);color:#fff;">Apply as Tutor</a>
+      <a href="signup" class="btn btn-white btn-lg">Join as Student</a>
+      <a href="tutor-apply" class="btn btn-lg" style="border:2px solid rgba(255,255,255,.5);color:#fff;transition:background .2s,border-color .2s,color .2s;" onmouseover="this.style.background='rgba(255,255,255,.15)';this.style.borderColor='#fff';" onmouseout="this.style.background='';this.style.borderColor='rgba(255,255,255,.5)';">Apply as Tutor</a>
     </div>
   </div>
 </section>
@@ -155,22 +155,22 @@
     </div>
     <div class="footer-col">
       <h4>Courses</h4>
-      <a href="course-mechanic.html">Female Mechanic Incubator</a>
-      <a href="course-baking.html">Baking & Cooking</a>
-      <a href="course-etiquette.html">Business Etiquette</a>
+      <a href="course-mechanic">Female Mechanic Incubator</a>
+      <a href="course-baking">Baking & Cooking</a>
+      <a href="course-etiquette">Business Etiquette</a>
     </div>
     <div class="footer-col">
       <h4>Platform</h4>
-      <a href="about.html">About EAW</a>
-      <a href="stories.html">Student Stories</a>
-      <a href="contact.html">Contact Us</a>
-      <a href="tutor-apply.html">Become a Tutor</a>
+      <a href="about">About EAW</a>
+      <a href="stories">Student Stories</a>
+      <a href="contact">Contact Us</a>
+      <a href="tutor-apply">Become a Tutor</a>
     </div>
     <div class="footer-col">
       <h4>Account</h4>
-      <a href="login.html">Sign In</a>
-      <a href="signup.html">Join for Free</a>
-      <a href="student-dashboard.html">Student Dashboard</a>
+      <a href="login">Sign In</a>
+      <a href="signup">Join for Free</a>
+      <a href="student-dashboard">Student Dashboard</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -193,10 +193,10 @@ document.getElementById('hamburger')?.addEventListener('click', () => document.g
         const navCta = document.querySelector('.nav-cta');
         if (navCta) {
           const dashLink = user.role === 'tutor' || user.role === 'tutor-pending'
-            ? 'tutor-dashboard.html'
-            : 'student-dashboard.html';
+            ? 'tutor-dashboard'
+            : 'student-dashboard';
           navCta.innerHTML = `<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a>
-            <a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;
+            <a href="/" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;
         }
       });
     }

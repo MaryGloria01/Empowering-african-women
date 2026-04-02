@@ -16,20 +16,20 @@
 
 <nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo">
       <img src="eaw_icon.png" alt="EAW" class="logo-img">
       <span class="logo-text">Empowering<br>African Women</span>
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="courses.html">Courses</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="stories.html">Stories</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="courses">Courses</a></li>
+      <li><a href="about">About</a></li>
+      <li><a href="stories">Stories</a></li>
+      <li><a href="contact" class="active">Contact</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+      <a href="login" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup" class="btn btn-blue btn-sm">Join for Free →</a>
     </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </div>
@@ -128,15 +128,15 @@
   <div style="max-width:1280px;margin:0 auto;">
     <h2 class="section-title">Quick Links</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
-      <a href="signup.html" class="quick-link-card">
+      <a href="signup" class="quick-link-card">
         <span style="font-size:28px;">👩‍🎓</span>
         <div><div class="qlc-title">Join as Student</div><div class="qlc-sub">Free registration</div></div>
       </a>
-      <a href="tutor-apply.html" class="quick-link-card">
+      <a href="tutor-apply" class="quick-link-card">
         <span style="font-size:28px;">👩‍🏫</span>
         <div><div class="qlc-title">Apply as Tutor</div><div class="qlc-sub">Subject to approval</div></div>
       </a>
-      <a href="courses.html" class="quick-link-card">
+      <a href="courses" class="quick-link-card">
         <span style="font-size:28px;">📚</span>
         <div><div class="qlc-title">Browse Courses</div><div class="qlc-sub">All 100% free</div></div>
       </a>
@@ -163,22 +163,22 @@
     </div>
     <div class="footer-col">
       <h4>Courses</h4>
-      <a href="course-mechanic.html">Female Mechanic Incubator</a>
-      <a href="course-baking.html">Baking & Cooking</a>
-      <a href="course-etiquette.html">Business Etiquette</a>
+      <a href="course-mechanic">Female Mechanic Incubator</a>
+      <a href="course-baking">Baking & Cooking</a>
+      <a href="course-etiquette">Business Etiquette</a>
     </div>
     <div class="footer-col">
       <h4>Platform</h4>
-      <a href="about.html">About EAW</a>
-      <a href="stories.html">Student Stories</a>
-      <a href="contact.html">Contact Us</a>
-      <a href="tutor-apply.html">Become a Tutor</a>
+      <a href="about">About EAW</a>
+      <a href="stories">Student Stories</a>
+      <a href="contact">Contact Us</a>
+      <a href="tutor-apply">Become a Tutor</a>
     </div>
     <div class="footer-col">
       <h4>Account</h4>
-      <a href="login.html">Sign In</a>
-      <a href="signup.html">Join for Free</a>
-      <a href="student-dashboard.html">Student Dashboard</a>
+      <a href="login">Sign In</a>
+      <a href="signup">Join for Free</a>
+      <a href="student-dashboard">Student Dashboard</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -201,10 +201,10 @@ document.getElementById('hamburger')?.addEventListener('click', () => document.g
         const navCta = document.querySelector('.nav-cta');
         if (navCta) {
           const dashLink = user.role === 'tutor' || user.role === 'tutor-pending'
-            ? 'tutor-dashboard.html'
-            : 'student-dashboard.html';
+            ? 'tutor-dashboard'
+            : 'student-dashboard';
           navCta.innerHTML = `<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a>
-            <a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;
+            <a href="/" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;
         }
       });
     }

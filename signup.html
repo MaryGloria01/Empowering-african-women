@@ -84,10 +84,10 @@
     </div>
   </div>
   <div class="auth-right">
-    <a href="index.html"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
+    <a href="/"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
     <h1>Create Your Account</h1>
     <p class="auth-right-subtitle-small">Join the EAW community, completely free.</p>
-    <p class="auth-subtitle">Already have an account? <a href="login.html">Sign in here →</a></p>
+    <p class="auth-subtitle">Already have an account? <a href="login">Sign in here →</a></p>
 
     <!-- ROLE SELECTOR -->
     <label class="form-label">I want to join as:</label>
@@ -206,8 +206,8 @@
       <div class="notice-box show" style="margin-bottom:20px;">
         ℹ️ <strong>Tutor accounts require admin approval.</strong> After you apply, an admin will review your application. You'll be notified by email when approved.
       </div>
-      <button onclick="window.location.href='tutor-apply.html'" class="btn-auth" style="background:var(--gold);color:var(--gray-900);">Continue to Tutor Application →</button>
-      <p style="text-align:center;font-size:14px;color:var(--text-light);margin-top:14px;">You can also <a href="signup.html" style="color:var(--blue);">sign up as a student</a> first.</p>
+      <button onclick="window.location.href='tutor-apply'" class="btn-auth" style="background:var(--gold);color:var(--gray-900);">Continue to Tutor Application →</button>
+      <p style="text-align:center;font-size:14px;color:var(--text-light);margin-top:14px;">You can also <a href="signup" style="color:var(--blue);">sign up as a student</a> first.</p>
     </div>
   </div>
 </div>
@@ -236,7 +236,7 @@ function togglePw(fieldId, btn) {
 function selectRole(role, card) {
   document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
   card.classList.add('active');
-  if (role === 'tutor') { window.location.href = 'tutor-apply.html'; return; }
+  if (role === 'tutor') { window.location.href = 'tutor-apply'; return; }
   document.getElementById('studentForm').style.display = 'block';
   document.getElementById('tutorInfo').style.display = 'none';
 }
@@ -417,7 +417,7 @@ async function verifyOTP() {
     return;
   }
 
-  window.location.href = 'student-dashboard.html';
+  window.location.href = 'student-dashboard';
 }
 
 async function resendOTP() {

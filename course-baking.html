@@ -20,20 +20,20 @@
 
 <nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo">
       <img src="eaw_icon.png" alt="EAW" class="logo-img">
       <span class="logo-text">Empowering<br>African Women</span>
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="courses.html" class="active">Courses</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="stories.html">Stories</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="courses" class="active">Courses</a></li>
+      <li><a href="about">About</a></li>
+      <li><a href="stories">Stories</a></li>
+      <li><a href="contact">Contact</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+      <a href="login" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup" class="btn btn-blue btn-sm">Join for Free →</a>
     </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </div>
@@ -196,7 +196,7 @@
 <div class="course-hero">
   <div class="course-hero-inner">
     <div>
-      <div class="breadcrumb"><a href="courses.html">Courses</a> › Culinary Skills</div>
+      <div class="breadcrumb"><a href="courses">Courses</a> › Culinary Skills</div>
       <span class="cc-badge badge-free" style="position:static;margin-bottom:12px;display:inline-block;">Free Course</span>
       <h1>Baking &amp; Cooking Essentials</h1>
       <p>Master 9 complete cake recipes, healthy Nigerian rice meals, fresh juices, and healthier baking techniques, all from scratch, with simple ingredients.</p>
@@ -441,7 +441,7 @@
     </div>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
-      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <a href="student-dashboard" class="btn btn-outline">Go to Dashboard →</a>
       <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
     </div>
   </div>
@@ -458,21 +458,21 @@
     </div>
     <div class="footer-col">
       <h4>Courses</h4>
-      <a href="course-mechanic.html">Female Mechanic Incubator</a>
-      <a href="course-baking.html">Baking & Cooking</a>
-      <a href="course-etiquette.html">Business Etiquette</a>
+      <a href="course-mechanic">Female Mechanic Incubator</a>
+      <a href="course-baking">Baking & Cooking</a>
+      <a href="course-etiquette">Business Etiquette</a>
     </div>
     <div class="footer-col">
       <h4>Platform</h4>
-      <a href="about.html">About EAW</a>
-      <a href="stories.html">Student Stories</a>
-      <a href="contact.html">Contact Us</a>
+      <a href="about">About EAW</a>
+      <a href="stories">Student Stories</a>
+      <a href="contact">Contact Us</a>
     </div>
     <div class="footer-col">
       <h4>Account</h4>
-      <a href="login.html">Sign In</a>
-      <a href="signup.html">Join for Free</a>
-      <a href="student-dashboard.html">Dashboard</a>
+      <a href="login">Sign In</a>
+      <a href="signup">Join for Free</a>
+      <a href="student-dashboard">Dashboard</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -486,7 +486,7 @@ document.getElementById('hamburger')?.addEventListener('click', () => document.g
 
 const COURSE_ID = 'baking';
 const TOTAL_MODULES = 5;
-const QUIZ_URL = 'quiz-baking.html';
+const QUIZ_URL = 'quiz-baking';
 
 function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || 'null'); }
 function saveUser(u) {
@@ -509,7 +509,7 @@ function toggleAccordion(header) {
 
 function enrollCourse() {
   const user = getUser();
-  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
   if (!user.enrollments.find(e => e.courseId === COURSE_ID)) {
     user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
@@ -546,7 +546,7 @@ function updateEnrolBtn() {
 
 function completeModule(moduleNum) {
   const user = getUser();
-  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
   let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
   if (!enrol) {
@@ -580,7 +580,7 @@ function completeModule(moduleNum) {
 
 function goToQuiz() {
   const user = getUser();
-  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
   let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
   if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); saveUser(user); }
@@ -909,7 +909,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   CONTENT_MODULES.forEach(n => _initVideoGate(n));
   _patchAccordions();
   const user = getUser();
-  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user) { window.location.href = 'signup'; return; }
   // Enrollment gate, user must have explicitly enrolled
   // Auto-enroll if not already enrolled
   if (!(user.enrollments || []).find(e => e.courseId === COURSE_ID)) {
@@ -923,7 +923,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateEnrolBtn();
   if (user) {
     const navCta = document.querySelector('.nav-cta');
-    if (navCta) navCta.innerHTML = `<a href="student-dashboard.html" class="btn btn-blue btn-sm">My Dashboard →</a>`;
+    if (navCta) navCta.innerHTML = `<a href="student-dashboard" class="btn btn-blue btn-sm">My Dashboard →</a>`;
   }
 });
 </script>

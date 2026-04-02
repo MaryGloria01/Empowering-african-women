@@ -68,20 +68,20 @@
 <body>
 <nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo">
       <img src="eaw_icon.png" alt="EAW" class="logo-img">
       <span class="logo-text">Empowering<br>African Women</span>
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="courses.html" class="active">Courses</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="stories.html">Stories</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="courses" class="active">Courses</a></li>
+      <li><a href="about">About</a></li>
+      <li><a href="stories">Stories</a></li>
+      <li><a href="contact">Contact</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+      <a href="login" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup" class="btn btn-blue btn-sm">Join for Free →</a>
     </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </div>
@@ -150,7 +150,7 @@
       </div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
         <button onclick="retakeQuiz()" class="btn btn-outline">↩ Retake Quiz</button>
-        <a href="course-sewing.html" class="btn btn-ghost">← Back to Course</a>
+        <a href="course-sewing" class="btn btn-ghost">← Back to Course</a>
       </div>
     </div>
     <div style="border-top:2px solid var(--gray-200);padding-top:32px;">
@@ -178,7 +178,7 @@
     </div>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
-      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <a href="student-dashboard" class="btn btn-outline">Go to Dashboard →</a>
       <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
     </div>
   </div>
@@ -187,7 +187,7 @@
 <footer style="background:var(--navy);color:#fff;padding:28px 24px;border-top:1px solid rgba(255,255,255,.07);">
   <div style="max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
     <span style="font-size:13px;color:rgba(255,255,255,.4);">© 2026 Empowering African Women (EAW), DBTWTEi, Incorporated Trustees, Nigeria</span>
-    <a href="course-sewing.html" style="font-size:13px;color:rgba(255,255,255,.5);">← Back to Course</a>
+    <a href="course-sewing" style="font-size:13px;color:rgba(255,255,255,.5);">← Back to Course</a>
   </div>
 </footer>
 
@@ -438,7 +438,7 @@ document.getElementById('hamburger')?.addEventListener('click', () => document.g
     if (user && user.firstName) {
       document.addEventListener('DOMContentLoaded', function() {
         const navCta = document.querySelector('.nav-cta');
-        if (navCta) { const dl = user.role === 'tutor' || user.role === 'tutor-pending' ? 'tutor-dashboard.html' : 'student-dashboard.html'; navCta.innerHTML = `<a href="${dl}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`; }
+        if (navCta) { const dl = user.role === 'tutor' || user.role === 'tutor-pending' ? 'tutor-dashboard' : 'student-dashboard'; navCta.innerHTML = `<a href="${dl}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="/" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`; }
       });
     }
   } catch(e) {}

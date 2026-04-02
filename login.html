@@ -51,10 +51,10 @@
     </div>
   </div>
   <div class="auth-right">
-    <a href="index.html"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
+    <a href="/"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
     <h1>Sign In to EAW</h1>
     <p class="auth-right-subtitle-small">Your learning dashboard awaits.</p>
-    <p class="auth-subtitle">New to EAW? <a href="signup.html" style="color:#60A5FA;font-weight:600;">Create a free account →</a></p>
+    <p class="auth-subtitle">New to EAW? <a href="signup" style="color:#60A5FA;font-weight:600;">Create a free account →</a></p>
 
     <div class="form-group">
       <label class="form-label">Email Address</label>
@@ -66,7 +66,7 @@
         <input type="password" id="loginPw" class="form-input" placeholder="Your password" maxlength="128">
         <button type="button" class="pw-eye" onclick="togglePw('loginPw',this)" title="Show/hide password"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
-      <a href="reset-password.html" class="forgot-link" style="color:#60A5FA;">Forgot password?</a>
+      <a href="reset-password" class="forgot-link" style="color:#60A5FA;">Forgot password?</a>
     </div>
 
     <div id="loginError" style="display:none;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:13px;margin-bottom:12px;"></div>
@@ -74,7 +74,7 @@
 
     <div class="divider">or</div>
 
-    <p style="text-align:center;font-size:13px;color:var(--text-light);">Are you a tutor applicant? <a href="tutor-apply.html" style="color:#60A5FA;font-weight:600;">Apply here</a></p>
+    <p style="text-align:center;font-size:13px;color:var(--text-light);">Are you a tutor applicant? <a href="tutor-apply" style="color:#60A5FA;font-weight:600;">Apply here</a></p>
   </div>
 </div>
 
@@ -143,11 +143,11 @@ async function doLogin() {
 
     const role = data.user.role;
     if (role === 'admin') {
-      window.location.href = 'admin-dashboard.html';
+      window.location.href = 'admin-dashboard';
     } else if (role === 'tutor' || role === 'tutor-pending') {
-      window.location.href = 'tutor-dashboard.html';
+      window.location.href = 'tutor-dashboard';
     } else {
-      window.location.href = 'student-dashboard.html';
+      window.location.href = 'student-dashboard';
     }
   } catch (err) {
     showLoginErr('Connection error. Please try again.');

@@ -16,20 +16,20 @@
 
 <nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo">
       <img src="eaw_icon.png" alt="EAW" class="logo-img">
       <span class="logo-text">Empowering<br>African Women</span>
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="courses.html" class="active">Courses</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="stories.html">Stories</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="courses" class="active">Courses</a></li>
+      <li><a href="about">About</a></li>
+      <li><a href="stories">Stories</a></li>
+      <li><a href="contact">Contact</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
-      <a href="signup.html" class="btn btn-blue btn-sm">Join for Free →</a>
+      <a href="login" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="signup" class="btn btn-blue btn-sm">Join for Free →</a>
     </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </div>
@@ -86,7 +86,7 @@
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(5,150,105,.3) 0%,transparent 65%);pointer-events:none;"></div>
   <div class="course-hero-inner" style="max-width:1280px;margin:0 auto;padding:56px 24px 48px;position:relative;z-index:1;">
     <div>
-      <div class="breadcrumb"><a href="courses.html">Courses</a> › Finance</div>
+      <div class="breadcrumb"><a href="courses">Courses</a> › Finance</div>
       <span class="cc-badge badge-free" style="position:static;margin-bottom:12px;display:inline-block;">Free Course</span>
       <h1 style="font-family:'Source Serif 4',serif;font-size:clamp(30px,3.2vw,42px);font-weight:900;margin-bottom:18px;color:#fff;line-height:1.15;">💰 Financial Literacy &amp; Economics</h1>
       <p style="font-size:17px;color:rgba(255,255,255,.85);margin-bottom:22px;line-height:1.7;">Take control of your financial future. Learn the economic principles behind money, markets, inflation, trade, income inequality, and how the global economy affects your daily life, through Crash Course Economics.</p>
@@ -369,22 +369,22 @@
     </div>
     <div class="footer-col">
       <h4>Courses</h4>
-      <a href="courses.html">All Courses →</a>
-      <a href="course-mechanic.html">Female Mechanic Incubator</a>
-      <a href="course-baking.html">Baking &amp; Cooking</a>
-      <a href="course-etiquette.html">Business Etiquette</a>
+      <a href="courses">All Courses →</a>
+      <a href="course-mechanic">Female Mechanic Incubator</a>
+      <a href="course-baking">Baking &amp; Cooking</a>
+      <a href="course-etiquette">Business Etiquette</a>
     </div>
     <div class="footer-col">
       <h4>Platform</h4>
-      <a href="about.html">About EAW</a>
-      <a href="stories.html">Student Stories</a>
-      <a href="contact.html">Contact Us</a>
+      <a href="about">About EAW</a>
+      <a href="stories">Student Stories</a>
+      <a href="contact">Contact Us</a>
     </div>
     <div class="footer-col">
       <h4>Account</h4>
-      <a href="login.html">Sign In</a>
-      <a href="signup.html">Join for Free</a>
-      <a href="student-dashboard.html">Dashboard</a>
+      <a href="login">Sign In</a>
+      <a href="signup">Join for Free</a>
+      <a href="student-dashboard">Dashboard</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -411,7 +411,7 @@
     </div>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button onclick="window.print()" class="btn btn-blue">🖨️ Print Certificate</button>
-      <a href="student-dashboard.html" class="btn btn-outline">Go to Dashboard →</a>
+      <a href="student-dashboard" class="btn btn-outline">Go to Dashboard →</a>
       <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
     </div>
   </div>
@@ -435,7 +435,7 @@ function loadYT(id, el) {
   el.replaceWith(wrap);
 }
 const COURSE_ID = 'finance';
-const QUIZ_URL = 'quiz-finance.html';
+const QUIZ_URL = 'quiz-finance';
 function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || 'null'); }
 function saveUser(u) {
   localStorage.setItem('eaw_user', JSON.stringify(u));
@@ -450,7 +450,7 @@ function saveUser(u) {
 }
 function toggleAcc(header) { header.classList.toggle('active'); header.nextElementSibling.classList.toggle('open'); }
 function enrollCourse() {
-  const user = getUser(); if (!user) { window.location.href = 'signup.html'; return; }
+  const user = getUser(); if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
   if (!user.enrollments.find(e => e.courseId === COURSE_ID)) { user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }); saveUser(user); fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}); }
   updateEnrolBtn();
@@ -480,7 +480,7 @@ function updateEnrolBtn() {
 
 function enrollFree() { enrollCourse(); }
 function completeModule(moduleNum) {
-  const user = getUser(); if (!user) { window.location.href = 'signup.html'; return; }
+  const user = getUser(); if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
   let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
   if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); }
@@ -502,7 +502,7 @@ function completeModule(moduleNum) {
   if (next) { const h = next.querySelector('.accordion-header'); if (h && !h.classList.contains('active')) h.click(); setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300); }
 }
 function goToQuiz() {
-  const user = getUser(); if (!user) { window.location.href = 'signup.html'; return; }
+  const user = getUser(); if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
   let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
   if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); saveUser(user); }
@@ -671,7 +671,7 @@ function _guardQuiz() {
 document.addEventListener('DOMContentLoaded', async () => {
   updateModuleUI(); _buildQuizGate();
   const user=getUser();
-  if (!user) { window.location.href = 'signup.html'; return; }
+  if (!user) { window.location.href = 'signup'; return; }
   // Enrollment gate, user must have explicitly enrolled
   // Auto-enroll if not already enrolled
   if (!(user.enrollments || []).find(e => e.courseId === COURSE_ID)) {
@@ -683,7 +683,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const enrol=user?(user.enrollments||[]).find(e=>e.courseId===COURSE_ID):null;
   if(enrol)document.getElementById('progressBar').style.display='block';
   updateEnrolBtn();
-  if(user&&user.firstName){const navCta=document.querySelector('.nav-cta');if(navCta){const dashLink=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard.html':'student-dashboard.html';navCta.innerHTML=`<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="index.html" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;}}
+  if(user&&user.firstName){const navCta=document.querySelector('.nav-cta');if(navCta){const dashLink=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard':'student-dashboard';navCta.innerHTML=`<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="/" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;}}
 });
 </script>
 <script src="eaw-common.js"></script>
