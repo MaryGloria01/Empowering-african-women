@@ -689,17 +689,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   const localUser = getUser();
   if (localUser.enrollments && localUser.enrollments.length) {
     localUser.enrollments.forEach(e => {
-      if (!_serverEnrollments.includes(e.courseId)) {
-        _serverEnrollments.push(e.courseId);
+      const slug = e.courseId || e;
+      if (!_serverEnrollments.includes(slug)) {
+        _serverEnrollments.push(slug);
         // Sync this local-only enrollment up to the server (idempotent)
         fetch('api/enroll.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ course: e.courseId })
+          body: JSON.stringify({ course: slug })
         }).catch(function(){});
       }
     });
+  }
+  // Write server enrollments back to localStorage so course pages stay in sync
+  if (_serverEnrollments.length) {
+    const _lu = getUser();
+    if (!_lu.enrollments) _lu.enrollments = [];
+    _serverEnrollments.forEach(function(slug) {
+      if (!_lu.enrollments.find(function(e){ return (e.courseId||e) === slug; })) {
+        _lu.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
+      }
+    });
+    saveUser(_lu);
   }
 
   // Fetch certificates from server and merge into localStorage

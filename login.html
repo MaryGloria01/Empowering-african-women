@@ -130,16 +130,46 @@ async function doLogin() {
 
     // Merge locally saved progress/certificates into server user object
     const sessionUser = data.user;
+    // Start with server enrollments (from DB) as the base
+    const serverEnrollmentSlugs = data.enrollments || [];
+    const allEnrollmentSlugs = new Set(serverEnrollmentSlugs);
+    const localEnrollmentsToSync = [];
     try {
       const users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
       const saved = users.find(u => u.email && u.email.toLowerCase() === sessionUser.email.toLowerCase());
       if (saved) {
-        if (saved.enrollments && saved.enrollments.length) sessionUser.enrollments = saved.enrollments;
+        // Collect local-only enrollments to push to server
+        if (saved.enrollments && saved.enrollments.length) {
+          saved.enrollments.forEach(function(e) {
+            const slug = e.courseId || e;
+            if (!allEnrollmentSlugs.has(slug)) {
+              allEnrollmentSlugs.add(slug);
+              localEnrollmentsToSync.push(slug);
+            }
+          });
+          sessionUser.enrollments = saved.enrollments;
+        }
         if (saved.certificates && saved.certificates.length) sessionUser.certificates = saved.certificates;
       }
     } catch(e) {}
+    // Build merged enrollments array in localStorage format
+    if (!sessionUser.enrollments) sessionUser.enrollments = [];
+    serverEnrollmentSlugs.forEach(function(slug) {
+      if (!sessionUser.enrollments.find(function(e){ return (e.courseId||e) === slug; })) {
+        sessionUser.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
+      }
+    });
     // Cache user in localStorage for frontend state (no password stored)
     localStorage.setItem('eaw_user', JSON.stringify(sessionUser));
+    // Push any local-only enrollments to DB now (session is freshly established)
+    localEnrollmentsToSync.forEach(function(slug) {
+      fetch('api/enroll.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ course: slug })
+      }).catch(function(){});
+    });
 
     const role = data.user.role;
     if (role === 'admin') {

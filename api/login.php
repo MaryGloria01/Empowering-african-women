@@ -67,15 +67,28 @@ $_SESSION['user_id']   = $user['id'];
 $_SESSION['user_role'] = $user['role'];
 unset($_SESSION['is_admin']);
 
-json_out(['success' => true, 'user' => [
-    'id'         => (int)$user['id'],
-    'firstName'  => $user['first_name'],
-    'lastName'   => $user['last_name'],
-    'email'      => $user['email'],
-    'phone'      => $user['phone'],
-    'role'       => $user['role'],
-    'isVerified' => (bool)$user['is_verified'],
-]]);
+// Fetch enrollments so every browser gets them immediately on login
+$enrStmt = $pdo->prepare('SELECT course_slug FROM enrollments WHERE user_id = ?');
+$enrStmt->execute([$user['id']]);
+$enrollmentSlugs = $enrStmt->fetchAll(PDO::FETCH_COLUMN);
+
+$progStmt = $pdo->prepare('SELECT course_slug, COUNT(*) as cnt FROM progress WHERE user_id = ? GROUP BY course_slug');
+$progStmt->execute([$user['id']]);
+$progressMap = [];
+while ($row = $progStmt->fetch()) { $progressMap[$row['course_slug']] = (int)$row['cnt']; }
+
+json_out(['success' => true,
+    'enrollments' => $enrollmentSlugs,
+    'progress'    => $progressMap,
+    'user' => [
+        'id'         => (int)$user['id'],
+        'firstName'  => $user['first_name'],
+        'lastName'   => $user['last_name'],
+        'email'      => $user['email'],
+        'phone'      => $user['phone'],
+        'role'       => $user['role'],
+        'isVerified' => (bool)$user['is_verified'],
+    ]]);
 
 function _fail_login(&$rl, $rl_file) {
     $rl['attempts'] = ($rl['attempts'] ?? 0) + 1;
