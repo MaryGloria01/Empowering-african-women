@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/db.php';
 cors();
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Pragma: no-cache');
 
 $user = current_user();
 if (!$user) json_out(['error' => 'Not authenticated'], 401);

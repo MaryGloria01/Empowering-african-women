@@ -792,6 +792,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   `;
 
   renderCourseList(enrollments, 'overviewCourses');
+
+  // Auto-refresh progress from DB every 30 seconds so cross-device updates show automatically
+  setInterval(async function() {
+    try {
+      const res = await fetch('api/enroll.php', { credentials: 'include' });
+      const data = await res.json();
+      if (data.enrollments && data.enrollments.length) _serverEnrollments = data.enrollments;
+      if (data.progress) _serverProgress = data.progress;
+      const fresh = buildEnrollments();
+      renderCourseList(fresh, 'myCoursesGrid');
+      renderCourseList(fresh, 'overviewCourses');
+      document.getElementById('statEnrolled').textContent = fresh.length;
+      const activeSection = document.querySelector('.sidebar-link.active');
+      if (activeSection && activeSection.dataset.section === 'progress') renderProgressGrid(fresh, 'progressGrid');
+    } catch(e) {}
+  }, 30000);
 });
 
 // ── PHONE VERIFICATION ──────────────────────────────────────────────────────
