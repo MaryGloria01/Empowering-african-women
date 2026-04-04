@@ -1,6 +1,6 @@
 # Empowering African Women (EAW) — Online Learning Portal
 
-> **DBTWTEi Nigeria** | Equipping women across Africa with vocational, professional, and life skills through free, accessible online education.
+> **DBTWTEi Nigeria** | Equipping women across Africa with vocational, professional and life skills through free, accessible online education.
 
 [![Live Site](https://img.shields.io/badge/Live%20Site-Visit-blue?style=for-the-badge)](https://empoweringafricanwomen.com)
 [![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
