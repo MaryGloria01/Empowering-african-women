@@ -55,7 +55,11 @@
 
     /* No navbar spacing on auth pages */
     body { padding-top: 0 !important; }
+    /* Google sign-in button container */
+    .google-btn-wrap { width:100%;margin-bottom:4px; }
+    .google-btn-wrap > div { width:100% !important; }
   </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <!-- Mobile header (shown when sidebar panel hidden) -->
@@ -88,6 +92,9 @@
     <h1>Create Your Account</h1>
     <p class="auth-right-subtitle-small">Join the EAW community, completely free.</p>
     <p class="auth-subtitle">Already have an account? <a href="login">Sign in here →</a></p>
+
+    <div class="google-btn-wrap"><div id="google-signin-btn"></div></div>
+    <div class="divider">or</div>
 
     <!-- ROLE SELECTOR -->
     <label class="form-label">I want to join as:</label>
@@ -213,6 +220,45 @@
 </div>
 
 <script>
+// ─── Google Sign-In ───────────────────────────────────────────────────────────
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com';
+
+function initGoogleSignIn() {
+  if (typeof google === 'undefined' || !google.accounts) return;
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleSignIn,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+  google.accounts.id.renderButton(document.getElementById('google-signin-btn'), {
+    theme: 'outline',
+    size: 'large',
+    width: document.getElementById('google-signin-btn').offsetWidth || 380,
+    text: 'continue_with',
+    shape: 'rectangular',
+    logo_alignment: 'left'
+  });
+}
+window.addEventListener('load', function() { setTimeout(initGoogleSignIn, 100); });
+
+async function handleGoogleSignIn(response) {
+  try {
+    const res  = await fetch('api/google-auth.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ id_token: response.credential })
+    });
+    const data = await res.json();
+    if (!data.success) { showErr(data.error || 'Google sign-in failed. Please try again.'); return; }
+    localStorage.setItem('eaw_user', JSON.stringify(data.user));
+    window.location.href = 'student-dashboard';
+  } catch(e) {
+    showErr('Connection error. Please try again.');
+  }
+}
+
 // ─── Country code "Other" toggle ─────────────────────────────────────────────
 document.getElementById('phoneCode').addEventListener('change', function() {
   document.getElementById('otherCodeWrap').style.display = this.value === '+other' ? 'block' : 'none';

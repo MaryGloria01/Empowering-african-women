@@ -22,7 +22,11 @@
     .forgot-link { display:block;text-align:right;font-size:13px;color:var(--blue);margin-top:6px;margin-bottom:14px; }
     /* Auth page, no navbar spacing needed */
     body { padding-top: 0 !important; }
+    /* Google sign-in button container */
+    .google-btn-wrap { width:100%;margin-bottom:4px; }
+    .google-btn-wrap > div { width:100% !important; }
   </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <!-- Mobile header (shown when sidebar panel hidden) -->
@@ -56,6 +60,9 @@
     <p class="auth-right-subtitle-small">Your learning dashboard awaits.</p>
     <p class="auth-subtitle">New to EAW? <a href="signup" style="color:#60A5FA;font-weight:600;">Create a free account →</a></p>
 
+    <div class="google-btn-wrap"><div id="google-signin-btn"></div></div>
+    <div class="divider">or</div>
+
     <div class="form-group">
       <label class="form-label">Email Address</label>
       <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" maxlength="254">
@@ -72,13 +79,94 @@
     <div id="loginError" style="display:none;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:13px;margin-bottom:12px;"></div>
     <button onclick="doLogin()" class="btn-auth">Sign In →</button>
 
-    <div class="divider">or</div>
-
-    <p style="text-align:center;font-size:13px;color:var(--text-light);">Are you a tutor applicant? <a href="tutor-apply" style="color:#60A5FA;font-weight:600;">Apply here</a></p>
+    <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:16px;">Are you a tutor applicant? <a href="tutor-apply" style="color:#60A5FA;font-weight:600;">Apply here</a></p>
   </div>
 </div>
 
 <script>
+// ── Google Sign-In ─────────────────────────────────────────────────────────────
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com';
+
+function initGoogleSignIn() {
+  if (typeof google === 'undefined' || !google.accounts) return;
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleSignIn,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+  google.accounts.id.renderButton(document.getElementById('google-signin-btn'), {
+    theme: 'outline',
+    size: 'large',
+    width: document.getElementById('google-signin-btn').offsetWidth || 380,
+    text: 'continue_with',
+    shape: 'rectangular',
+    logo_alignment: 'left'
+  });
+}
+window.addEventListener('load', function() { setTimeout(initGoogleSignIn, 100); });
+
+async function handleGoogleSignIn(response) {
+  const el = document.getElementById('loginError');
+  el.style.display = 'none';
+  try {
+    const res  = await fetch('api/google-auth.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ id_token: response.credential })
+    });
+    const data = await res.json();
+    if (!data.success) { showLoginErr(data.error || 'Google sign-in failed.'); return; }
+    _onAuthSuccess(data);
+  } catch(e) {
+    showLoginErr('Connection error. Please try again.');
+  }
+}
+
+async function _onAuthSuccess(data) {
+  sessionStorage.removeItem('eaw_login_rl');
+  const sessionUser = data.user;
+  const serverEnrollmentSlugs = data.enrollments || [];
+  const allEnrollmentSlugs = new Set(serverEnrollmentSlugs);
+  const localEnrollmentsToSync = [];
+  try {
+    const currentLocal = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+    if (currentLocal && currentLocal.email && currentLocal.email.toLowerCase() === sessionUser.email.toLowerCase()) {
+      if (currentLocal.enrollments && currentLocal.enrollments.length) {
+        currentLocal.enrollments.forEach(function(e) {
+          const slug = e.courseId || e;
+          if (!allEnrollmentSlugs.has(slug)) { allEnrollmentSlugs.add(slug); localEnrollmentsToSync.push(slug); }
+        });
+        sessionUser.enrollments = currentLocal.enrollments;
+      }
+      if (currentLocal.certificates && currentLocal.certificates.length) sessionUser.certificates = currentLocal.certificates;
+    }
+  } catch(e) {}
+  if (!sessionUser.enrollments) sessionUser.enrollments = [];
+  serverEnrollmentSlugs.forEach(function(slug) {
+    if (!sessionUser.enrollments.find(function(e){ return (e.courseId||e) === slug; })) {
+      sessionUser.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
+    }
+  });
+  localStorage.setItem('eaw_user', JSON.stringify(sessionUser));
+  if (localEnrollmentsToSync.length) {
+    await Promise.all(localEnrollmentsToSync.map(function(slug) {
+      return fetch('api/enroll.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ course: slug })
+      }).catch(function(){});
+    }));
+  }
+  const role = data.user.role;
+  if (role === 'admin') window.location.href = 'admin-dashboard';
+  else if (role === 'tutor' || role === 'tutor-pending') window.location.href = 'tutor-dashboard';
+  else window.location.href = 'student-dashboard';
+}
+
+// ── Eye icon / password toggle ─────────────────────────────────────────────────
 const EYE_ON  = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_OFF = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 function togglePw(fieldId, btn) {
@@ -125,72 +213,7 @@ async function doLogin() {
       return;
     }
 
-    // Clear rate limit on success
-    sessionStorage.removeItem('eaw_login_rl');
-
-    // Merge locally saved progress/certificates into server user object
-    const sessionUser = data.user;
-    // Start with server enrollments (from DB) as the base
-    const serverEnrollmentSlugs = data.enrollments || [];
-    const allEnrollmentSlugs = new Set(serverEnrollmentSlugs);
-    const localEnrollmentsToSync = [];
-    try {
-      // Read from eaw_user (primary — kept up to date by saveUser on all course pages)
-      const currentLocal = JSON.parse(localStorage.getItem('eaw_user') || 'null');
-      if (currentLocal && currentLocal.email && currentLocal.email.toLowerCase() === sessionUser.email.toLowerCase()) {
-        if (currentLocal.enrollments && currentLocal.enrollments.length) {
-          currentLocal.enrollments.forEach(function(e) {
-            const slug = e.courseId || e;
-            if (!allEnrollmentSlugs.has(slug)) { allEnrollmentSlugs.add(slug); localEnrollmentsToSync.push(slug); }
-          });
-          sessionUser.enrollments = currentLocal.enrollments;
-        }
-        if (currentLocal.certificates && currentLocal.certificates.length) sessionUser.certificates = currentLocal.certificates;
-      }
-      // Also check eaw_users registry as fallback
-      const users = JSON.parse(localStorage.getItem('eaw_users') || '[]');
-      const saved = users.find(u => u.email && u.email.toLowerCase() === sessionUser.email.toLowerCase());
-      if (saved) {
-        if (saved.enrollments && saved.enrollments.length) {
-          saved.enrollments.forEach(function(e) {
-            const slug = e.courseId || e;
-            if (!allEnrollmentSlugs.has(slug)) { allEnrollmentSlugs.add(slug); localEnrollmentsToSync.push(slug); }
-          });
-          if (!sessionUser.enrollments || !sessionUser.enrollments.length) sessionUser.enrollments = saved.enrollments;
-        }
-        if (!sessionUser.certificates && saved.certificates && saved.certificates.length) sessionUser.certificates = saved.certificates;
-      }
-    } catch(e) {}
-    // Build merged enrollments array in localStorage format
-    if (!sessionUser.enrollments) sessionUser.enrollments = [];
-    serverEnrollmentSlugs.forEach(function(slug) {
-      if (!sessionUser.enrollments.find(function(e){ return (e.courseId||e) === slug; })) {
-        sessionUser.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
-      }
-    });
-    // Cache user in localStorage for frontend state (no password stored)
-    localStorage.setItem('eaw_user', JSON.stringify(sessionUser));
-    // Push any local-only enrollments to DB — await all before redirecting
-    // (fire-and-forget fetches get cancelled by the redirect otherwise)
-    if (localEnrollmentsToSync.length) {
-      await Promise.all(localEnrollmentsToSync.map(function(slug) {
-        return fetch('api/enroll.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ course: slug })
-        }).catch(function(){});
-      }));
-    }
-
-    const role = data.user.role;
-    if (role === 'admin') {
-      window.location.href = 'admin-dashboard';
-    } else if (role === 'tutor' || role === 'tutor-pending') {
-      window.location.href = 'tutor-dashboard';
-    } else {
-      window.location.href = 'student-dashboard';
-    }
+    await _onAuthSuccess(data);
   } catch (err) {
     showLoginErr('Connection error. Please try again.');
     btn.textContent = 'Sign In →';

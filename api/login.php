@@ -54,7 +54,14 @@ $stmt = $pdo->prepare('SELECT id, first_name, last_name, email, phone, role, pas
 $stmt->execute([$email]);
 $user = $stmt->fetch();
 
-if (!$user || !password_verify($password, $user['password_hash'])) {
+if (!$user) { _fail_login($rl, $rl_file); }
+
+// Google-only account — no usable password_hash
+if (strpos($user['password_hash'] ?? '', 'google_oauth_') === 0) {
+    json_out(['error' => 'This account was created with Google Sign-In. Please use the "Continue with Google" button to sign in.'], 401);
+}
+
+if (!password_verify($password, $user['password_hash'])) {
     _fail_login($rl, $rl_file);
 }
 
