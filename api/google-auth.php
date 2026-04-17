@@ -5,7 +5,7 @@ cors();
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_out(['error' => 'Method not allowed'], 405);
 
 // ── Your Google OAuth Client ID ───────────────────────────────────────────────
-define('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com');
+define('GOOGLE_CLIENT_ID', '628340119385-bg1k4gkadmu7ngpha69o44us9fhvlefe.apps.googleusercontent.com');
 
 $data    = get_input();
 $idToken = trim($data['id_token'] ?? '');
