@@ -149,7 +149,7 @@
             <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: BBC Learning English on YouTube</p>
             <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">BBC Learning English (9.5M+ subscribers) publishes free English lessons every week covering grammar, vocabulary, pronunciation and real conversations. Visit <strong>youtube.com/@bbclearningenglish</strong> and start with their <em>"English in a Minute"</em> and <em>"6 Minute English"</em> series.</p>
           </div>
-          <button onclick="completeModule(1)" id="complete-btn-1" class="module-complete-btn">Mark Module 1 Complete ✓</button>
+          <button onclick="completeModule(1)" id="complete-btn-1" class="module-complete-btn">Mark Module 1 Complete</button>
         </div>
       </div>
 
@@ -167,7 +167,7 @@
             <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: mmmEnglish on YouTube</p>
             <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">With over 5 million subscribers, mmmEnglish (Emma) teaches pronunciation, vocabulary, phrasal verbs, idioms and grammar in a friendly, practical style. Visit <strong>youtube.com/@mmmEnglish</strong> and search <em>"beginner English"</em> to start.</p>
           </div>
-          <button onclick="completeModule(2)" id="complete-btn-2" class="module-complete-btn">Mark Module 2 Complete ✓</button>
+          <button onclick="completeModule(2)" id="complete-btn-2" class="module-complete-btn">Mark Module 2 Complete</button>
         </div>
       </div>
 
@@ -185,7 +185,7 @@
             <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: Speak English With Mr. Duncan on YouTube</p>
             <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">Mr. Duncan offers engaging, fun lessons focused on practical professional English. Visit his channel and look for his <em>"Business English"</em> and <em>"English for Work"</em> series.</p>
           </div>
-          <button onclick="completeModule(3)" id="complete-btn-3" class="module-complete-btn">Mark Module 3 Complete ✓</button>
+          <button onclick="completeModule(3)" id="complete-btn-3" class="module-complete-btn">Mark Module 3 Complete</button>
         </div>
       </div>
 
@@ -203,7 +203,7 @@
             <p style="color:#fff;font-size:15px;font-weight:600;margin:0 0 6px;">📺 Watch: English with Vanessa on YouTube</p>
             <p style="color:rgba(255,255,255,.75);font-size:13px;margin:0;line-height:1.6;">Vanessa teaches real-life American English with a focus on pronunciation and natural expression. Her clear, encouraging style is perfect for building confidence. Search <strong>"English with Vanessa pronunciation"</strong> on YouTube.</p>
           </div>
-          <button onclick="completeModule(4)" id="complete-btn-4" class="module-complete-btn">Mark Module 4 Complete ✓</button>
+          <button onclick="completeModule(4)" id="complete-btn-4" class="module-complete-btn">Mark Module 4 Complete</button>
         </div>
       </div>
 
@@ -214,7 +214,7 @@
       <h3 style="font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;margin-bottom:10px;color:#fff;">Earn Your English Language Certificate</h3>
       <p style="color:rgba(255,255,255,.85);margin-bottom:20px;">Complete all 4 modules to receive your EAW Certificate in English Language &amp; Communication.</p>
       <div style="margin-top:8px;">
-        <button id="takeQuizBtn" onclick="_guardQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;width:100%;font-size:16px;padding:16px;">📝 Take Final Assessment →</button>
+        <button id="takeQuizBtn" onclick="_guardQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;width:100%;font-size:16px;padding:16px;">Take Final Assessment →</button>
         <p style="text-align:center;font-size:13px;color:rgba(255,255,255,.7);margin-top:8px;">Complete all modules first, then score 70%+ to earn your certificate</p>
       </div>
     </div>
@@ -324,7 +324,7 @@ function updateEnrolBtn() {
   const enrolled = user && (user.enrollments || []).find(e => e.courseId === COURSE_ID);
   document.querySelectorAll('.enrol-btn').forEach(btn => {
     if (enrolled) {
-      btn.textContent = '✓ Enrolled, Start Learning →';
+      btn.textContent = 'Start Learning →';
       btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
       btn.style.cursor = 'default';
       btn.onclick = function() {
@@ -376,9 +376,9 @@ function updateModuleUI() {
   const pbar = document.getElementById('courseProgressBar'); const ptext = document.getElementById('courseProgressText');
   if (pbar) pbar.style.width = pct + '%';
   if (ptext) ptext.textContent = pct + '% complete' + (quizPassed ? ', Certificate Earned! 🎓' : ', ' + completed.filter(n => CONTENT_MODULES.includes(n)).length + ' of ' + CONTENT_MODULES.length + ' modules + quiz');
-  for (let i = 1; i <= TOTAL_MODULES; i++) { const btn = document.getElementById('complete-btn-' + i); if (btn && completed.includes(i)) { btn.textContent = '✅ Module Complete!'; btn.style.background = 'var(--green)'; btn.disabled = true; } }
+  for (let i = 1; i <= TOTAL_MODULES; i++) { const btn = document.getElementById('complete-btn-' + i); if (btn && completed.includes(i)) { btn.textContent = 'Module Complete'; btn.style.background = 'var(--green)'; btn.disabled = true; } }
   const quizBtn = document.getElementById(QUIZ_BTN_ID);
-  if (quizBtn && quizPassed) { quizBtn.textContent = '🎓 View Your Certificate'; quizBtn.style.background = 'var(--green)'; quizBtn.style.color = '#fff'; quizBtn.onclick = issueCertificate; }
+  if (quizBtn && quizPassed) { quizBtn.textContent = 'View Your Certificate'; quizBtn.style.background = 'var(--green)'; quizBtn.style.color = '#fff'; quizBtn.onclick = issueCertificate; }
 }
 function issueCertificate() {
   const user = getUser(); if (!user) return;
@@ -469,10 +469,10 @@ function _buildQuizGate() {
     <div class="eqg-body">
       <div class="eqg-checklist" id="eqgChecklist">${items}</div>
       <button class="eqg-btn ${(done||quizPassed)?'unlocked':'locked'}" id="${QUIZ_BTN_ID}" onclick="${quizPassed?'issueCertificate()':'_guardQuiz()'}">
-        ${quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock')}
+        ${quizPassed ? 'View Your Certificate →' : (done ? 'Take Final Assessment →' : 'Complete all '+total+' modules to unlock')}
       </button>
       <div class="eqg-hint ${(done||quizPassed)?'unlocked':'locked'}" id="eqgHint">
-        ${quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`)}
+        ${quizPassed ? 'Certificate earned! Click above to view it.' : (done ? "You're ready — good luck on the assessment!" : `${count} of ${total} modules completed`)}
       </div>
     </div>
   </div>`;
@@ -515,11 +515,11 @@ function _refreshQuizGate() {
   if (btn) {
     btn.className = 'eqg-btn '+((done||quizPassed)?'unlocked':'locked');
     btn.onclick = quizPassed ? issueCertificate : _guardQuiz;
-    btn.innerHTML = quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock');
+    btn.innerHTML = quizPassed ? 'View Your Certificate →' : (done ? 'Take Final Assessment →' : 'Complete all '+total+' modules to unlock');
   }
   if (hint) {
     hint.className = 'eqg-hint '+((done||quizPassed)?'unlocked':'locked');
-    hint.textContent = quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`);
+    hint.textContent = quizPassed ? 'Certificate earned! Click above to view it.' : (done ? "You're ready — good luck on the assessment!" : `${count} of ${total} modules completed`);
   }
 }
 function _guardQuiz() {

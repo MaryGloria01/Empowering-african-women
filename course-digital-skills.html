@@ -180,7 +180,7 @@
               </div>
             </div>
           </div>
-          <button onclick="completeModule(1)" id="complete-btn-1" class="module-complete-btn">Mark Module 1 Complete ✓</button>
+          <button onclick="completeModule(1)" id="complete-btn-1" class="module-complete-btn">Mark Module 1 Complete</button>
         </div>
       </div>
 
@@ -221,7 +221,7 @@
               </div>
             </div>
           </div>
-          <button onclick="completeModule(2)" id="complete-btn-2" class="module-complete-btn">Mark Module 2 Complete ✓</button>
+          <button onclick="completeModule(2)" id="complete-btn-2" class="module-complete-btn">Mark Module 2 Complete</button>
         </div>
       </div>
 
@@ -262,7 +262,7 @@
               </div>
             </div>
           </div>
-          <button onclick="completeModule(3)" id="complete-btn-3" class="module-complete-btn">Mark Module 3 Complete ✓</button>
+          <button onclick="completeModule(3)" id="complete-btn-3" class="module-complete-btn">Mark Module 3 Complete</button>
         </div>
       </div>
 
@@ -303,7 +303,7 @@
               </div>
             </div>
           </div>
-          <button onclick="completeModule(4)" id="complete-btn-4" class="module-complete-btn">Mark Module 4 Complete ✓</button>
+          <button onclick="completeModule(4)" id="complete-btn-4" class="module-complete-btn">Mark Module 4 Complete</button>
         </div>
       </div>
 
@@ -344,7 +344,7 @@
               </div>
             </div>
           </div>
-          <button onclick="completeModule(5)" id="complete-btn-5" class="module-complete-btn">Mark Module 5 Complete ✓</button>
+          <button onclick="completeModule(5)" id="complete-btn-5" class="module-complete-btn">Mark Module 5 Complete</button>
         </div>
       </div>
 
@@ -355,7 +355,7 @@
       <h3 style="font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;margin-bottom:10px;color:#fff;">Earn Your Digital Skills Certificate</h3>
       <p style="color:rgba(255,255,255,.85);margin-bottom:20px;">Complete all 5 modules to receive your EAW Certificate in Computer Science &amp; Digital Skills.</p>
       <div style="margin-top:8px;">
-        <button id="takeQuizBtn" onclick="_guardQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;width:100%;font-size:16px;padding:16px;">📝 Take Final Assessment →</button>
+        <button id="takeQuizBtn" onclick="_guardQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;width:100%;font-size:16px;padding:16px;">Take Final Assessment →</button>
         <p style="text-align:center;font-size:13px;color:rgba(255,255,255,.7);margin-top:8px;">Complete all modules first, then score 70%+ to earn your certificate</p>
       </div>
     </div>
@@ -489,7 +489,7 @@ function updateEnrolBtn() {
   const enrolled = user && (user.enrollments || []).find(e => e.courseId === COURSE_ID);
   document.querySelectorAll('.enrol-btn').forEach(btn => {
     if (enrolled) {
-      btn.textContent = '✓ Enrolled, Start Learning →';
+      btn.textContent = 'Start Learning →';
       btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
       btn.style.cursor = 'default';
       btn.onclick = function() {
@@ -563,11 +563,11 @@ function updateModuleUI() {
   if (ptext) ptext.textContent = pct + '% complete' + (quizPassed ? ', Certificate Earned! 🎓' : ', ' + completed.filter(n => CONTENT_MODULES.includes(n)).length + ' of ' + CONTENT_MODULES.length + ' modules + quiz');
   for (let i = 1; i <= TOTAL_MODULES; i++) {
     const btn = document.getElementById('complete-btn-' + i);
-    if (btn && completed.includes(i)) { btn.textContent = '✅ Module Complete!'; btn.style.background = 'var(--green)'; btn.disabled = true; }
+    if (btn && completed.includes(i)) { btn.textContent = 'Module Complete'; btn.style.background = 'var(--green)'; btn.disabled = true; }
   }
   const quizBtn = document.getElementById(QUIZ_BTN_ID);
   if (quizBtn && quizPassed) {
-    quizBtn.textContent = '🎓 View Your Certificate';
+    quizBtn.textContent = 'View Your Certificate';
     quizBtn.style.background = 'var(--green)';
     quizBtn.style.color = '#fff';
     quizBtn.onclick = issueCertificate;
@@ -680,10 +680,10 @@ function _buildQuizGate() {
     <div class="eqg-body">
       <div class="eqg-checklist" id="eqgChecklist">${items}</div>
       <button class="eqg-btn ${(done||quizPassed)?'unlocked':'locked'}" id="${QUIZ_BTN_ID}" onclick="${quizPassed?'issueCertificate()':'_guardQuiz()'}">
-        ${quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock')}
+        ${quizPassed ? 'View Your Certificate →' : (done ? 'Take Final Assessment →' : 'Complete all '+total+' modules to unlock')}
       </button>
       <div class="eqg-hint ${(done||quizPassed)?'unlocked':'locked'}" id="eqgHint">
-        ${quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`)}
+        ${quizPassed ? 'Certificate earned! Click above to view it.' : (done ? "You're ready — good luck on the assessment!" : `${count} of ${total} modules completed`)}
       </div>
     </div>
   </div>`;
@@ -727,11 +727,11 @@ function _refreshQuizGate() {
   if (btn) {
     btn.className = 'eqg-btn '+((done||quizPassed)?'unlocked':'locked');
     btn.onclick = quizPassed ? issueCertificate : _guardQuiz;
-    btn.innerHTML = quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock');
+    btn.innerHTML = quizPassed ? 'View Your Certificate →' : (done ? 'Take Final Assessment →' : 'Complete all '+total+' modules to unlock');
   }
   if (hint) {
     hint.className = 'eqg-hint '+((done||quizPassed)?'unlocked':'locked');
-    hint.textContent = quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`);
+    hint.textContent = quizPassed ? 'Certificate earned! Click above to view it.' : (done ? "You're ready — good luck on the assessment!" : `${count} of ${total} modules completed`);
   }
 }
 

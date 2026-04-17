@@ -50,11 +50,13 @@ function cors() {
 function start_session() {
     if (session_status() === PHP_SESSION_NONE) {
         // Never put session ID in URLs — prevents URI-too-large (414) on slow connections
-        ini_set('session.use_trans_sid',   '0');
+        ini_set('session.use_trans_sid',    '0');
         ini_set('session.use_only_cookies', '1');
         ini_set('session.cookie_secure',    '1');
         ini_set('session.cookie_httponly',  '1');
         ini_set('session.cookie_samesite',  'Strict');
+        // Match server-side GC lifetime to cookie lifetime (default is 1440s = 24min on most hosts)
+        ini_set('session.gc_maxlifetime',   (string)(86400 * 30));
         session_set_cookie_params([
             'lifetime' => 86400 * 30,
             'path'     => '/',

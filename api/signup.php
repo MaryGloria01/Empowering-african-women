@@ -58,9 +58,14 @@ $stmt = $pdo->prepare('INSERT INTO users (first_name, last_name, email, phone, p
 $stmt->execute([$firstName, $lastName, $email, $phone, $hash, $role]);
 $userId = $pdo->lastInsertId();
 
-// Track referral if provided (validate it's alphanumeric only)
+// Track referral: validate code exists in DB and is not the new user's own code
 if (!empty($data['ref']) && preg_match('/^[A-Z0-9]{6,10}$/', strtoupper($data['ref']))) {
-    $pdo->prepare("UPDATE users SET referred_by = ? WHERE id = ?")->execute([strtoupper($data['ref']), $userId]);
+    $refCode = strtoupper($data['ref']);
+    $refStmt = $pdo->prepare("SELECT id FROM users WHERE referral_code = ? AND email != ?");
+    $refStmt->execute([$refCode, $email]);
+    if ($refStmt->fetch()) {
+        $pdo->prepare("UPDATE users SET referred_by = ? WHERE id = ?")->execute([$refCode, $userId]);
+    }
 }
 
 // Update rate limit counter

@@ -288,7 +288,7 @@
             </video>
           </div>
           <button id="complete-btn-1" onclick="completeModule(1)" class="module-complete-btn">
-            Mark Module 1 Complete ✓
+            Mark Module 1 Complete
           </button>
         </div>
       </div>
@@ -319,7 +319,7 @@
             </video>
           </div>
           <button id="complete-btn-2" onclick="completeModule(2)" class="module-complete-btn">
-            Mark Module 2 Complete ✓
+            Mark Module 2 Complete
           </button>
         </div>
       </div>
@@ -350,7 +350,7 @@
             </video>
           </div>
           <button id="complete-btn-3" onclick="completeModule(3)" class="module-complete-btn">
-            Mark Module 3 Complete ✓
+            Mark Module 3 Complete
           </button>
         </div>
       </div>
@@ -396,7 +396,7 @@
           </div>
           <!-- Module 4 is the FINAL module, completing it sends student to the quiz -->
           <button id="complete-btn-4" onclick="goToQuiz()" class="module-complete-btn" style="background:var(--gold);color:#1a0a00;">
-            📝 Take Final Assessment →
+            Take Final Assessment →
           </button>
           <p style="text-align:center;font-size:13px;color:var(--text-mid);margin-top:8px;">Score 70% or above to unlock your Certificate of Completion</p>
         </div>
@@ -568,7 +568,7 @@ function updateEnrolBtn() {
   const enrolled = user && (user.enrollments || []).find(e => e.courseId === COURSE_ID);
   document.querySelectorAll('.enrol-btn').forEach(btn => {
     if (enrolled) {
-      btn.textContent = '✓ Enrolled, Start Learning →';
+      btn.textContent = 'Start Learning →';
       btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
       btn.style.cursor = 'default';
       btn.onclick = function() {
@@ -649,7 +649,7 @@ function updateModuleUI() {
     const btn = document.getElementById('complete-btn-' + i);
     const dot = document.getElementById('dot-' + i);
     if (completed.includes(i)) {
-      if (btn) { btn.textContent = '✅ Module Complete!'; btn.style.background = 'var(--green)'; btn.style.color = '#fff'; btn.disabled = true; }
+      if (btn) { btn.textContent = 'Module Complete'; btn.style.background = 'var(--green)'; btn.style.color = '#fff'; btn.disabled = true; }
       if (dot) dot.classList.add('done');
     }
   }
@@ -661,7 +661,7 @@ function updateModuleUI() {
   const quizBtn = document.getElementById('complete-btn-4');
   if (quizBtn) {
     if (quizPassed) {
-      quizBtn.textContent = '🎓 View Your Certificate';
+      quizBtn.textContent = 'View Your Certificate';
       quizBtn.style.background = 'var(--green)';
       quizBtn.style.color = '#fff';
       quizBtn.onclick = issueCertificate;
@@ -669,7 +669,7 @@ function updateModuleUI() {
       const attempts = user ? ((user.quizAttempts||{})[COURSE_ID]||[]) : [];
       if (attempts.length > 0) {
         const last = attempts[attempts.length-1];
-        quizBtn.textContent = `📝 Retake Quiz (Last: ${last.score}/${last.total}) →`;
+        quizBtn.textContent = `Retake Quiz (Last: ${last.score}/${last.total}) →`;
       }
     }
   }
@@ -819,10 +819,10 @@ function _buildQuizGate() {
     <div class="eqg-body">
       <div class="eqg-checklist" id="eqgChecklist">${items}</div>
       <button class="eqg-btn ${(done||quizPassed)?'unlocked':'locked'}" id="${QUIZ_BTN_ID}" onclick="${quizPassed?'issueCertificate()':'_guardQuiz()'}">
-        ${quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock')}
+        ${quizPassed ? 'View Your Certificate →' : (done ? 'Take Final Assessment →' : 'Complete all '+total+' modules to unlock')}
       </button>
       <div class="eqg-hint ${(done||quizPassed)?'unlocked':'locked'}" id="eqgHint">
-        ${quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`)}
+        ${quizPassed ? 'Certificate earned! Click above to view it.' : (done ? "You're ready — good luck on the assessment!" : `${count} of ${total} modules completed`)}
       </div>
     </div>
   </div>`;
@@ -867,11 +867,11 @@ function _refreshQuizGate() {
   if (btn) {
     btn.className = 'eqg-btn '+((done||quizPassed)?'unlocked':'locked');
     btn.onclick = quizPassed ? issueCertificate : _guardQuiz;
-    btn.innerHTML = quizPassed ? '🎓 View Your Certificate →' : (done ? '📝 Take Final Assessment →' : '🔒 Complete all '+total+' modules to unlock');
+    btn.innerHTML = quizPassed ? 'View Your Certificate →' : (done ? 'Take Final Assessment →' : 'Complete all '+total+' modules to unlock');
   }
   if (hint) {
     hint.className = 'eqg-hint '+((done||quizPassed)?'unlocked':'locked');
-    hint.textContent = quizPassed ? '🎉 Certificate earned! Click above to view it.' : (done ? "✅ You're all set, good luck on the assessment!" : `${count} of ${total} modules completed`);
+    hint.textContent = quizPassed ? 'Certificate earned! Click above to view it.' : (done ? "You're ready — good luck on the assessment!" : `${count} of ${total} modules completed`);
   }
 }
 
