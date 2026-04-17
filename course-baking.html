@@ -544,7 +544,7 @@ function updateEnrolBtn() {
   });
 }
 
-function completeModule(moduleNum) {
+async function completeModule(moduleNum) {
   const user = getUser();
   if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
@@ -561,7 +561,7 @@ function completeModule(moduleNum) {
   enrol.progress = Math.min(80, enrol.completedModules.length * 20);
   saveUser(user);
   // Save progress to server (non-blocking, best-effort)
-  fetch('api/progress.php', {
+  await fetch('api/progress.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     credentials: 'include',

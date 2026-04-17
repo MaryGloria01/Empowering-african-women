@@ -589,25 +589,43 @@ async function unenrolCourse(courseId) {
   if (!ok) return;
   const user = getUser();
   if (!user) return;
+  // Optimistically remove from state
+  const prevEnrollments = user.enrollments ? [...user.enrollments] : [];
+  const prevServerEnrollments = [..._serverEnrollments];
   if (user.enrollments) {
     user.enrollments = user.enrollments.filter(e => e.courseId !== courseId);
     saveUser(user);
   }
   _serverEnrollments = _serverEnrollments.filter(s => s !== courseId);
-  try {
-    fetch('api/enroll.php', {
-      method: 'DELETE',
-      headers: {'Content-Type': 'application/json'},
-      credentials: 'include',
-      body: JSON.stringify({course: courseId})
-    }).catch(function(){});
-  } catch(e) {}
   const enrollments = buildEnrollments();
   renderCourseList(enrollments, 'myCoursesGrid');
   renderCourseList(enrollments, 'overviewCourses');
   renderRecommended();
   document.getElementById('statEnrolled').textContent = enrollments.length;
   document.getElementById('coursesBadge').textContent = enrollments.length;
+  // Await DB delete — rollback UI if it fails
+  try {
+    const delRes = await fetch('api/enroll.php', {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
+      body: JSON.stringify({course: courseId})
+    });
+    const delData = await delRes.json();
+    if (!delData.success) throw new Error('Delete failed');
+  } catch(e) {
+    // Rollback
+    const ru = getUser();
+    if (ru) { ru.enrollments = prevEnrollments; saveUser(ru); }
+    _serverEnrollments = prevServerEnrollments;
+    const rolled = buildEnrollments();
+    renderCourseList(rolled, 'myCoursesGrid');
+    renderCourseList(rolled, 'overviewCourses');
+    renderRecommended();
+    document.getElementById('statEnrolled').textContent = rolled.length;
+    document.getElementById('coursesBadge').textContent = rolled.length;
+    alert('Could not remove course. Please try again.');
+  }
 }
 
 function renderCertList(certs, containerId) {
@@ -682,7 +700,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const res = await fetch('api/enroll.php', { credentials: 'include' });
     const data = await res.json();
-    if (data.enrollments && data.enrollments.length) _serverEnrollments = data.enrollments;
+    if (data.enrollments) _serverEnrollments = data.enrollments;
     if (data.progress) _serverProgress = data.progress;
   } catch (e) { /* offline */ }
   // Always merge localStorage enrollments so nothing is lost
@@ -798,7 +816,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const res = await fetch('api/enroll.php', { credentials: 'include' });
       const data = await res.json();
-      if (data.enrollments && data.enrollments.length) _serverEnrollments = data.enrollments;
+      if (data.enrollments) _serverEnrollments = data.enrollments;
       if (data.progress) _serverProgress = data.progress;
       const fresh = buildEnrollments();
       renderCourseList(fresh, 'myCoursesGrid');

@@ -462,7 +462,7 @@ function updateEnrolBtn() {
 }
 
 function enrollFree() { enrollCourse(); }
-function completeModule(moduleNum) {
+async function completeModule(moduleNum) {
   const user = getUser(); if (!user) { window.location.href = 'signup'; return; }
   if (!user.enrollments) user.enrollments = [];
   let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
@@ -474,7 +474,7 @@ function completeModule(moduleNum) {
   localStorage.setItem(_progKey, JSON.stringify(_completedModules));
   enrol.progress = Math.min(84, Math.round(enrol.completedModules.length / 5 * 84)); saveUser(user);
   // Save progress to server (non-blocking, best-effort)
-  fetch('api/progress.php', {
+  await fetch('api/progress.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     credentials: 'include',
