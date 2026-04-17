@@ -237,7 +237,8 @@ function initGoogleSignIn() {
     width: document.getElementById('google-signin-btn').offsetWidth || 380,
     text: 'continue_with',
     shape: 'rectangular',
-    logo_alignment: 'left'
+    logo_alignment: 'left',
+    locale: 'en'
   });
 }
 window.addEventListener('load', function() { setTimeout(initGoogleSignIn, 100); });
