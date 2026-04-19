@@ -16,7 +16,7 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   Header always unset X-Powered-By
   Header always unset Server
   # Content-Security-Policy — restrict where scripts/styles/media can load from
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.emailjs.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self'; connect-src 'self' https://api.emailjs.com https://eaw-otp-worker.empoweringafricanwomen.workers.dev; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.emailjs.com https://cdn.jsdelivr.net https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://lh3.googleusercontent.com; media-src 'self'; connect-src 'self' https://api.emailjs.com https://eaw-otp-worker.empoweringafricanwomen.workers.dev https://accounts.google.com; frame-src https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
 </IfModule>
 
 # ── Protect sensitive files from direct access ────────────────────────────────

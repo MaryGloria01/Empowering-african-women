@@ -251,6 +251,16 @@ function injectNavButtons() {
   });
 }
 
+/* ─── Course page DB sync (polling + tab-focus) ───────────────────────── */
+function _eawRefreshCourseProgress() {
+  if (typeof loadProgressFromDB !== 'function') return;
+  loadProgressFromDB().then(function() {
+    if (typeof updateModuleUI  === 'function') updateModuleUI();
+    if (typeof _buildQuizGate  === 'function') _buildQuizGate();
+    if (typeof updateEnrolBtn  === 'function') updateEnrolBtn();
+  }).catch(function() {});
+}
+
 /* ─── Init ────────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {
   buildSearchModal();
@@ -258,4 +268,12 @@ document.addEventListener('DOMContentLoaded', function() {
   try {
     if (localStorage.getItem('eaw_theme') === 'dark') applyDarkMode(true);
   } catch(e) {}
+
+  // On course pages: poll DB every 60 s + refresh when tab regains focus
+  if (typeof loadProgressFromDB === 'function') {
+    setInterval(_eawRefreshCourseProgress, 60000);
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) _eawRefreshCourseProgress();
+    });
+  }
 });
