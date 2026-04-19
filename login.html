@@ -1,86 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
-  <link rel="shortcut icon" href="eaw_icon.png">
-  <meta name="theme-color" content="#0F172A">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign In | Empowering African Women</title>
-  <link rel="stylesheet" href="styles.css?v=3">
-  <script src="preloader.js"></script>
-  <style>
-    .pw-wrap { position: relative; }
-    .pw-wrap .form-input { padding-right: 44px; }
-    .pw-eye { position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);padding:4px;display:flex;align-items:center;justify-content:center; }
-    .pw-eye:hover { color:var(--blue); }
-    .pw-eye svg { display:block;pointer-events:none; }
-    input[type="password"]::-ms-reveal,
-    input[type="password"]::-ms-clear { display:none; }
-    .forgot-link { display:block;text-align:right;font-size:13px;color:var(--blue);margin-top:6px;margin-bottom:14px; }
-    /* Auth page, no navbar spacing needed */
-    body { padding-top: 0 !important; }
-    /* Google sign-in button container */
-    .google-btn-wrap { width:100%;margin-bottom:4px; }
-    .google-btn-wrap > div { width:100% !important; }
-  </style>
-  <script src="https://accounts.google.com/gsi/client?hl=en" async defer></script>
+ <meta charset="UTF-8"/>
+ <link rel="icon" type="image/png" sizes="32x32" href="eaw_icon.png">
+ <link rel="icon" type="image/png" sizes="16x16" href="eaw_icon.png">
+ <link rel="apple-touch-icon" sizes="180x180" href="eaw_icon.png">
+ <link rel="shortcut icon" href="eaw_icon.png">
+ <meta name="theme-color" content="#0F172A">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Sign In | Empowering African Women</title>
+ <link rel="stylesheet" href="styles.css?v=3">
+ <script src="preloader.js"></script>
+ <style>
+ .pw-wrap { position: relative; }
+ .pw-wrap .form-input { padding-right: 44px; }
+ .pw-eye { position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);padding:4px;display:flex;align-items:center;justify-content:center; }
+ .pw-eye:hover { color:var(--blue); }
+ .pw-eye svg { display:block;pointer-events:none; }
+ input[type="password"]::-ms-reveal,
+ input[type="password"]::-ms-clear { display:none; }
+ .forgot-link { display:block;text-align:right;font-size:13px;color:var(--blue);margin-top:6px;margin-bottom:14px; }
+ /* Auth page, no navbar spacing needed */
+ body { padding-top: 0 !important; }
+ /* Google sign-in button container */
+ .google-btn-wrap { width:100%;margin-bottom:4px; }
+ .google-btn-wrap > div { width:100% !important; }
+ </style>
+ <script src="https://accounts.google.com/gsi/client?hl=en" async defer></script>
 </head>
 <body>
 <!-- Mobile header (shown when sidebar panel hidden) -->
-<div class="auth-mobile-header">
-  <img src="eaw_icon.png" alt="EAW">
-  <h2>Welcome back to EAW</h2>
-  <p>Continue your learning journey</p>
+<div class="auth-mobile-header"><img src="eaw_icon.png" alt="EAW">
+ <h2>Welcome back to EAW</h2>
+ <p>Continue your learning journey</p>
 </div>
 
-<div class="auth-wrap">
-  <div class="auth-left">
-    <img src="eaw_icon.png" alt="EAW" class="auth-left-logo">
-    <h2>Welcome back to EAW</h2>
-    <p>Continue your learning journey. Access your courses, track your progress, and download your certificates.</p>
-    <div class="auth-img-wrap">
-      <img src="Pictures/20190821_144554.jpg" alt="EAW Training">
-    </div>
-    <div class="auth-testimonial">
-      <p>"EAW didn't just teach me to fix cars, it gave me the confidence to believe in myself."</p>
-      <cite>Florence Iria, EAW Graduate, Lagos, Nigeria</cite>
-    </div>
-    <div class="auth-trust-points">
-      <div class="auth-trust-item"><span>✓</span><span>Free courses, no fees, ever</span></div>
-      <div class="auth-trust-item"><span>✓</span><span>Official certificates on completion</span></div>
-      <div class="auth-trust-item"><span>✓</span><span>No credit card required</span></div>
-    </div>
-  </div>
-  <div class="auth-right">
-    <a href="/"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
-    <h1>Sign In to EAW</h1>
-    <p class="auth-right-subtitle-small">Your learning dashboard awaits.</p>
-    <p class="auth-subtitle">New to EAW? <a href="signup" style="color:#60A5FA;font-weight:600;">Create a free account →</a></p>
+<div class="auth-wrap"><div class="auth-left"><img src="eaw_icon.png" alt="EAW" class="auth-left-logo">
+ <h2>Welcome back to EAW</h2>
+ <p>Continue your learning journey. Access your courses, track your progress, and download your certificates.</p>
+ <div class="auth-img-wrap"><img src="Pictures/20190821_144554.jpg" alt="EAW Training">
+ </div>
+ <div class="auth-testimonial"><p>"EAW didn't just teach me to fix cars, it gave me the confidence to believe in myself."</p>
+ <cite>Florence Iria, EAW Graduate, Lagos, Nigeria</cite>
+ </div>
+ <div class="auth-trust-points"><div class="auth-trust-item"><span>✓</span><span>Free courses, no fees, ever</span></div>
+ <div class="auth-trust-item"><span>✓</span><span>Official certificates on completion</span></div>
+ <div class="auth-trust-item"><span>✓</span><span>No credit card required</span></div>
+ </div>
+ </div>
+ <div class="auth-right"><a href="/"><img src="eaw_logo_white.jpg" alt="EAW" class="auth-right-logo"></a>
+ <h1>Sign In to EAW</h1>
+ <p class="auth-right-subtitle-small">Your learning dashboard awaits.</p>
+ <p class="auth-subtitle">New to EAW? <a href="signup" style="color:#60A5FA;font-weight:600;">Create a free account →</a></p>
 
-    <div class="google-btn-wrap"><div id="google-signin-btn"></div></div>
-    <div class="divider">or</div>
+ <div class="google-btn-wrap"><div id="google-signin-btn"></div></div>
+ <div class="divider">or</div>
 
-    <div class="form-group">
-      <label class="form-label">Email Address</label>
-      <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" maxlength="254">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <div class="pw-wrap">
-        <input type="password" id="loginPw" class="form-input" placeholder="Your password" maxlength="128">
-        <button type="button" class="pw-eye" onclick="togglePw('loginPw',this)" title="Show/hide password"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-      </div>
-      <a href="reset-password" class="forgot-link" style="color:#60A5FA;">Forgot password?</a>
-    </div>
+ <div class="form-group"><label class="form-label">Email Address</label>
+ <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" maxlength="254">
+ </div>
+ <div class="form-group"><label class="form-label">Password</label>
+ <div class="pw-wrap"><input type="password" id="loginPw" class="form-input" placeholder="Your password" maxlength="128">
+ <button type="button" class="pw-eye" onclick="togglePw('loginPw',this)" title="Show/hide password"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+ </div>
+ <a href="reset-password" class="forgot-link" style="color:#60A5FA;">Forgot password?</a>
+ </div>
 
-    <div id="loginError" style="display:none;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:13px;margin-bottom:12px;"></div>
-    <button onclick="doLogin()" class="btn-auth">Sign In →</button>
+ <div id="loginError" style="display:none;background:#fde8e8;color:var(--red);border-radius:var(--r-md);padding:10px 14px;font-size:13px;margin-bottom:12px;"></div>
+ <button onclick="doLogin()" class="btn-auth">Sign In →</button>
 
-    <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:16px;">Are you a tutor applicant? <a href="tutor-apply" style="color:#60A5FA;font-weight:600;">Apply here</a></p>
-  </div>
+ <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:16px;">Are you a tutor applicant? <a href="tutor-apply" style="color:#60A5FA;font-weight:600;">Apply here</a></p>
+ </div>
 </div>
 
 <script>
@@ -88,151 +78,151 @@
 const GOOGLE_CLIENT_ID = '628340119385-bg1k4gkadmu7ngpha69o44us9fhvlefe.apps.googleusercontent.com';
 
 function initGoogleSignIn() {
-  if (typeof google === 'undefined' || !google.accounts) return;
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleSignIn,
-    auto_select: false,
-    cancel_on_tap_outside: true
-  });
-  google.accounts.id.renderButton(document.getElementById('google-signin-btn'), {
-    theme: 'outline',
-    size: 'large',
-    width: document.getElementById('google-signin-btn').offsetWidth || 380,
-    text: 'continue_with',
-    shape: 'rectangular',
-    logo_alignment: 'left',
-    locale: 'en'
-  });
+ if (typeof google === 'undefined' || !google.accounts) return;
+ google.accounts.id.initialize({
+ client_id: GOOGLE_CLIENT_ID,
+ callback: handleGoogleSignIn,
+ auto_select: false,
+ cancel_on_tap_outside: true
+ });
+ google.accounts.id.renderButton(document.getElementById('google-signin-btn'), {
+ theme: 'outline',
+ size: 'large',
+ width: document.getElementById('google-signin-btn').offsetWidth || 380,
+ text: 'continue_with',
+ shape: 'rectangular',
+ logo_alignment: 'left',
+ locale: 'en'
+ });
 }
 window.addEventListener('load', function() { setTimeout(initGoogleSignIn, 100); });
 
 async function handleGoogleSignIn(response) {
-  const el = document.getElementById('loginError');
-  el.style.display = 'none';
-  try {
-    const res  = await fetch('api/google-auth.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ id_token: response.credential, mode: 'login' })
-    });
-    const data = await res.json();
-    if (!data.success) {
-      const msg = data.error || 'Google sign-in failed.';
-      const noAccount = msg.toLowerCase().includes('no account');
-      showLoginErr(noAccount
-        ? msg + ' <a href="signup" style="color:#dc2626;font-weight:600;text-decoration:underline;">Sign up here →</a>'
-        : msg, noAccount);
-      return;
-    }
-    _onAuthSuccess(data);
-  } catch(e) {
-    showLoginErr('Connection error. Please try again.');
-  }
+ const el = document.getElementById('loginError');
+ el.style.display = 'none';
+ try {
+ const res = await fetch('api/google-auth.php', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ credentials: 'include',
+ body: JSON.stringify({ id_token: response.credential, mode: 'login' })
+ });
+ const data = await res.json();
+ if (!data.success) {
+ const msg = data.error || 'Google sign-in failed.';
+ const noAccount = msg.toLowerCase().includes('no account');
+ showLoginErr(noAccount
+ ? msg + ' <a href="signup" style="color:#dc2626;font-weight:600;text-decoration:underline;">Sign up here →</a>'
+ : msg, noAccount);
+ return;
+ }
+ _onAuthSuccess(data);
+ } catch(e) {
+ showLoginErr('Connection error. Please try again.');
+ }
 }
 
 async function _onAuthSuccess(data) {
-  sessionStorage.removeItem('eaw_login_rl');
-  const sessionUser = data.user;
-  const serverEnrollmentSlugs = data.enrollments || [];
-  const allEnrollmentSlugs = new Set(serverEnrollmentSlugs);
-  const localEnrollmentsToSync = [];
-  try {
-    const currentLocal = JSON.parse(localStorage.getItem('eaw_user') || 'null');
-    if (currentLocal && currentLocal.email && currentLocal.email.toLowerCase() === sessionUser.email.toLowerCase()) {
-      if (currentLocal.enrollments && currentLocal.enrollments.length) {
-        currentLocal.enrollments.forEach(function(e) {
-          const slug = e.courseId || e;
-          if (!allEnrollmentSlugs.has(slug)) { allEnrollmentSlugs.add(slug); localEnrollmentsToSync.push(slug); }
-        });
-        sessionUser.enrollments = currentLocal.enrollments;
-      }
-      if (currentLocal.certificates && currentLocal.certificates.length) sessionUser.certificates = currentLocal.certificates;
-    }
-  } catch(e) {}
-  if (!sessionUser.enrollments) sessionUser.enrollments = [];
-  serverEnrollmentSlugs.forEach(function(slug) {
-    if (!sessionUser.enrollments.find(function(e){ return (e.courseId||e) === slug; })) {
-      sessionUser.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
-    }
-  });
-  localStorage.setItem('eaw_user', JSON.stringify(sessionUser));
-  if (localEnrollmentsToSync.length) {
-    await Promise.all(localEnrollmentsToSync.map(function(slug) {
-      return fetch('api/enroll.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ course: slug })
-      }).catch(function(){});
-    }));
-  }
-  const role = data.user.role;
-  if (role === 'admin') window.location.href = 'admin-dashboard';
-  else if (role === 'tutor' || role === 'tutor-pending') window.location.href = 'tutor-dashboard';
-  else window.location.href = 'student-dashboard';
+ sessionStorage.removeItem('eaw_login_rl');
+ const sessionUser = data.user;
+ const serverEnrollmentSlugs = data.enrollments || [];
+ const allEnrollmentSlugs = new Set(serverEnrollmentSlugs);
+ const localEnrollmentsToSync = [];
+ try {
+ const currentLocal = JSON.parse(localStorage.getItem('eaw_user') || 'null');
+ if (currentLocal && currentLocal.email && currentLocal.email.toLowerCase() === sessionUser.email.toLowerCase()) {
+ if (currentLocal.enrollments && currentLocal.enrollments.length) {
+ currentLocal.enrollments.forEach(function(e) {
+ const slug = e.courseId || e;
+ if (!allEnrollmentSlugs.has(slug)) { allEnrollmentSlugs.add(slug); localEnrollmentsToSync.push(slug); }
+ });
+ sessionUser.enrollments = currentLocal.enrollments;
+ }
+ if (currentLocal.certificates && currentLocal.certificates.length) sessionUser.certificates = currentLocal.certificates;
+ }
+ } catch(e) {}
+ if (!sessionUser.enrollments) sessionUser.enrollments = [];
+ serverEnrollmentSlugs.forEach(function(slug) {
+ if (!sessionUser.enrollments.find(function(e){ return (e.courseId||e) === slug; })) {
+ sessionUser.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
+ }
+ });
+ localStorage.setItem('eaw_user', JSON.stringify(sessionUser));
+ if (localEnrollmentsToSync.length) {
+ await Promise.all(localEnrollmentsToSync.map(function(slug) {
+ return fetch('api/enroll.php', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ credentials: 'include',
+ body: JSON.stringify({ course: slug })
+ }).catch(function(){});
+ }));
+ }
+ const role = data.user.role;
+ if (role === 'admin') window.location.href = 'admin-dashboard';
+ else if (role === 'tutor' || role === 'tutor-pending') window.location.href = 'tutor-dashboard';
+ else window.location.href = 'student-dashboard';
 }
 
 // ── Eye icon / password toggle ─────────────────────────────────────────────────
-const EYE_ON  = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_ON = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_OFF = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 function togglePw(fieldId, btn) {
-  const f = document.getElementById(fieldId);
-  if (f.type === 'password') { f.type = 'text'; btn.innerHTML = EYE_OFF; }
-  else { f.type = 'password'; btn.innerHTML = EYE_ON; }
+ const f = document.getElementById(fieldId);
+ if (f.type === 'password') { f.type = 'text'; btn.innerHTML = EYE_OFF; }
+ else { f.type = 'password'; btn.innerHTML = EYE_ON; }
 }
 
 async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pw    = document.getElementById('loginPw').value;
+ const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+ const pw = document.getElementById('loginPw').value;
 
-  if (!email || !pw) { showLoginErr('Please enter your email and password.'); return; }
+ if (!email || !pw) { showLoginErr('Please enter your email and password.'); return; }
 
-  // Rate limiting
-  const _rl = JSON.parse(sessionStorage.getItem('eaw_login_rl') || '{"attempts":0,"lockUntil":0}');
-  if (Date.now() < _rl.lockUntil) {
-    const secs = Math.ceil((_rl.lockUntil - Date.now()) / 1000);
-    showLoginErr('Too many failed attempts. Please wait ' + secs + ' seconds before trying again.');
-    return;
-  }
+ // Rate limiting
+ const _rl = JSON.parse(sessionStorage.getItem('eaw_login_rl') || '{"attempts":0,"lockUntil":0}');
+ if (Date.now() < _rl.lockUntil) {
+ const secs = Math.ceil((_rl.lockUntil - Date.now()) / 1000);
+ showLoginErr('Too many failed attempts. Please wait ' + secs + ' seconds before trying again.');
+ return;
+ }
 
-  const btn = document.querySelector('.btn-auth');
-  btn.textContent = 'Signing in…';
-  btn.disabled = true;
+ const btn = document.querySelector('.btn-auth');
+ btn.textContent = 'Signing in…';
+ btn.disabled = true;
 
-  try {
-    const res  = await fetch('api/login.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password: pw })
-    });
-    const data = await res.json();
+ try {
+ const res = await fetch('api/login.php', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ credentials: 'include',
+ body: JSON.stringify({ email, password: pw })
+ });
+ const data = await res.json();
 
-    if (!data.success) {
-      const _rlFail = JSON.parse(sessionStorage.getItem('eaw_login_rl') || '{"attempts":0,"lockUntil":0}');
-      _rlFail.attempts = (_rlFail.attempts || 0) + 1;
-      if (_rlFail.attempts >= 5) { _rlFail.lockUntil = Date.now() + 5 * 60 * 1000; }
-      sessionStorage.setItem('eaw_login_rl', JSON.stringify(_rlFail));
-      showLoginErr(data.error || 'Login failed. Please try again.');
-      btn.textContent = 'Sign In →';
-      btn.disabled = false;
-      return;
-    }
+ if (!data.success) {
+ const _rlFail = JSON.parse(sessionStorage.getItem('eaw_login_rl') || '{"attempts":0,"lockUntil":0}');
+ _rlFail.attempts = (_rlFail.attempts || 0) + 1;
+ if (_rlFail.attempts >= 5) { _rlFail.lockUntil = Date.now() + 5 * 60 * 1000; }
+ sessionStorage.setItem('eaw_login_rl', JSON.stringify(_rlFail));
+ showLoginErr(data.error || 'Login failed. Please try again.');
+ btn.textContent = 'Sign In →';
+ btn.disabled = false;
+ return;
+ }
 
-    await _onAuthSuccess(data);
-  } catch (err) {
-    showLoginErr('Connection error. Please try again.');
-    btn.textContent = 'Sign In →';
-    btn.disabled = false;
-  }
+ await _onAuthSuccess(data);
+ } catch (err) {
+ showLoginErr('Connection error. Please try again.');
+ btn.textContent = 'Sign In →';
+ btn.disabled = false;
+ }
 }
 
 function showLoginErr(msg, isHtml) {
-  const el = document.getElementById('loginError');
-  if (isHtml) el.innerHTML = msg; else el.textContent = msg;
-  el.style.display = 'block';
+ const el = document.getElementById('loginError');
+ if (isHtml) el.innerHTML = msg; else el.textContent = msg;
+ el.style.display = 'block';
 }
 
 document.getElementById('loginPw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
