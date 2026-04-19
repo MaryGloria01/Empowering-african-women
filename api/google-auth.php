@@ -51,7 +51,9 @@ if ($user) {
     if (!$user['google_id']) {
         $pdo->prepare('UPDATE users SET google_id = ? WHERE id = ?')
             ->execute([$googleId, $user['id']]);
-        // auth_provider intentionally NOT changed — they keep their password too
+        error_log('[EAW google-auth] email=' . $email . ' action=linked_google_id user_id=' . $user['id']);
+    } else {
+        error_log('[EAW google-auth] email=' . $email . ' action=login user_id=' . $user['id'] . ' mode=' . $mode);
     }
     $userId    = (int)$user['id'];
     $firstName = $user['first_name'];
@@ -59,15 +61,39 @@ if ($user) {
     $role      = $user['role'];
     $phone     = $user['phone'] ?? '';
 } elseif ($mode === 'signup') {
-    // ── Sign-up flow — create new student account ─────────────────────────────
-    $fakeHash = 'google_oauth_' . bin2hex(random_bytes(16));
-    $ins = $pdo->prepare('INSERT INTO users (first_name, last_name, email, phone, password_hash, role, google_id, auth_provider, is_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())');
-    $ins->execute([$firstName, $lastName, $email, '', $fakeHash, 'student', $googleId, 'google']);
-    $userId = (int)$pdo->lastInsertId();
-    $role   = 'student';
-    $phone  = '';
+    // ── Sign-up flow: INSERT with try/catch to block any race-condition duplicate
+    try {
+        $fakeHash = 'google_oauth_' . bin2hex(random_bytes(16));
+        $ins = $pdo->prepare('INSERT INTO users (first_name, last_name, email, phone, password_hash, role, google_id, auth_provider, is_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())');
+        $ins->execute([$firstName, $lastName, $email, '', $fakeHash, 'student', $googleId, 'google']);
+        $userId = (int)$pdo->lastInsertId();
+        $role   = 'student';
+        $phone  = '';
+        error_log('[EAW google-auth] email=' . $email . ' action=new_account_google user_id=' . $userId);
+    } catch (PDOException $e) {
+        if ($e->getCode() === '23000') {
+            // Race condition: another request inserted this email between our SELECT and INSERT
+            // Recover by fetching the existing row and logging them in
+            error_log('[EAW google-auth] email=' . $email . ' action=race_condition_recovery');
+            $stmt = $pdo->prepare('SELECT id, first_name, last_name, email, phone, role, google_id FROM users WHERE email = ? LIMIT 1');
+            $stmt->execute([$email]);
+            $existing = $stmt->fetch();
+            if (!$existing) json_out(['error' => 'Account creation failed. Please try again.'], 500);
+            if (!$existing['google_id']) {
+                $pdo->prepare('UPDATE users SET google_id = ? WHERE id = ?')->execute([$googleId, $existing['id']]);
+            }
+            $userId    = (int)$existing['id'];
+            $firstName = $existing['first_name'];
+            $lastName  = $existing['last_name'];
+            $role      = $existing['role'];
+            $phone     = $existing['phone'] ?? '';
+        } else {
+            throw $e;
+        }
+    }
 } else {
     // ── Login flow — no account found, refuse ─────────────────────────────────
+    error_log('[EAW google-auth] email=' . $email . ' action=rejected_no_account mode=login');
     json_out(['error' => 'No account found with this Google email. Please sign up first.'], 404);
 }
 

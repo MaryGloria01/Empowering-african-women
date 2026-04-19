@@ -47,16 +47,28 @@ if (!preg_match('/[^A-Za-z0-9]/', $password))
 
 $pdo = getDB();
 
-// Check duplicate email
+// ── Pre-check duplicate (fast path, before hashing) ──────────────────────────
 $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
 $stmt->execute([$email]);
-if ($stmt->fetch()) json_out(['error' => 'Unable to create account with this email. If you already have an account, please log in.'], 409);
+if ($stmt->fetch()) {
+    error_log('[EAW signup] email=' . $email . ' action=rejected_duplicate_email');
+    json_out(['error' => 'An account with this email already exists. Please log in.'], 409);
+}
 
-// Insert user
+// ── Insert — catch race-condition duplicate from DB UNIQUE constraint ─────────
 $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-$stmt = $pdo->prepare('INSERT INTO users (first_name, last_name, email, phone, password_hash, role, is_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, NOW())');
-$stmt->execute([$firstName, $lastName, $email, $phone, $hash, $role]);
-$userId = $pdo->lastInsertId();
+try {
+    $stmt = $pdo->prepare('INSERT INTO users (first_name, last_name, email, phone, password_hash, role, is_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, NOW())');
+    $stmt->execute([$firstName, $lastName, $email, $phone, $hash, $role]);
+    $userId = $pdo->lastInsertId();
+    error_log('[EAW signup] email=' . $email . ' action=new_account user_id=' . $userId);
+} catch (PDOException $e) {
+    if ($e->getCode() === '23000') {
+        error_log('[EAW signup] email=' . $email . ' action=rejected_race_condition');
+        json_out(['error' => 'An account with this email already exists. Please log in.'], 409);
+    }
+    throw $e;
+}
 
 // Track referral: validate code exists in DB and is not the new user's own code
 if (!empty($data['ref']) && preg_match('/^[A-Z0-9]{6,10}$/', strtoupper($data['ref']))) {
