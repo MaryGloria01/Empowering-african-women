@@ -249,12 +249,15 @@ async function handleGoogleSignIn(response) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ id_token: response.credential })
+      body: JSON.stringify({ id_token: response.credential, mode: 'signup' })
     });
     const data = await res.json();
     if (!data.success) { showErr(data.error || 'Google sign-in failed. Please try again.'); return; }
+    // Account may already exist — log them in either way
     localStorage.setItem('eaw_user', JSON.stringify(data.user));
-    window.location.href = 'student-dashboard';
+    const role = data.user.role;
+    if (role === 'tutor' || role === 'tutor-pending') window.location.href = 'tutor-dashboard';
+    else window.location.href = 'student-dashboard';
   } catch(e) {
     showErr('Connection error. Please try again.');
   }

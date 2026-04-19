@@ -29,32 +29,46 @@ $lastName  = substr(trim($payload['family_name'] ?? ''),     0, 60);
 
 if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) json_out(['error' => 'Invalid email from Google.'], 400);
 
+// ── mode: 'login' (default) = never create; 'signup' = create if not found ────
+$mode = ($data['mode'] ?? 'login') === 'signup' ? 'signup' : 'login';
+
 $pdo = getDB();
 
-// ── Find existing user by google_id OR email ──────────────────────────────────
-$stmt = $pdo->prepare('SELECT id, first_name, last_name, email, phone, role, google_id, auth_provider FROM users WHERE google_id = ? OR email = ? LIMIT 1');
-$stmt->execute([$googleId, $email]);
+// ── Look up by google_id first, then fall back to email ───────────────────────
+$stmt = $pdo->prepare('SELECT id, first_name, last_name, email, phone, role, google_id FROM users WHERE google_id = ? LIMIT 1');
+$stmt->execute([$googleId]);
 $user = $stmt->fetch();
 
+if (!$user) {
+    // No match on google_id — look up by email (most important: same email = same person)
+    $stmt = $pdo->prepare('SELECT id, first_name, last_name, email, phone, role, google_id FROM users WHERE email = ? LIMIT 1');
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+}
+
 if ($user) {
-    // Link google_id to an existing email-based account if not already linked
+    // ── Existing account — link google_id if not already linked ───────────────
     if (!$user['google_id']) {
-        $pdo->prepare('UPDATE users SET google_id = ?, auth_provider = ? WHERE id = ?')
-            ->execute([$googleId, 'google', $user['id']]);
+        $pdo->prepare('UPDATE users SET google_id = ? WHERE id = ?')
+            ->execute([$googleId, $user['id']]);
+        // auth_provider intentionally NOT changed — they keep their password too
     }
     $userId    = (int)$user['id'];
     $firstName = $user['first_name'];
     $lastName  = $user['last_name'];
     $role      = $user['role'];
     $phone     = $user['phone'] ?? '';
-} else {
-    // New user — create student account (role always 'student' for self-signup)
+} elseif ($mode === 'signup') {
+    // ── Sign-up flow — create new student account ─────────────────────────────
     $fakeHash = 'google_oauth_' . bin2hex(random_bytes(16));
     $ins = $pdo->prepare('INSERT INTO users (first_name, last_name, email, phone, password_hash, role, google_id, auth_provider, is_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())');
     $ins->execute([$firstName, $lastName, $email, '', $fakeHash, 'student', $googleId, 'google']);
     $userId = (int)$pdo->lastInsertId();
     $role   = 'student';
     $phone  = '';
+} else {
+    // ── Login flow — no account found, refuse ─────────────────────────────────
+    json_out(['error' => 'No account found with this Google email. Please sign up first.'], 404);
 }
 
 // ── Session ───────────────────────────────────────────────────────────────────

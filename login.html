@@ -115,10 +115,17 @@ async function handleGoogleSignIn(response) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ id_token: response.credential })
+      body: JSON.stringify({ id_token: response.credential, mode: 'login' })
     });
     const data = await res.json();
-    if (!data.success) { showLoginErr(data.error || 'Google sign-in failed.'); return; }
+    if (!data.success) {
+      const msg = data.error || 'Google sign-in failed.';
+      const noAccount = msg.toLowerCase().includes('no account');
+      showLoginErr(noAccount
+        ? msg + ' <a href="signup" style="color:#dc2626;font-weight:600;text-decoration:underline;">Sign up here →</a>'
+        : msg, noAccount);
+      return;
+    }
     _onAuthSuccess(data);
   } catch(e) {
     showLoginErr('Connection error. Please try again.');
@@ -222,9 +229,9 @@ async function doLogin() {
   }
 }
 
-function showLoginErr(msg) {
+function showLoginErr(msg, isHtml) {
   const el = document.getElementById('loginError');
-  el.textContent = msg;
+  if (isHtml) el.innerHTML = msg; else el.textContent = msg;
   el.style.display = 'block';
 }
 
