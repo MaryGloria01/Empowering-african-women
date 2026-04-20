@@ -47,7 +47,7 @@ if (!preg_match('/[^A-Za-z0-9]/', $password))
 
 $pdo = getDB();
 
-// ── Pre-check duplicate (fast path, before hashing) ─────────────────────────
+// ── Pre-check duplicate (fast path, before hashing) ────────────────────────
 $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
 $stmt->execute([$email]);
 if ($stmt->fetch()) {
