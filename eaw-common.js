@@ -256,10 +256,13 @@ function _eawRefreshCourseProgress() {
  if (typeof loadProgressFromDB !== 'function') return;
  loadProgressFromDB().then(function() {
  if (typeof updateModuleUI === 'function') updateModuleUI();
- // Use _refreshQuizGate (updates existing gate in-place) — never _buildQuizGate which
- // replaces the button inside an already-built gate, creating a nested duplicate gate.
- if (typeof _refreshQuizGate === 'function') _refreshQuizGate();
- else if (typeof _buildQuizGate === 'function') _buildQuizGate();
+ // Only refresh the gate if it already exists in the DOM.
+ // Never call _buildQuizGate here — the page's own DOMContentLoaded owns
+ // the initial build. Calling it here causes a race: if this runs before
+ // the page finishes init, _buildQuizGate fires twice and nests a duplicate gate.
+ if (typeof _refreshQuizGate === 'function' && document.getElementById('eawQuizGate')) {
+ _refreshQuizGate();
+ }
  if (typeof updateEnrolBtn === 'function') updateEnrolBtn();
  }).catch(function() {});
 }
