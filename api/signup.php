@@ -4,7 +4,7 @@ cors();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_out(['error' => 'Method not allowed'], 405);
 
-// ── Server-side rate limiting ─────────────────────────────────────────────────
+// ── Server-side rate limiting ────────────────────────────────────────────────
 $ip      = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $ip      = preg_replace('/[^a-f0-9:.]/', '', explode(',', $ip)[0]);
 $rl_file = sys_get_temp_dir() . '/eaw_signup_' . md5($ip) . '.json';
@@ -47,7 +47,7 @@ if (!preg_match('/[^A-Za-z0-9]/', $password))
 
 $pdo = getDB();
 
-// ── Pre-check duplicate (fast path, before hashing) ──────────────────────────
+// ── Pre-check duplicate (fast path, before hashing) ────────────────────────
 $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
 $stmt->execute([$email]);
 if ($stmt->fetch()) {
