@@ -256,9 +256,149 @@ function _eawRefreshCourseProgress() {
  if (typeof loadProgressFromDB !== 'function') return;
  loadProgressFromDB().then(function() {
  if (typeof updateModuleUI === 'function') updateModuleUI();
- if (typeof _buildQuizGate === 'function') _buildQuizGate();
+ // Use _refreshQuizGate (updates existing gate in-place) — never _buildQuizGate which
+ // replaces the button inside an already-built gate, creating a nested duplicate gate.
+ if (typeof _refreshQuizGate === 'function') _refreshQuizGate();
+ else if (typeof _buildQuizGate === 'function') _buildQuizGate();
  if (typeof updateEnrolBtn === 'function') updateEnrolBtn();
  }).catch(function() {});
+}
+
+/* ─── Enrollment badges on any page with .course-card[data-course] ──────
+   Handles index.html "Start Learning" spans. courses.html manages its own
+   button elements via refreshEnrolButtons(), so those are left untouched. */
+function _eawRefreshEnrollBadges() {
+ var user;
+ try { user = JSON.parse(localStorage.getItem('eaw_user') || 'null'); } catch(e) { user = null; }
+ if (!user) return;
+
+ var enrolled = new Set((user.enrollments || []).map(function(e){ return e.courseId || e; }));
+ var completed = new Set();
+ (user.certificates || []).forEach(function(c){ completed.add(c.id || c); });
+ (user.enrollments || []).forEach(function(e){
+ if (e.quizPassed || e.progress >= 100) completed.add(e.courseId);
+ });
+
+ document.querySelectorAll('.course-card[data-course]').forEach(function(card) {
+ var slug = card.dataset.course;
+ var footer = card.querySelector('.cc-footer');
+ var btn = footer && footer.querySelector('.btn');
+ // Only update <span> buttons (index.html pattern).
+ // courses.html uses <button> elements handled by its own refreshEnrolButtons().
+ if (!btn || btn.tagName !== 'SPAN') return;
+
+ if (completed.has(slug)) {
+ btn.textContent = '✓ Completed';
+ btn.className = 'btn btn-sm';
+ btn.style.background = '#059669';
+ btn.style.backgroundImage = 'none';
+ btn.style.color = '#fff';
+ } else if (enrolled.has(slug)) {
+ btn.textContent = 'Continue →';
+ btn.className = 'btn btn-sm';
+ btn.style.background = '#1D4ED8';
+ btn.style.backgroundImage = 'none';
+ btn.style.color = '#fff';
+ }
+ });
+}
+
+/* ─── Auth nav: replace Sign In / Join Free with dashboard link ──────── */
+function _eawUpdateAuthNav() {
+ var user;
+ try { user = JSON.parse(localStorage.getItem('eaw_user') || 'null'); } catch(e) { user = null; }
+
+ document.querySelectorAll('.nav-cta').forEach(function(cta) {
+ var signInLink = cta.querySelector('a[href="login"]');
+ if (!signInLink) return; // dashboard/auth pages — leave untouched
+
+ if (!user || !user.id) {
+ // Not logged in — restore default links (handles sign-out redirect)
+ signInLink.href = 'login';
+ signInLink.textContent = 'Sign In';
+ signInLink.className = 'btn btn-ghost btn-sm';
+ var joinLink = cta.querySelector('a[href="signup"], a.eaw-nav-signout');
+ if (joinLink) {
+ joinLink.href = 'signup';
+ joinLink.textContent = 'Join for Free \u2192';
+ joinLink.className = 'btn btn-blue btn-sm';
+ joinLink.removeAttribute('data-eaw-signout');
+ joinLink.onclick = null;
+ }
+ return;
+ }
+
+ // Logged in — show dashboard + sign-out
+ signInLink.href = 'student-dashboard';
+ signInLink.textContent = 'My Dashboard';
+ signInLink.className = 'btn btn-ghost btn-sm';
+
+ var joinLink2 = cta.querySelector('a[href="signup"], a.eaw-nav-signout');
+ if (joinLink2) {
+ joinLink2.href = 'javascript:void(0)';
+ joinLink2.textContent = 'Sign Out';
+ joinLink2.className = 'btn btn-ghost btn-sm eaw-nav-signout';
+ joinLink2.onclick = function(ev) {
+ ev.preventDefault();
+ try { fetch('api/logout.php', { credentials: 'include' }).catch(function(){}); } catch(e2) {}
+ try { localStorage.removeItem('eaw_user'); sessionStorage.clear(); } catch(e3) {}
+ window.location.href = '/';
+ };
+ }
+ });
+}
+
+/* ─── Session restore: sync PHP session → localStorage on every page load */
+async function _eawRestoreSession() {
+ try {
+ var res = await fetch('api/user.php', { credentials: 'include' });
+ if (!res.ok) return; // 401 = not logged in, keep localStorage as-is
+
+ var data = await res.json();
+ if (!data.success) return;
+
+ // Merge server identity with existing localStorage (never overwrite local progress data)
+ var stored;
+ try { stored = JSON.parse(localStorage.getItem('eaw_user') || 'null'); } catch(e) { stored = null; }
+ var merged = Object.assign({}, stored || {}, data.user);
+ // Always trust server for identity fields
+ merged.id = data.user.id;
+ merged.firstName = data.user.firstName;
+ merged.lastName = data.user.lastName;
+ merged.email = data.user.email;
+ merged.role = data.user.role;
+
+ // Merge server enrollments into localStorage (add missing ones, preserve existing detail)
+ if (data.enrollments && data.enrollments.length) {
+ if (!merged.enrollments) merged.enrollments = [];
+ var enrollSet = new Set(merged.enrollments.map(function(e){ return e.courseId || e; }));
+ data.enrollments.forEach(function(slug) {
+ if (!enrollSet.has(slug)) {
+ merged.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
+ }
+ });
+ }
+
+ // Merge server certificates into localStorage
+ if (data.certificates && data.certificates.length) {
+ if (!merged.certificates) merged.certificates = [];
+ var certSet = new Set(merged.certificates.map(function(c){ return c.id || c; }));
+ data.certificates.forEach(function(slug) {
+ if (!certSet.has(slug)) merged.certificates.push({ id: slug, issuedAt: new Date().toISOString() });
+ });
+ }
+
+ try { localStorage.setItem('eaw_user', JSON.stringify(merged)); } catch(e4) {}
+
+ // Update navbar now that we have fresh user data
+ _eawUpdateAuthNav();
+
+ // Update enrollment badges on index/courses pages
+ _eawRefreshEnrollBadges();
+
+ // Re-run course progress if on a course page
+ _eawRefreshCourseProgress();
+ } catch(e) {}
 }
 
 /* ─── Init ────────────────────────────────────────────────────────────── */
@@ -268,6 +408,13 @@ document.addEventListener('DOMContentLoaded', function() {
  try {
  if (localStorage.getItem('eaw_theme') === 'dark') applyDarkMode(true);
  } catch(e) {}
+
+ // Update auth links and enrollment badges immediately from localStorage
+ _eawUpdateAuthNav();
+ _eawRefreshEnrollBadges();
+
+ // Then restore/validate session from server (updates localStorage + nav if session is active)
+ _eawRestoreSession();
 
  // On course pages: poll DB every 60 s + refresh when tab regains focus
  if (typeof loadProgressFromDB === 'function') {

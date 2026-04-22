@@ -72,9 +72,11 @@ CREATE TABLE IF NOT EXISTS settings (
 INSERT IGNORE INTO settings (key_name, value)
 VALUES ('admin_email', 'admin@empoweringafricanwomen.com');
 
--- ── Referral columns (run if table already exists) ──────────────────────────
-ALTER TABLE users ADD COLUMN IF NOT EXISTS referral_code VARCHAR(16) NULL UNIQUE AFTER role;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS referred_by VARCHAR(16) NULL AFTER referral_code;
+-- ── Google OAuth + referral columns ───────────────────────────────────────
+ALTER TABLE users ADD COLUMN IF NOT EXISTS referral_code  VARCHAR(16)  NULL UNIQUE AFTER role;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS referred_by    VARCHAR(16)  NULL AFTER referral_code;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id      VARCHAR(64)  NULL UNIQUE AFTER is_verified;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_provider  VARCHAR(20)  NULL AFTER google_id;
 
 -- ── Admin Audit Log ────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS admin_audit_log (

@@ -1,4 +1,9 @@
 <?php
+// Force off any host-level display_errors so PHP warnings never corrupt JSON output
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+error_reporting(E_ERROR | E_PARSE);
+
 require_once __DIR__ . '/config.php';
 
 // Global error handler — never leak file paths or stack traces to client

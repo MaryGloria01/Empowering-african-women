@@ -4,7 +4,7 @@ cors();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// GET — return current session user + issue CSRF token
+// GET — return current session user + enrollments + issue CSRF token
 if ($method === 'GET') {
     $user = current_user();
     if (!$user) json_out(['error' => 'Not authenticated'], 401);
@@ -13,15 +13,35 @@ if ($method === 'GET') {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
     header('X-CSRF-Token: ' . $_SESSION['csrf_token']);
-    json_out(['success' => true, 'user' => [
-        'id'         => (int)$user['id'],
-        'firstName'  => $user['first_name'],
-        'lastName'   => $user['last_name'],
-        'email'      => $user['email'],
-        'phone'      => $user['phone'],
-        'role'       => $user['role'],
-        'isVerified' => (bool)$user['is_verified'],
-    ]]);
+
+    $pdo = getDB();
+
+    $enrStmt = $pdo->prepare('SELECT course_slug FROM enrollments WHERE user_id = ?');
+    $enrStmt->execute([$user['id']]);
+    $enrollmentSlugs = $enrStmt->fetchAll(PDO::FETCH_COLUMN);
+
+    $progStmt = $pdo->prepare('SELECT course_slug, COUNT(*) as cnt FROM progress WHERE user_id = ? GROUP BY course_slug');
+    $progStmt->execute([$user['id']]);
+    $progressMap = [];
+    while ($row = $progStmt->fetch()) { $progressMap[$row['course_slug']] = (int)$row['cnt']; }
+
+    $certStmt = $pdo->prepare('SELECT course_slug FROM certificates WHERE user_id = ?');
+    $certStmt->execute([$user['id']]);
+    $certSlugs = $certStmt->fetchAll(PDO::FETCH_COLUMN);
+
+    json_out(['success' => true,
+        'enrollments' => $enrollmentSlugs,
+        'progress'    => $progressMap,
+        'certificates'=> $certSlugs,
+        'user' => [
+            'id'         => (int)$user['id'],
+            'firstName'  => $user['first_name'],
+            'lastName'   => $user['last_name'],
+            'email'      => $user['email'],
+            'phone'      => $user['phone'],
+            'role'       => $user['role'],
+            'isVerified' => (bool)$user['is_verified'],
+        ]]);
 }
 
 // POST — update profile (own data only, validated & length-capped)
