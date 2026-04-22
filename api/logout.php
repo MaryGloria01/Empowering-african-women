@@ -3,6 +3,7 @@ require_once __DIR__ . '/db.php';
 cors();
 
 start_session();
+debug_log("LOGOUT | session_id=" . session_id() . " | uid_was=" . ($_SESSION['user_id'] ?? 'NONE'));
 
 // Wipe all session variables
 $_SESSION = [];

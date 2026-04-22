@@ -73,6 +73,21 @@ function start_session() {
     }
 }
 
+// ── Debug Logging ─────────────────────────────────────────────────────────────
+// Log file lives at public_html/debug.log — blocked from HTTP by .htaccess FilesMatch *.log rule.
+// Format: [YYYY-MM-DD HH:MM:SS] [file.php] [uid=X] message
+define('EAW_DEBUG_LOG', __DIR__ . '/../debug.log');
+
+function debug_log(string $message, string $file = ''): void {
+    $ts   = date('Y-m-d H:i:s');
+    $page = $file ?: basename(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file'] ?? 'unknown');
+    $uid  = (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['user_id']))
+            ? 'uid=' . $_SESSION['user_id']
+            : 'uid=NONE';
+    $line = "[$ts] [$page] [$uid] $message" . PHP_EOL;
+    @file_put_contents(EAW_DEBUG_LOG, $line, FILE_APPEND | LOCK_EX);
+}
+
 function current_user() {
     start_session();
     if (empty($_SESSION['user_id'])) return null;

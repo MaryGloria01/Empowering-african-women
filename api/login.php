@@ -4,6 +4,8 @@ cors();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_out(['error' => 'Method not allowed'], 405);
 
+debug_log('REQUEST login.php | method=POST');
+
 // ── Server-side rate limiting (file-based, no DB needed) ─────────────────────
 $ip       = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $ip       = preg_replace('/[^a-f0-9:.]/', '', explode(',', $ip)[0]); // sanitise IP
@@ -12,12 +14,14 @@ $rl       = file_exists($rl_file) ? json_decode(file_get_contents($rl_file), tru
 
 if (time() < ($rl['lock_until'] ?? 0)) {
     $secs = $rl['lock_until'] - time();
+    debug_log("LOGIN BLOCKED (rate limit) | ip=$ip | locked for {$secs}s");
     json_out(['error' => "Too many failed attempts. Try again in {$secs} seconds."], 429);
 }
 
 $data     = get_input();
 $email    = strtolower(trim($data['email'] ?? ''));
 $password = $data['password'] ?? '';
+debug_log("LOGIN ATTEMPT | email=$email | ip=$ip");
 
 if (!$email || !$password) json_out(['error' => 'Email and password are required.'], 400);
 if (strlen($email) > 254 || strlen($password) > 128) json_out(['error' => 'Invalid input.'], 400);
@@ -32,11 +36,13 @@ $adminStmt->execute(['admin_password_hash']);
 $adminHash = $adminStmt->fetchColumn();
 
 if ($email === strtolower($adminEmail)) {
+    debug_log("LOGIN: admin email matched | email=$email");
     if (!$adminHash) {
-        // No hash set yet — force admin to set password via portal first
+        debug_log("LOGIN FAIL: admin password hash not set in DB");
         json_out(['error' => 'Admin account not initialised. Please contact system administrator.'], 403);
     }
     if (password_verify($password, $adminHash)) {
+        debug_log("LOGIN SUCCESS: admin authenticated | email=$email");
         $rl = ['attempts' => 0, 'lock_until' => 0];
         file_put_contents($rl_file, json_encode($rl));
         start_session();
@@ -46,6 +52,7 @@ if ($email === strtolower($adminEmail)) {
         json_out(['success' => true, 'token' => bin2hex(random_bytes(16)),
             'user' => ['id' => 0, 'firstName' => 'Admin', 'lastName' => '', 'email' => $email, 'role' => 'admin']]);
     }
+    debug_log("LOGIN FAIL: admin wrong password | email=$email");
     _fail_login($rl, $rl_file);
 }
 
@@ -54,18 +61,24 @@ $stmt = $pdo->prepare('SELECT id, first_name, last_name, email, phone, role, pas
 $stmt->execute([$email]);
 $user = $stmt->fetch();
 
-if (!$user) { _fail_login($rl, $rl_file); }
+if (!$user) {
+    debug_log("LOGIN FAIL: email not found | email=$email");
+    _fail_login($rl, $rl_file);
+}
 
 // Google-only account — no usable password_hash
 if (strpos($user['password_hash'] ?? '', 'google_oauth_') === 0) {
+    debug_log("LOGIN FAIL: Google-only account tried password login | email=$email");
     json_out(['error' => 'This account was created with Google Sign-In. Please use the "Continue with Google" button to sign in.'], 401);
 }
 
 if (!password_verify($password, $user['password_hash'])) {
+    debug_log("LOGIN FAIL: wrong password | email=$email | user_id={$user['id']}");
     _fail_login($rl, $rl_file);
 }
 
 // Success — reset rate limit, regenerate session
+debug_log("LOGIN SUCCESS | email=$email | user_id={$user['id']} | role={$user['role']}");
 $rl = ['attempts' => 0, 'lock_until' => 0];
 file_put_contents($rl_file, json_encode($rl));
 start_session();
@@ -78,6 +91,7 @@ unset($_SESSION['is_admin']);
 $enrStmt = $pdo->prepare('SELECT course_slug FROM enrollments WHERE user_id = ?');
 $enrStmt->execute([$user['id']]);
 $enrollmentSlugs = $enrStmt->fetchAll(PDO::FETCH_COLUMN);
+debug_log("LOGIN: enrollments fetched | user_id={$user['id']} | count=" . count($enrollmentSlugs) . " | slugs=" . implode(',', $enrollmentSlugs));
 
 $progStmt = $pdo->prepare('SELECT course_slug, COUNT(*) as cnt FROM progress WHERE user_id = ? GROUP BY course_slug');
 $progStmt->execute([$user['id']]);

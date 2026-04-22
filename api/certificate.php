@@ -3,18 +3,24 @@ require_once __DIR__ . '/db.php';
 cors();
 
 $user = current_user();
-if (!$user) json_out(['error' => 'Not authenticated'], 401);
+if (!$user) {
+    debug_log("certificate.php: not authenticated | method=" . ($_SERVER['REQUEST_METHOD'] ?? '?') . " | session_id=" . session_id());
+    json_out(['error' => 'Not authenticated'], 401);
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
+debug_log("REQUEST certificate.php | method=$method | user_id={$user['id']}");
 
 // GET — return all certificates for current user
 if ($method === 'GET') {
+    debug_log("certificate.php GET: fetching certificates | user_id={$user['id']}");
     $pdo  = getDB();
     $stmt = $pdo->prepare(
         'SELECT course_slug, title, score, issued_at, cert_code FROM certificates WHERE user_id = ? ORDER BY issued_at ASC'
     );
     $stmt->execute([$user['id']]);
     $rows = $stmt->fetchAll();
+    debug_log("certificate.php GET: returned | user_id={$user['id']} | count=" . count($rows) . " | courses=" . implode(',', array_column($rows, 'course_slug')));
 
     $certs = array_map(function($r) {
         return [
@@ -37,13 +43,18 @@ if ($method === 'POST') {
     $title = trim($data['title'] ?? '');
     $score = trim($data['score'] ?? '');
 
-    if (!$slug) json_out(['error' => 'Course slug required.'], 400);
+    if (!$slug) {
+        debug_log("certificate.php POST: missing slug | user_id={$user['id']}");
+        json_out(['error' => 'Course slug required.'], 400);
+    }
 
     // Validate slug is alphanumeric with hyphens only
     if (!preg_match('/^[a-z0-9\-]{1,80}$/', $slug)) {
+        debug_log("certificate.php POST: invalid slug | user_id={$user['id']} | slug=$slug");
         json_out(['error' => 'Invalid course slug.'], 400);
     }
 
+    debug_log("certificate.php POST: issuing cert | user_id={$user['id']} | course=$slug | title=$title | score=$score");
     $pdo = getDB();
 
     // Already issued? Return existing cert_code
@@ -51,6 +62,7 @@ if ($method === 'POST') {
     $stmt->execute([$user['id'], $slug]);
     $existing = $stmt->fetch();
     if ($existing) {
+        debug_log("certificate.php POST: cert already exists | user_id={$user['id']} | course=$slug | cert_code={$existing['cert_code']}");
         json_out([
             'success'   => true,
             'cert_code' => $existing['cert_code'],
@@ -71,8 +83,10 @@ if ($method === 'POST') {
         $score ?: null,
         $certCode,
     ]);
+    debug_log("certificate.php POST: cert issued | user_id={$user['id']} | course=$slug | cert_code=$certCode");
 
     json_out(['success' => true, 'cert_code' => $certCode, 'already' => false]);
 }
 
+debug_log("certificate.php: method not allowed | method=$method | user_id={$user['id']}");
 json_out(['error' => 'Method not allowed'], 405);
