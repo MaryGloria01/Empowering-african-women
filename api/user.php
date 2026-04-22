@@ -25,14 +25,23 @@ if ($method === 'GET') {
     $progressMap = [];
     while ($row = $progStmt->fetch()) { $progressMap[$row['course_slug']] = (int)$row['cnt']; }
 
+    // Per-course lesson IDs — exact source of truth for progress %
+    $progDetailStmt = $pdo->prepare('SELECT course_slug, lesson_id FROM progress WHERE user_id = ?');
+    $progDetailStmt->execute([$user['id']]);
+    $progressDetails = [];
+    while ($row = $progDetailStmt->fetch()) {
+        $progressDetails[$row['course_slug']][] = $row['lesson_id'];
+    }
+
     $certStmt = $pdo->prepare('SELECT course_slug FROM certificates WHERE user_id = ?');
     $certStmt->execute([$user['id']]);
     $certSlugs = $certStmt->fetchAll(PDO::FETCH_COLUMN);
 
     json_out(['success' => true,
-        'enrollments' => $enrollmentSlugs,
-        'progress'    => $progressMap,
-        'certificates'=> $certSlugs,
+        'enrollments'     => $enrollmentSlugs,
+        'progress'        => $progressMap,
+        'progressDetails' => $progressDetails,
+        'certificates'    => $certSlugs,
         'user' => [
             'id'         => (int)$user['id'],
             'firstName'  => $user['first_name'],

@@ -17,7 +17,7 @@ if ($method === 'GET') {
     $stmt->execute([$user['id']]);
     $slugs = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-    // Also fetch per-course lesson completion counts
+    // Per-course lesson completion counts (for backwards compat)
     $stmt2 = $pdo->prepare('SELECT course_slug, COUNT(*) as cnt FROM progress WHERE user_id = ? GROUP BY course_slug');
     $stmt2->execute([$user['id']]);
     $progressMap = [];
@@ -25,7 +25,15 @@ if ($method === 'GET') {
         $progressMap[$row['course_slug']] = (int)$row['cnt'];
     }
 
-    json_out(['success' => true, 'enrollments' => $slugs, 'progress' => $progressMap]);
+    // Per-course lesson IDs — lets the dashboard calculate exact % without guessing module counts
+    $stmt3 = $pdo->prepare('SELECT course_slug, lesson_id FROM progress WHERE user_id = ?');
+    $stmt3->execute([$user['id']]);
+    $progressDetails = [];
+    while ($row = $stmt3->fetch()) {
+        $progressDetails[$row['course_slug']][] = $row['lesson_id'];
+    }
+
+    json_out(['success' => true, 'enrollments' => $slugs, 'progress' => $progressMap, 'progressDetails' => $progressDetails]);
 }
 
 // POST — enroll in a course

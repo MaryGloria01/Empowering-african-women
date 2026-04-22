@@ -371,23 +371,29 @@ async function _eawRestoreSession() {
  merged.email = data.user.email;
  merged.role = data.user.role;
 
- // Merge server enrollments into localStorage (add missing ones, preserve existing detail)
- if (data.enrollments && data.enrollments.length) {
- if (!merged.enrollments) merged.enrollments = [];
- var enrollSet = new Set(merged.enrollments.map(function(e){ return e.courseId || e; }));
- data.enrollments.forEach(function(slug) {
- if (!enrollSet.has(slug)) {
- merged.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
- }
+ // REPLACE enrollment list from server — server is the single source of truth.
+ // Additive-only merge caused unenrolled courses to persist on other devices
+ // and the remove button to break when the stale entry reappeared.
+ if (data.enrollments !== undefined) {
+ var existingEnrollments = merged.enrollments || [];
+ merged.enrollments = data.enrollments.map(function(slug) {
+ // Preserve any local detail (completedModules, quizPassed) for this slug
+ var ex = existingEnrollments.find(function(e){ return (e.courseId || e) === slug; });
+ return ex ? ex : { courseId: slug, enrolledAt: new Date().toISOString() };
  });
  }
 
- // Merge server certificates into localStorage
- if (data.certificates && data.certificates.length) {
- if (!merged.certificates) merged.certificates = [];
- var certSet = new Set(merged.certificates.map(function(c){ return c.id || c; }));
- data.certificates.forEach(function(slug) {
- if (!certSet.has(slug)) merged.certificates.push({ id: slug, issuedAt: new Date().toISOString() });
+ // Store per-course lesson IDs so dashboard can compute accurate % without API calls
+ if (data.progressDetails) {
+ merged.progressDetails = data.progressDetails;
+ }
+
+ // REPLACE certificates from server (same principle — server wins)
+ if (data.certificates !== undefined) {
+ var existingCerts = merged.certificates || [];
+ merged.certificates = data.certificates.map(function(slug) {
+ var ex = existingCerts.find(function(c){ return (c.id || c) === slug; });
+ return ex ? ex : { id: slug, issuedAt: new Date().toISOString() };
  });
  }
 

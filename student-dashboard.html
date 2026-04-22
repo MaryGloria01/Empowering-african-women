@@ -342,45 +342,32 @@ async function saveUser(u) {
  } catch (e) { /* best effort */ }
 }
 
-// Server-loaded enrollments
+// Server-loaded enrollments — always replaced from server, never additive-merged
 let _serverEnrollments = [];
 let _serverProgress = {};
-let _serverCertSlugs = new Set(); // slugs that have server-issued certificates
+let _serverProgressDetails = {}; // {slug: ['module-1','module-2',...]} — exact lesson IDs
+let _serverCertSlugs = new Set();
 
-// Build enrollment objects merging server slugs with server progress + localStorage fallback
+// Build enrollment objects — server DB is the single source of truth for progress
 function buildEnrollments() {
- const user = getUser();
- const saved = user.enrollments || [];
  return _serverEnrollments.map(slug => {
  const cd = COURSES[slug];
- const totalMods = cd ? cd.totalModules : 4;
+ const contentMods = cd ? (cd.contentModules || cd.totalModules) : 4;
 
- // Server lesson count (from progress table)
- const serverCount = _serverProgress[slug] || 0;
+ // Certificate = course fully complete (100%)
+ if (_serverCertSlugs.has(slug)) return { courseId: slug, progress: 100 };
 
- // Also check localStorage for quiz completion and completed modules
- const match = saved.find(e => e.courseId === slug);
- const quizPassed = (match && match.quizPassed) || _serverCertSlugs.has(slug);
- const localProgress = match ? (match.progress || 0) : 0;
+ // Use per-lesson IDs from server for accurate % (avoids totalModules guessing)
+ const lessonIds = _serverProgressDetails[slug] || [];
+ const completedCount = lessonIds.filter(id => {
+ const n = parseInt(id.replace('module-', ''), 10);
+ return !isNaN(n) && n >= 1 && n <= contentMods;
+ }).length;
 
- // Also check per-course progress key
- const progKey = 'eaw_prog_' + (user.email || '') + '_' + slug;
- const savedModules = JSON.parse(localStorage.getItem(progKey) || '[]');
- const localModules = match && match.completedModules ? match.completedModules : [];
- const allCompleted = [...new Set([...localModules, ...savedModules])];
-
- let pct;
- if (quizPassed) {
- pct = 100;
- } else if (serverCount > 0) {
- const contentMods = Math.max(1, totalMods - 1);
- pct = Math.min(80, Math.round(serverCount / contentMods * 80));
- } else if (allCompleted.length > 0) {
- const contentMods = Math.max(1, totalMods - 1);
- pct = Math.min(80, Math.round(allCompleted.length / contentMods * 80));
- } else {
- pct = localProgress;
- }
+ // Cap at 80 — the final 20% requires passing the assessment
+ const pct = completedCount > 0
+ ? Math.min(80, Math.round(completedCount / contentMods * 100))
+ : 0;
 
  return { courseId: slug, progress: pct };
  });
@@ -420,17 +407,17 @@ async function enrollAndGo(courseId, url) {
 
 // ── COURSE DATA, add new courses here and everywhere updates automatically ──
 const COURSES = {
- mechanic: { title: 'Female Mechanic Incubator', cat: 'Auto Mechanics', icon: '', img: 'Pictures/Female_Mechanic_Incubator.jpg', color: ['#0F172A','#1E3A8A'], link: 'course-mechanic', totalModules: 4 },
- baking: { title: 'Baking & Cooking Essentials', cat: 'Baking & Cooking', icon: '', img: 'Pictures/Baking_&_Cooking_Essentials.jpg', color: ['#7C2D12','#C2410C'], link: 'course-baking', totalModules: 5 },
- etiquette: { title: 'Social & Business Etiquette', cat: 'Business Skills', icon: '', img: 'Pictures/Social_&_Business_Etiquette.jpg', color: ['#1D4ED8','#2563EB'], link: 'course-etiquette', totalModules: 10 },
- coding: { title: 'Coding & Tech Basics', cat: 'Technology', icon: '', img: 'Pictures/Coding_&_Web_Development.jpg', color: ['#0F766E','#0D9488'], link: 'course-coding', totalModules: 4 },
- 'digital-skills': { title: 'Digital Skills', cat: 'Technology', icon: '', img: 'Pictures/Computer_Science_&_Digital_Skills.jpg', color: ['#0369A1','#0EA5E9'], link: 'course-digital-skills', totalModules: 5 },
- english: { title: 'English Communication', cat: 'Language', icon: '', img: 'Pictures/English_Language_&_Communication.jpg', color: ['#7E22CE','#9333EA'], link: 'course-english', totalModules: 4 },
- entrepreneurship: { title: 'Entrepreneurship & Business', cat: 'Business Skills', icon: '', img: 'Pictures/Business_&_Entrepreneurship.jpg', color: ['#B45309','#D97706'], link: 'course-entrepreneurship',totalModules: 5 },
- finance: { title: 'Personal Finance', cat: 'Finance', icon: '', img: 'Pictures/Financial_Literacy.jpg', color: ['#065F46','#059669'], link: 'course-finance', totalModules: 4 },
- health: { title: 'Health & Wellness', cat: 'Health', icon: '', img: 'Pictures/Health _&_Body_Awareness.jpg', color: ['#BE185D','#DB2777'], link: 'course-health', totalModules: 4 },
- sewing: { title: 'Fashion & Sewing', cat: 'Fashion & Design', icon: '', img: 'Pictures/Sewing_&_Fashion_Design.jpg', color: ['#9D174D','#BE185D'], link: 'course-sewing', totalModules: 4 },
- 'soft-skills': { title: 'Soft Skills Development', cat: 'Career Skills', icon: '', img: 'Pictures/Professional_Soft_Skills.jpg', color: ['#1E40AF','#3B82F6'], link: 'course-soft-skills', totalModules: 5 },
+ mechanic: { title: 'Female Mechanic Incubator', cat: 'Auto Mechanics', icon: '', img: 'Pictures/Female_Mechanic_Incubator.jpg', color: ['#0F172A','#1E3A8A'], link: 'course-mechanic', totalModules: 4, contentModules: 3 },
+ baking: { title: 'Baking & Cooking Essentials', cat: 'Baking & Cooking', icon: '', img: 'Pictures/Baking_&_Cooking_Essentials.jpg', color: ['#7C2D12','#C2410C'], link: 'course-baking', totalModules: 5, contentModules: 4 },
+ etiquette: { title: 'Social & Business Etiquette', cat: 'Business Skills', icon: '', img: 'Pictures/Social_&_Business_Etiquette.jpg', color: ['#1D4ED8','#2563EB'], link: 'course-etiquette', totalModules: 10, contentModules: 5 },
+ coding: { title: 'Coding & Tech Basics', cat: 'Technology', icon: '', img: 'Pictures/Coding_&_Web_Development.jpg', color: ['#0F766E','#0D9488'], link: 'course-coding', totalModules: 4, contentModules: 4 },
+ 'digital-skills': { title: 'Digital Skills', cat: 'Technology', icon: '', img: 'Pictures/Computer_Science_&_Digital_Skills.jpg', color: ['#0369A1','#0EA5E9'], link: 'course-digital-skills', totalModules: 5, contentModules: 5 },
+ english: { title: 'English Communication', cat: 'Language', icon: '', img: 'Pictures/English_Language_&_Communication.jpg', color: ['#7E22CE','#9333EA'], link: 'course-english', totalModules: 4, contentModules: 4 },
+ entrepreneurship: { title: 'Entrepreneurship & Business', cat: 'Business Skills', icon: '', img: 'Pictures/Business_&_Entrepreneurship.jpg', color: ['#B45309','#D97706'], link: 'course-entrepreneurship', totalModules: 5, contentModules: 6 },
+ finance: { title: 'Personal Finance', cat: 'Finance', icon: '', img: 'Pictures/Financial_Literacy.jpg', color: ['#065F46','#059669'], link: 'course-finance', totalModules: 4, contentModules: 5 },
+ health: { title: 'Health & Wellness', cat: 'Health', icon: '', img: 'Pictures/Health _&_Body_Awareness.jpg', color: ['#BE185D','#DB2777'], link: 'course-health', totalModules: 4, contentModules: 5 },
+ sewing: { title: 'Fashion & Sewing', cat: 'Fashion & Design', icon: '', img: 'Pictures/Sewing_&_Fashion_Design.jpg', color: ['#9D174D','#BE185D'], link: 'course-sewing', totalModules: 4, contentModules: 4 },
+ 'soft-skills': { title: 'Soft Skills Development', cat: 'Career Skills', icon: '', img: 'Pictures/Professional_Soft_Skills.jpg', color: ['#1E40AF','#3B82F6'], link: 'course-soft-skills', totalModules: 5, contentModules: 5 },
 };
 
 // ── BROWSE COURSES SUBMENU (dynamic from COURSES data) ──
@@ -641,32 +628,17 @@ document.addEventListener('DOMContentLoaded', async () => {
  const data = await res.json();
  if (data.enrollments) _serverEnrollments = data.enrollments;
  if (data.progress) _serverProgress = data.progress;
+ if (data.progressDetails) _serverProgressDetails = data.progressDetails;
  } catch (e) { /* offline */ }
- // Always merge localStorage enrollments so nothing is lost
- const localUser = getUser();
- if (localUser.enrollments && localUser.enrollments.length) {
- localUser.enrollments.forEach(e => {
- const slug = e.courseId || e;
- if (!_serverEnrollments.includes(slug)) {
- _serverEnrollments.push(slug);
- // Sync this local-only enrollment up to the server (idempotent)
- fetch('api/enroll.php', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- credentials: 'include',
- body: JSON.stringify({ course: slug })
- }).catch(function(){});
- }
- });
- }
- // Write server enrollments back to localStorage so course pages stay in sync
- if (_serverEnrollments.length) {
+ // Server is authoritative — replace localStorage enrollment list to reflect server state
+ // (handles cross-device unenrolls; no additive-only merge)
  const _lu = getUser();
+ if (_serverEnrollments.length || _lu.enrollments) {
  if (!_lu.enrollments) _lu.enrollments = [];
- _serverEnrollments.forEach(function(slug) {
- if (!_lu.enrollments.find(function(e){ return (e.courseId||e) === slug; })) {
- _lu.enrollments.push({ courseId: slug, enrolledAt: new Date().toISOString() });
- }
+ // Replace with server list, preserving any local detail objects
+ _lu.enrollments = _serverEnrollments.map(slug => {
+ const ex = _lu.enrollments.find(e => (e.courseId || e) === slug);
+ return ex ? ex : { courseId: slug, enrolledAt: new Date().toISOString() };
  });
  saveUser(_lu);
  }
@@ -755,6 +727,7 @@ document.addEventListener('DOMContentLoaded', async () => {
  const data = await res.json();
  if (data.enrollments) _serverEnrollments = data.enrollments;
  if (data.progress) _serverProgress = data.progress;
+ if (data.progressDetails) _serverProgressDetails = data.progressDetails;
  const fresh = buildEnrollments();
  renderCourseList(fresh, 'myCoursesGrid');
  renderCourseList(fresh, 'overviewCourses');
