@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/db.php';
 cors();
+start_session(); // must be before any debug_log so uid is accurate
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_out(['error' => 'Method not allowed'], 405);
 

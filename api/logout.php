@@ -10,15 +10,18 @@ $_SESSION = [];
 
 // Expire the session cookie immediately in the browser
 if (ini_get('session.use_cookies')) {
-    $params = session_get_cookie_params();
+    $params   = session_get_cookie_params();
+    $isHttps  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+             || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+             || (!empty($_SERVER['HTTP_X_FORWARDED_SSL'])   && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
     setcookie(
         session_name(), '', [
             'expires'  => time() - 3600,
             'path'     => $params['path'],
             'domain'   => $params['domain'],
-            'secure'   => true,
+            'secure'   => $isHttps,
             'httponly' => true,
-            'samesite' => 'Strict',
+            'samesite' => 'Lax',
         ]
     );
 }

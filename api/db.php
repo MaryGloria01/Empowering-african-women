@@ -54,22 +54,27 @@ function cors() {
 
 function start_session() {
     if (session_status() === PHP_SESSION_NONE) {
-        // Never put session ID in URLs — prevents URI-too-large (414) on slow connections
+        // Hostinger runs PHP behind LiteSpeed reverse proxy — SSL is terminated at the proxy,
+        // so $_SERVER['HTTPS'] is empty. Hardcoding secure:true caused PHP to either not send
+        // the cookie or the browser to discard it, making every request start a fresh session.
+        // Detect real HTTPS via the X-Forwarded-Proto header that LiteSpeed injects.
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+                || (!empty($_SERVER['HTTP_X_FORWARDED_SSL'])   && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
+
         ini_set('session.use_trans_sid',    '0');
         ini_set('session.use_only_cookies', '1');
-        ini_set('session.cookie_secure',    '1');
-        ini_set('session.cookie_httponly',  '1');
-        ini_set('session.cookie_samesite',  'Strict');
-        // Match server-side GC lifetime to cookie lifetime (default is 1440s = 24min on most hosts)
         ini_set('session.gc_maxlifetime',   (string)(86400 * 30));
         session_set_cookie_params([
             'lifetime' => 86400 * 30,
             'path'     => '/',
-            'secure'   => true,
+            'secure'   => $isHttps,   // true on HTTPS, false when proxy hides SSL from PHP
             'httponly' => true,
-            'samesite' => 'Strict',
+            'samesite' => 'Lax',      // Lax works across same-site redirects; Strict blocked cookies after HTTP→HTTPS redirect
         ]);
         session_start();
+
+        debug_log('start_session: started | isHttps=' . ($isHttps ? 'true' : 'false') . ' | session_id=' . session_id());
     }
 }
 
