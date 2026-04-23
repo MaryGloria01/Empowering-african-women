@@ -377,7 +377,7 @@ async function enrollAndGo(courseId, url) {
  const title = COURSES[courseId] ? COURSES[courseId].title : courseId;
  const ok = await _showDialog({
  type: 'enroll',
- icon: '',
+ icon: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
  title: 'Enrol in Course?',
  msg: 'Start learning "' + title + '"? You can remove it anytime from your dashboard.',
  confirmText: 'Yes, Enrol'
