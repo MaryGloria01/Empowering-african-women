@@ -689,9 +689,10 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
   .hero-inner { grid-template-columns: 1fr; gap: 28px; }
   .hero-img-col { order: -1; }
   .hero-main-img { aspect-ratio: 16/9; border-radius: var(--r-lg); }
-  .hero-title { font-size: clamp(28px, 6.5vw, 40px); }
-  .hero-sub { font-size: 15px; margin-bottom: 24px; max-width: 100%; }
-  .hero-actions { gap: 12px; }
+  .hero-title { font-size: clamp(28px, 6.5vw, 40px); text-align: center; }
+  .hero-sub { font-size: 15px; margin-bottom: 24px; max-width: 100%; text-align: center; }
+  .hero-badge { display: flex; justify-content: center; }
+  .hero-actions { gap: 12px; justify-content: center; }
   .hero-actions .btn { width: 100%; justify-content: center; text-align: center; }
   .hero-stats { padding: 16px 18px; gap: 12px; justify-content: center; }
   .h-stat-div { display: none; }
