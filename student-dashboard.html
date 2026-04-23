@@ -489,7 +489,7 @@ let _dialogResolve = null;
 function _showDialog(opts) {
  const overlay = document.getElementById('eawDialogOverlay');
  document.getElementById('eawDialogIcon').className = 'eaw-dialog-icon ' + (opts.type || 'enroll');
- document.getElementById('eawDialogIcon').textContent = opts.icon || '';
+ document.getElementById('eawDialogIcon').innerHTML = opts.icon || '';
  document.getElementById('eawDialogTitle').textContent = opts.title || '';
  document.getElementById('eawDialogMsg').textContent = opts.msg || '';
  const btn = document.getElementById('eawDialogConfirmBtn');
@@ -511,7 +511,7 @@ async function unenrolCourse(courseId) {
  const title = COURSES[courseId] ? COURSES[courseId].title : courseId;
  const ok = await _showDialog({
  type: 'danger',
- icon: '',
+ icon: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
  title: 'Remove Course?',
  msg: 'Remove "' + title + '" from your courses? Your progress will be saved if you re-enrol.',
  confirmText: 'Yes, Remove'
