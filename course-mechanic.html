@@ -576,7 +576,7 @@ function updateModuleUI() {
  const user = getUser();
  const enrol = user ? (user.enrollments || []).find(e => e.courseId === COURSE_ID) : null;
  const completed = _completedModules.length > 0 ? _completedModules : (enrol ? (enrol.completedModules || []) : []);
- const hasCert = user && (user.certificates || []).some(c => c.id === COURSE_ID);
+ const hasCert = (user && (user.certificates || []).some(c => c.id === COURSE_ID)) || !!_certified;
  const quizPassed = hasCert || (enrol ? !!enrol.quizPassed : false);
  const pct = quizPassed ? 100 : (_completedModules.length > 0 ? Math.round(_completedModules.filter(n => CONTENT_MODULES.includes(n)).length / CONTENT_MODULES.length * 80) : (enrol ? (enrol.progress || 0) : 0));
 
@@ -705,8 +705,10 @@ async function loadProgressFromDB() {
  const _savedProg = JSON.parse(localStorage.getItem(_progKey2) || '[]');
  _savedProg.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
  // Push enrollment + any local-only completions up to server (one-way sync, idempotent)
+ try {
  await authFetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
  await Promise.all(_completedModules.filter(function(n){return !isNaN(n)&&!_serverNums.has(n);}).map(function(n){return authFetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}));
+ } catch(e) {}
  // Sync merged progress + cert status back to localStorage
  const _syncUser = getUser();
  if (_syncUser) {

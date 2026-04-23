@@ -492,7 +492,7 @@ function issueCertificate() {
  user.certificates.push(cert);
  saveUser(user);
  // Sync certificate to server (non-blocking)
- fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(function(){});
+ authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(function(){});
  }
 
  document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || '');
