@@ -127,13 +127,15 @@ async function _onAuthSuccess(data) {
  const sessionUser = data.user;
  const serverSlugs = data.enrollments || [];
 
+ // Store session ID in localStorage — sent as X-Session-Id header on every API call
+ // so auth works in any tab/browser on this device without depending solely on cookies.
+ if (data.sid) localStorage.setItem('eaw_sid', data.sid);
+
  // Server is the single source of truth — never push stale local data to server.
- // Build enrollment objects from server slugs only.
  sessionUser.enrollments = serverSlugs.map(function(slug) {
  return { courseId: slug, enrolledAt: new Date().toISOString() };
  });
 
- // Store per-lesson progress details if returned (login.php and google-auth.php both return this now)
  if (data.progressDetails) sessionUser.progressDetails = data.progressDetails;
 
  localStorage.setItem('eaw_user', JSON.stringify(sessionUser));

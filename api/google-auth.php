@@ -125,6 +125,7 @@ $progressDetails = [];
 while ($row = $detailStmt->fetch()) { $progressDetails[$row['course_slug']][] = $row['lesson_id']; }
 
 json_out(['success' => true,
+    'sid'             => session_id(),
     'enrollments'     => $enrollmentSlugs,
     'progress'        => $progressMap,
     'progressDetails' => $progressDetails,

@@ -333,10 +333,9 @@ function getUser() { return JSON.parse(localStorage.getItem('eaw_user') || '{}')
 async function saveUser(u) {
  localStorage.setItem('eaw_user', JSON.stringify(u));
  try {
- await fetch('api/user.php', {
+ await authFetch('api/user.php', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- credentials: 'include',
  body: JSON.stringify({ firstName: u.firstName, lastName: u.lastName, phone: u.phone })
  });
  } catch (e) { /* best effort */ }
@@ -385,10 +384,9 @@ async function enrollAndGo(courseId, url) {
  });
  if (!ok) return;
  try {
- await fetch('api/enroll.php', {
+ await authFetch('api/enroll.php', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- credentials: 'include',
  body: JSON.stringify({ course: courseId })
  });
  if (!_serverEnrollments.includes(courseId)) { _serverEnrollments.push(courseId); renderRecommended(); }
@@ -537,10 +535,9 @@ async function unenrolCourse(courseId) {
  document.getElementById('coursesBadge').textContent = enrollments.length;
  // Await DB delete — rollback UI if it fails
  try {
- const delRes = await fetch('api/enroll.php', {
+ const delRes = await authFetch('api/enroll.php', {
  method: 'DELETE',
  headers: {'Content-Type': 'application/json'},
- credentials: 'include',
  body: JSON.stringify({course: courseId})
  });
  const delData = await delRes.json();
@@ -622,9 +619,10 @@ document.addEventListener('DOMContentLoaded', async () => {
  if (!user.firstName) { window.location.href = 'login'; return; }
  if (user.role === 'tutor' || user.role === 'tutor-pending') { window.location.href = 'tutor-dashboard'; return; }
 
- // Fetch enrollments from server, fall back to localStorage
+ // Fetch enrollments from server — authFetch sends X-Session-Id header for cross-tab auth
  try {
- const res = await fetch('api/enroll.php', { credentials: 'include' });
+ const res = await authFetch('api/enroll.php');
+ if (res.status === 401) { localStorage.removeItem('eaw_user'); localStorage.removeItem('eaw_sid'); window.location.href = 'login'; return; }
  const data = await res.json();
  if (data.enrollments) _serverEnrollments = data.enrollments;
  if (data.progress) _serverProgress = data.progress;
@@ -643,9 +641,9 @@ document.addEventListener('DOMContentLoaded', async () => {
  saveUser(_lu);
  }
 
- // Fetch certificates from server and merge into localStorage
+ // Fetch certificates from server
  try {
- const certRes = await fetch('api/certificate.php', { credentials: 'include' });
+ const certRes = await authFetch('api/certificate.php');
  const certData = await certRes.json();
  if (certData.certificates && certData.certificates.length) {
  const cu = getUser();
@@ -720,10 +718,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
  renderCourseList(enrollments, 'overviewCourses');
 
- // Auto-refresh progress from DB every 30 seconds so cross-device updates show automatically
+ // Auto-refresh progress from DB every 30 seconds
  setInterval(async function() {
  try {
- const res = await fetch('api/enroll.php', { credentials: 'include' });
+ const res = await authFetch('api/enroll.php');
  const data = await res.json();
  if (data.enrollments) _serverEnrollments = data.enrollments;
  if (data.progress) _serverProgress = data.progress;
@@ -840,7 +838,7 @@ async function loadReferrals() {
 
  // Try server first
  try {
- const res = await fetch('api/referral.php', { credentials: 'include' });
+ const res = await authFetch('api/referral.php');
  const data = await res.json();
  if (data.success) {
  _renderReferralUI(data.referral_code, data.referred_count, data.referred);

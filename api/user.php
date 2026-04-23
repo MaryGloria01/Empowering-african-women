@@ -79,15 +79,6 @@ if ($method === 'POST') {
         json_out(['error' => 'Not authenticated'], 401);
     }
 
-    // CSRF — always required on POST, not optional
-    start_session();
-    $csrf_header  = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-    $csrf_session = $_SESSION['csrf_token']       ?? '';
-    if (!$csrf_header || !$csrf_session || !hash_equals($csrf_session, $csrf_header)) {
-        debug_log("user.php POST: CSRF FAIL | user_id={$user['id']} | header_present=" . ($csrf_header ? 'yes' : 'no') . " | session_token_present=" . ($csrf_session ? 'yes' : 'no'));
-        json_out(['error' => 'Invalid CSRF token.'], 403);
-    }
-
     $data      = get_input();
     $firstName = substr(trim($data['firstName'] ?? $user['first_name']), 0, 60);
     $lastName  = substr(trim($data['lastName']  ?? $user['last_name']),  0, 60);

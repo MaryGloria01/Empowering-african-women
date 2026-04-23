@@ -48,33 +48,38 @@ function cors() {
         header('Access-Control-Allow-Credentials: true');
     }
     header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
+    header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token, X-Session-Id');
+    header('Access-Control-Expose-Headers: X-CSRF-Token');
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 }
 
 function start_session() {
     if (session_status() === PHP_SESSION_NONE) {
-        // Hostinger runs PHP behind LiteSpeed reverse proxy — SSL is terminated at the proxy,
-        // so $_SERVER['HTTPS'] is empty. Hardcoding secure:true caused PHP to either not send
-        // the cookie or the browser to discard it, making every request start a fresh session.
-        // Detect real HTTPS via the X-Forwarded-Proto header that LiteSpeed injects.
         $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
                 || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
                 || (!empty($_SERVER['HTTP_X_FORWARDED_SSL'])   && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
 
         ini_set('session.use_trans_sid',    '0');
-        ini_set('session.use_only_cookies', '1');
+        ini_set('session.use_only_cookies', '0'); // allow header-based session ID
         ini_set('session.gc_maxlifetime',   (string)(86400 * 30));
         session_set_cookie_params([
             'lifetime' => 86400 * 30,
             'path'     => '/',
-            'secure'   => $isHttps,   // true on HTTPS, false when proxy hides SSL from PHP
+            'secure'   => $isHttps,
             'httponly' => true,
-            'samesite' => 'Lax',      // Lax works across same-site redirects; Strict blocked cookies after HTTP→HTTPS redirect
+            'samesite' => 'Lax',
         ]);
-        session_start();
 
-        debug_log('start_session: started | isHttps=' . ($isHttps ? 'true' : 'false') . ' | session_id=' . session_id());
+        // Token auth fallback: if browser has no session cookie (different tab/browser),
+        // accept the session ID from the X-Session-Id header sent by JS from localStorage.
+        $cookieSid = $_COOKIE[session_name()] ?? '';
+        $headerSid = trim($_SERVER['HTTP_X_SESSION_ID'] ?? '');
+        if (!$cookieSid && $headerSid && preg_match('/^[a-zA-Z0-9,\-]{20,128}$/', $headerSid)) {
+            session_id($headerSid);
+        }
+
+        session_start();
+        debug_log('start_session: started | isHttps=' . ($isHttps ? 'true' : 'false') . ' | session_id=' . session_id() . ' | via=' . ($cookieSid ? 'cookie' : ($headerSid ? 'header' : 'new')));
     }
 }
 

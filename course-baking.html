@@ -446,7 +446,7 @@ function enrollCourse() {
  if (!user.enrollments.find(e => e.courseId === COURSE_ID)) {
  user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
  saveUser(user);
- fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})});
+ authFetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:COURSE_ID})});
  }
  updateEnrolBtn();
  const first = document.querySelector('.accordion-header');
@@ -493,10 +493,10 @@ async function completeModule(moduleNum) {
  enrol.progress = Math.min(80, enrol.completedModules.length * 20);
  saveUser(user);
  // Save progress to server (non-blocking, best-effort)
- await fetch('api/progress.php', {
+ await authFetch('api/progress.php', {
  method: 'POST',
  headers: {'Content-Type': 'application/json'},
- credentials: 'include',
+ 
  body: JSON.stringify({course: COURSE_ID, lesson: 'module-' + moduleNum})
  }).catch(function(){});
  updateModuleUI();
@@ -571,7 +571,7 @@ function issueCertificate() {
  cert = { id: COURSE_ID, title: 'Baking & Cooking Essentials', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() };
  user.certificates.push(cert);
  saveUser(user);
- fetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{});
+ authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{});
  }
  const m = document.getElementById('certModal');
  if (m) {
@@ -615,7 +615,7 @@ async function loadProgressFromDB() {
  _certified = false;
  const _serverNums = new Set();
  try {
- const res = await fetch('api/progress.php?course=' + COURSE_ID, { credentials: 'include' });
+ const res = await authFetch('api/progress.php?course=' + COURSE_ID, {});
  const data = await res.json();
  if (data.completed) { _completedModules = data.completed.map(function(id){ var n=parseInt(String(id).replace('module-',''),10); return isNaN(n)?null:n; }).filter(function(n){return n!==null;}); _completedModules.forEach(function(n){_serverNums.add(n);}); }
  if (data.certified) _certified = true;
@@ -631,8 +631,8 @@ async function loadProgressFromDB() {
  const _savedProg = JSON.parse(localStorage.getItem(_progKey2) || '[]');
  _savedProg.forEach(n => { if (!_completedModules.includes(n)) _completedModules.push(n); });
  // Push enrollment + any local-only completions up to server (one-way sync, idempotent)
- await fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
- await Promise.all(_completedModules.filter(function(n){return !isNaN(n)&&!_serverNums.has(n);}).map(function(n){return fetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}));
+ await authFetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+ await Promise.all(_completedModules.filter(function(n){return !isNaN(n)&&!_serverNums.has(n);}).map(function(n){return authFetch('api/progress.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:COURSE_ID,lesson:'module-'+n})}).catch(function(){});}));
  // Sync merged progress + cert status back to localStorage
  const _syncUser = getUser();
  if (_syncUser) {
@@ -839,7 +839,7 @@ document.addEventListener('DOMContentLoaded', async () => {
  if (!user.enrollments) user.enrollments = [];
  user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() });
  saveUser(user);
- fetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
+ authFetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:COURSE_ID})}).catch(function(){});
  }
  const enrol = user ? (user.enrollments || []).find(e => e.courseId === COURSE_ID) : null;
  if (enrol) document.getElementById('progressBar').style.display = 'block';

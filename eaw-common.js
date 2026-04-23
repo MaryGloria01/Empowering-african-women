@@ -351,11 +351,46 @@ function _eawUpdateAuthNav() {
  });
 }
 
+/* ─── authFetch: wraps fetch() with session-id header + credentials ──────
+   Coursera/Udemy pattern: store session token in localStorage, send as header
+   so auth works across tabs and browsers on the same device. */
+function authFetch(url, options) {
+ options = options || {};
+ options.credentials = 'include';
+ var sid = localStorage.getItem('eaw_sid');
+ if (sid) {
+ options.headers = Object.assign({}, options.headers || {}, { 'X-Session-Id': sid });
+ }
+ // Cache-bust all GET requests to prevent LiteSpeed serving stale 401 responses
+ if (!options.method || options.method === 'GET') {
+ url = url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now();
+ }
+ return fetch(url, options);
+}
+window.authFetch = authFetch;
+
 /* ─── Session restore: sync PHP session → localStorage on every page load */
 async function _eawRestoreSession() {
  try {
- var res = await fetch('api/user.php', { credentials: 'include' });
- if (!res.ok) return; // 401 = not logged in, keep localStorage as-is
+ var res = await authFetch('api/user.php');
+ if (!res.ok) {
+ // 401 = session expired. If localStorage has a user, clear it and redirect to login.
+ // This prevents stale partial data (0 enrollments + old certificates) showing.
+ if (res.status === 401) {
+ var stored;
+ try { stored = JSON.parse(localStorage.getItem('eaw_user') || 'null'); } catch(e2) { stored = null; }
+ if (stored && stored.firstName) {
+ localStorage.removeItem('eaw_user');
+ localStorage.removeItem('eaw_sid');
+ // Only redirect if not already on login/signup page
+ var path = window.location.pathname;
+ if (path.indexOf('login') === -1 && path.indexOf('signup') === -1 && path.indexOf('reset') === -1) {
+ window.location.href = 'login';
+ }
+ }
+ }
+ return;
+ }
 
  var data = await res.json();
  if (!data.success) return;
