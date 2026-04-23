@@ -381,12 +381,11 @@ body.dash-body { background: var(--gray-50); padding-top: 72px; }
 .dash-greeting h1 { font-family: 'Source Serif 4', serif; font-size: 30px; font-weight: 700; margin-bottom: 8px; }
 .dash-greeting p { color: var(--text-mid); margin-bottom: 28px; }
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-.stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg); padding: 22px; text-align: center; transition: var(--ease); position: relative; overflow: hidden; }
+.stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg); padding: 14px 12px; text-align: center; transition: var(--ease); position: relative; overflow: hidden; }
 .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--blue), var(--blue-mid)); border-radius: var(--r-lg) var(--r-lg) 0 0; }
 .stat-card:hover { box-shadow: var(--sh-md); border-color: var(--blue-light); transform: translateY(-3px); }
-.stat-icon { font-size: 28px; margin-bottom: 8px; }
-.stat-num { font-family: 'Source Serif 4', serif; font-size: 32px; font-weight: 700; color: var(--blue); }
-.stat-lbl { font-size: 14px; color: var(--text-light); font-weight: 600; margin-top: 4px; }
+.stat-num { font-family: 'Source Serif 4', serif; font-size: 24px; font-weight: 700; color: var(--blue); }
+.stat-lbl { font-size: 12px; color: var(--text-light); font-weight: 600; margin-top: 3px; }
 .dash-section-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 .dash-section-title::before { content: ''; display: inline-block; width: 4px; height: 20px; background: linear-gradient(to bottom, var(--blue), var(--blue-mid)); border-radius: 2px; }
 .enrolled-card { display: flex; gap: 16px; align-items: center; background: #fff; border: 1px solid var(--gray-200); border-radius: var(--r-lg); padding: 16px; margin-bottom: 12px; transition: var(--ease); }
