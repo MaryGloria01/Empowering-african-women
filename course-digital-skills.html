@@ -393,8 +393,17 @@ function enrollCourse() {
 function updateEnrolBtn() {
  const user = getUser();
  const enrolled = user && (user.enrollments || []).find(e => e.courseId === COURSE_ID);
+ const hasCert = (user && (user.certificates||[]).some(c => c.id === COURSE_ID)) || !!_certified;
  document.querySelectorAll('.enrol-btn').forEach(btn => {
- if (enrolled) {
+ if (hasCert) {
+ btn.textContent = '✓ Completed';
+ btn.style.background = 'linear-gradient(135deg,#D97706,#F59E0B)';
+ btn.style.cursor = 'default';
+ btn.onclick = function() {
+ const first = document.querySelector('.accordion-header');
+ if (first) { if (!first.classList.contains('active')) first.click(); first.scrollIntoView({ behavior:'smooth', block:'start' }); }
+ };
+ } else if (enrolled) {
  btn.textContent = 'Start Learning →';
  btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
  btn.style.cursor = 'default';
