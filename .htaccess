@@ -98,8 +98,8 @@ RewriteRule ^ %1 [R=301,L]
   ExpiresActive On
   ExpiresDefault "access plus 1 month"
 
-  # HTML — short cache so updates are picked up quickly
-  ExpiresByType text/html "access plus 1 hour"
+  # HTML — no cache: always revalidate so deploys are instant on all devices
+  ExpiresByType text/html "access plus 0 seconds"
 
   # CSS and JS — 1 year (use versioning for updates)
   ExpiresByType text/css "access plus 1 year"
@@ -135,7 +135,8 @@ RewriteRule ^ %1 [R=301,L]
   </FilesMatch>
 
   <FilesMatch "\.(html|htm)$">
-    Header set Cache-Control "public, max-age=3600, must-revalidate"
+    Header set Cache-Control "no-cache, must-revalidate"
+    Header set X-LiteSpeed-Cache-Control "no-cache"
   </FilesMatch>
 
   <FilesMatch "\.(php)$">
@@ -149,9 +150,14 @@ RewriteRule ^ %1 [R=301,L]
 FileETag None
 
 # ── LiteSpeed Cache (Hostinger) ───────────────────────────────────────────────
+# Cache static assets publicly but never cache HTML/PHP (so deploys are instant)
 <IfModule LiteSpeed>
   CacheEnable public /
   CacheLookup on
+  <FilesMatch "\.(html|htm|php)$">
+    CacheDisable public
+    Header set X-LiteSpeed-Cache-Control "no-cache"
+  </FilesMatch>
 </IfModule>
 
 # ── Prevent Hotlinking ────────────────────────────────────────────────────────

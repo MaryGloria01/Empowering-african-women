@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>English Language &amp; Communication | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=3">
+ <link rel="stylesheet" href="styles.css?v=4">
  <script src="preloader.js"></script>
 </head>
 <body>
@@ -491,6 +491,6 @@ document.addEventListener('DOMContentLoaded', async () => {
  if(user&&user.firstName){const navCta=document.querySelector('.nav-cta');if(navCta){const dashLink=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard':'student-dashboard';navCta.innerHTML=`<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="/" class="btn btn-ghost btn-sm" onclick="authFetch('api/logout.php');localStorage.removeItem('eaw_user')">Sign Out</a>`;}}
 });
 </script>
-<script src="eaw-common.js"></script>
+<script src="eaw-common.js?v=4"></script>
 </body>
 </html>
