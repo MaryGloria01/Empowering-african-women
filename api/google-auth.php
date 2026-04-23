@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . '/db.php';
 cors();
+start_session();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_out(['error' => 'Method not allowed'], 405);
+
+debug_log('REQUEST google-auth.php | method=POST');
 
 // ── Your Google OAuth Client ID ───────────────────────────────────────────────
 define('GOOGLE_CLIENT_ID', '628340119385-bg1k4gkadmu7ngpha69o44us9fhvlefe.apps.googleusercontent.com');
@@ -98,25 +101,33 @@ if ($user) {
 }
 
 // ── Session ───────────────────────────────────────────────────────────────────
-start_session();
 session_regenerate_id(true);
 $_SESSION['user_id']   = $userId;
 $_SESSION['user_role'] = $role;
 unset($_SESSION['is_admin']);
+debug_log("GOOGLE AUTH SUCCESS | email=$email | user_id=$userId | mode=$mode");
 
 // ── Return same shape as login.php ────────────────────────────────────────────
 $enrStmt = $pdo->prepare('SELECT course_slug FROM enrollments WHERE user_id = ?');
 $enrStmt->execute([$userId]);
 $enrollmentSlugs = $enrStmt->fetchAll(PDO::FETCH_COLUMN);
+debug_log("GOOGLE AUTH: enrollments | user_id=$userId | count=" . count($enrollmentSlugs) . " | slugs=" . implode(',', $enrollmentSlugs));
 
 $progStmt = $pdo->prepare('SELECT course_slug, COUNT(*) as cnt FROM progress WHERE user_id = ? GROUP BY course_slug');
 $progStmt->execute([$userId]);
 $progressMap = [];
 while ($row = $progStmt->fetch()) { $progressMap[$row['course_slug']] = (int)$row['cnt']; }
 
+// Per-course lesson IDs for accurate % calculation (same as login.php)
+$detailStmt = $pdo->prepare('SELECT course_slug, lesson_id FROM progress WHERE user_id = ?');
+$detailStmt->execute([$userId]);
+$progressDetails = [];
+while ($row = $detailStmt->fetch()) { $progressDetails[$row['course_slug']][] = $row['lesson_id']; }
+
 json_out(['success' => true,
-    'enrollments' => $enrollmentSlugs,
-    'progress'    => $progressMap,
+    'enrollments'     => $enrollmentSlugs,
+    'progress'        => $progressMap,
+    'progressDetails' => $progressDetails,
     'user' => [
         'id'         => $userId,
         'firstName'  => $firstName,

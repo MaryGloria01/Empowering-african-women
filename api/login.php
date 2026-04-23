@@ -99,9 +99,15 @@ $progStmt->execute([$user['id']]);
 $progressMap = [];
 while ($row = $progStmt->fetch()) { $progressMap[$row['course_slug']] = (int)$row['cnt']; }
 
+$detailStmt = $pdo->prepare('SELECT course_slug, lesson_id FROM progress WHERE user_id = ?');
+$detailStmt->execute([$user['id']]);
+$progressDetails = [];
+while ($row = $detailStmt->fetch()) { $progressDetails[$row['course_slug']][] = $row['lesson_id']; }
+
 json_out(['success' => true,
-    'enrollments' => $enrollmentSlugs,
-    'progress'    => $progressMap,
+    'enrollments'     => $enrollmentSlugs,
+    'progress'        => $progressMap,
+    'progressDetails' => $progressDetails,
     'user' => [
         'id'         => (int)$user['id'],
         'firstName'  => $user['first_name'],
