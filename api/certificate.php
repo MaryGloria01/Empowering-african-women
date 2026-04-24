@@ -38,6 +38,7 @@ if ($method === 'GET') {
 
 // POST — issue a certificate (idempotent — returns existing cert_code if already issued)
 if ($method === 'POST') {
+    verify_csrf();
     $data  = get_input();
     $slug  = trim($data['course'] ?? '');
     $title = trim($data['title'] ?? '');
@@ -48,8 +49,8 @@ if ($method === 'POST') {
         json_out(['error' => 'Course slug required.'], 400);
     }
 
-    // Validate slug is alphanumeric with hyphens only
-    if (!preg_match('/^[a-z0-9\-]{1,80}$/', $slug)) {
+    // Validate slug against whitelist (most restrictive check)
+    if (!in_array($slug, VALID_COURSE_SLUGS)) {
         debug_log("certificate.php POST: invalid slug | user_id={$user['id']} | slug=$slug");
         json_out(['error' => 'Invalid course slug.'], 400);
     }

@@ -20,6 +20,10 @@ if ($method === 'GET') {
         debug_log("progress.php GET: missing course slug | user_id={$user['id']}");
         json_out(['error' => 'Course slug required.'], 400);
     }
+    if (!in_array($slug, VALID_COURSE_SLUGS)) {
+        debug_log("progress.php GET: invalid slug | user_id={$user['id']} | slug=$slug");
+        json_out(['error' => 'Invalid course.'], 400);
+    }
 
     debug_log("progress.php GET: fetching | user_id={$user['id']} | course=$slug");
     $pdo  = getDB();
@@ -39,12 +43,17 @@ if ($method === 'GET') {
 
 // POST — mark a lesson complete
 if ($method === 'POST') {
+    verify_csrf();
     $data     = get_input();
     $slug     = trim($data['course']  ?? '');
     $lessonId = trim($data['lesson']  ?? '');
     if (!$slug || !$lessonId) {
         debug_log("progress.php POST: missing params | user_id={$user['id']} | course='$slug' | lesson='$lessonId'");
         json_out(['error' => 'Course and lesson required.'], 400);
+    }
+    if (!in_array($slug, VALID_COURSE_SLUGS)) {
+        debug_log("progress.php POST: invalid slug | user_id={$user['id']} | slug=$slug");
+        json_out(['error' => 'Invalid course.'], 400);
     }
 
     debug_log("progress.php POST: marking complete | user_id={$user['id']} | course=$slug | lesson=$lessonId");

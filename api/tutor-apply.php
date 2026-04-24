@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_out(['error' => 'Method not allo
 
 // ── Rate limiting: max 3 tutor applications per IP per hour ──────────────────
 $ip      = preg_replace('/[^a-f0-9:.]/', '', explode(',', ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown'))[0]);
-$rl_file = sys_get_temp_dir() . '/eaw_apply_' . md5($ip) . '.json';
+$rl_file = rl_dir() . 'eaw_apply_' . md5($ip) . '.json'; // Fix #9: project-local dir
 $rl      = file_exists($rl_file) ? json_decode(file_get_contents($rl_file), true) : ['count' => 0, 'window_start' => time()];
 if (time() - ($rl['window_start'] ?? 0) > 3600) { $rl = ['count' => 0, 'window_start' => time()]; }
 if (($rl['count'] ?? 0) >= 3) {

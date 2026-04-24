@@ -351,6 +351,9 @@ function _eawUpdateAuthNav() {
  });
 }
 
+// Fix #7: CSRF token — populated from user.php GET response on every page load
+window._eawCsrf = '';
+
 /* ─── authFetch: wraps fetch() with session-id header + credentials ──────
    Coursera/Udemy pattern: store session token in localStorage, send as header
    so auth works across tabs and browsers on the same device. */
@@ -360,6 +363,11 @@ function authFetch(url, options) {
  var sid = localStorage.getItem('eaw_sid');
  if (sid) {
  options.headers = Object.assign({}, options.headers || {}, { 'X-Session-Id': sid });
+ }
+ // Fix #7: include CSRF token for all state-changing requests
+ var method = (options.method || 'GET').toUpperCase();
+ if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS' && window._eawCsrf) {
+ options.headers = Object.assign({}, options.headers || {}, { 'X-CSRF-Token': window._eawCsrf });
  }
  // Cache-bust all GET requests to prevent LiteSpeed serving stale 401 responses
  if (!options.method || options.method === 'GET') {
@@ -394,6 +402,10 @@ async function _eawRestoreSession() {
 
  var data = await res.json();
  if (!data.success) return;
+
+ // Fix #7: store CSRF token for use in subsequent mutation requests
+ var csrfToken = res.headers.get('X-CSRF-Token');
+ if (csrfToken) window._eawCsrf = csrfToken;
 
  // Merge server identity with existing localStorage (never overwrite local progress data)
  var stored;

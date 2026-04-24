@@ -64,9 +64,10 @@ if ($method === 'GET') {
 
 // POST — update profile (own data only, validated & length-capped)
 if ($method === 'POST') {
-    // Rate limiting: max 10 profile updates per IP per hour
+    verify_csrf();
+    // Rate limiting: max 10 profile updates per IP per hour (Fix #9: project-local dir)
     $ip      = preg_replace('/[^a-f0-9:.]/', '', explode(',', ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown'))[0]);
-    $rl_file = sys_get_temp_dir() . '/eaw_user_' . md5($ip) . '.json';
+    $rl_file = rl_dir() . 'eaw_user_' . md5($ip) . '.json';
     $rl      = file_exists($rl_file) ? json_decode(file_get_contents($rl_file), true) : ['count' => 0, 'window_start' => time()];
     if (time() - ($rl['window_start'] ?? 0) > 3600) { $rl = ['count' => 0, 'window_start' => time()]; }
     if (($rl['count'] ?? 0) >= 10) {

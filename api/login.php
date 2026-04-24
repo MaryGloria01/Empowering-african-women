@@ -10,7 +10,7 @@ debug_log('REQUEST login.php | method=POST');
 // ── Server-side rate limiting (file-based, no DB needed) ─────────────────────
 $ip       = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $ip       = preg_replace('/[^a-f0-9:.]/', '', explode(',', $ip)[0]); // sanitise IP
-$rl_file  = sys_get_temp_dir() . '/eaw_login_' . md5($ip) . '.json';
+$rl_file  = rl_dir() . 'eaw_login_' . md5($ip) . '.json'; // Fix #9: project-local dir
 $rl       = file_exists($rl_file) ? json_decode(file_get_contents($rl_file), true) : ['attempts' => 0, 'lock_until' => 0];
 
 if (time() < ($rl['lock_until'] ?? 0)) {

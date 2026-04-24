@@ -7,8 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_out(['error' => 'Method not allo
 
 debug_log('REQUEST google-auth.php | method=POST');
 
-// ── Your Google OAuth Client ID ───────────────────────────────────────────────
-define('GOOGLE_CLIENT_ID', '628340119385-bg1k4gkadmu7ngpha69o44us9fhvlefe.apps.googleusercontent.com');
+// GOOGLE_CLIENT_ID is defined in config.php (loaded via db.php)
 
 $data    = get_input();
 $idToken = trim($data['id_token'] ?? '');

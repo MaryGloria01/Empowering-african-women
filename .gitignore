@@ -12,8 +12,9 @@ Video_courses/Auto_Care_101.mp4
 "Video_courses/3_Ways_to_prevent_Car_Fires _Auto_care_101.mp4"
 Pictures/20190723_134844.mp4
 
-# Database credentials — NEVER commit
+# Database credentials and environment config — NEVER commit
 api/config.php
+.env
 
 # Windows system files
 Thumbs.db

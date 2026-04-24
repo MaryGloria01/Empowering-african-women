@@ -617,8 +617,8 @@ async function renderOverview() {
  `;
 
  const pending = [
- ...d.courseSubmissions.filter(c => c.status === 'pending').map(c => ({ type: 'course', label: `Course submission: "${c.title}" by ${c.tutorName}`, date: c.submittedAt, section: 'courses' })),
- ...d.payments.filter(p => p.status === 'pending').map(p => ({ type: 'payment', label: `Payment from ${p.studentName} for ${p.courseTitle}`, date: p.submittedAt, section: 'payments' })),
+ ...d.courseSubmissions.filter(c => c.status === 'pending').map(c => ({ type: 'course', label: `Course submission: &quot;${esc(c.title)}&quot; by ${esc(c.tutorName)}`, date: c.submittedAt, section: 'courses' })),
+ ...d.payments.filter(p => p.status === 'pending').map(p => ({ type: 'payment', label: `Payment from ${esc(p.studentName)} for ${esc(p.courseTitle)}`, date: p.submittedAt, section: 'payments' })),
  ].sort((a,b) => new Date(b.date) - new Date(a.date));
 
  const pEl = document.getElementById('pendingActions');
@@ -640,8 +640,8 @@ async function renderOverview() {
  if (!recPays.length) { rp.innerHTML = '<p style="color:var(--text-light);font-size:14px;">No payment records yet.</p>'; return; }
  rp.innerHTML = recPays.map(p => `
  <div style="display:flex;align-items:center;gap:12px;padding:10px;background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-lg);margin-bottom:8px;"><span style="font-size:18px;"></span>
- <div style="flex:1;font-size:13px;"><strong>${p.studentName}</strong>, ${p.courseTitle}, ${p.amount}</div>
- <span class="status-badge status-${p.status === 'confirmed' ? 'approved' : p.status}">${p.status}</span>
+ <div style="flex:1;font-size:13px;"><strong>${esc(p.studentName)}</strong>, ${esc(p.courseTitle)}, ${esc(p.amount)}</div>
+ <span class="status-badge status-${p.status === 'confirmed' ? 'approved' : esc(p.status)}">${esc(p.status)}</span>
  </div>`).join('');
 }
 
@@ -663,16 +663,17 @@ function closeModal() { document.getElementById('detailModal').classList.remove(
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
- const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
- const tok = sessionStorage.getItem('eaw_admin_token');
- if (!user.firstName) { window.location.href = 'login'; return; }
- if (user.role !== 'admin' || !tok) { window.location.href = user.role === 'tutor' || user.role === 'tutor-pending' ? 'tutor-dashboard' : 'student-dashboard'; return; }
-
- // Fetch CSRF token from server for use in all state-changing POST requests
+ // Fix #4: verify admin session server-side before rendering anything
  try {
- const r = await fetch('api/admin.php?action=stats', { credentials: 'include' });
+ const sid = localStorage.getItem('eaw_sid') || '';
+ const headers = { 'Content-Type': 'application/json' };
+ if (sid) headers['X-Session-Id'] = sid;
+ const r = await fetch('api/admin.php?action=stats', { credentials: 'include', headers });
+ if (!r.ok) { window.location.href = 'login'; return; }
  _csrfToken = r.headers.get('X-CSRF-Token') || '';
- } catch(e) { /* non-fatal — CSRF validation will catch missing token */ }
+ } catch(e) { window.location.href = 'login'; return; }
+
+ const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
 
  document.getElementById('sidebarName').textContent = user.firstName + ' ' + (user.lastName || '');
  document.getElementById('sidebarInitial').textContent = (user.firstName || 'A').charAt(0).toUpperCase();

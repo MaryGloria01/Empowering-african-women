@@ -40,6 +40,14 @@ function get_input() {
     return json_decode(file_get_contents('php://input'), true) ?? [];
 }
 
+// Fix #10: Security headers for all API endpoints
+function security_headers(): void {
+    header('Content-Security-Policy: default-src \'none\'', true);
+    header('X-Content-Type-Options: nosniff', true);
+    header('X-Frame-Options: DENY', true);
+    header('Referrer-Policy: no-referrer', true);
+}
+
 function cors() {
     $allowed = ['https://empoweringafricanwomen.com', 'https://www.empoweringafricanwomen.com'];
     $origin  = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -50,6 +58,7 @@ function cors() {
     header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token, X-Session-Id');
     header('Access-Control-Expose-Headers: X-CSRF-Token');
+    security_headers();
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 }
 
@@ -72,9 +81,10 @@ function start_session() {
 
         // Token auth fallback: if browser has no session cookie (different tab/browser),
         // accept the session ID from the X-Session-Id header sent by JS from localStorage.
+        // Fix #5: removed stray comma from character class (valid session IDs are hex + hyphen only)
         $cookieSid = $_COOKIE[session_name()] ?? '';
         $headerSid = trim($_SERVER['HTTP_X_SESSION_ID'] ?? '');
-        if (!$cookieSid && $headerSid && preg_match('/^[a-zA-Z0-9,\-]{20,128}$/', $headerSid)) {
+        if (!$cookieSid && $headerSid && preg_match('/^[a-zA-Z0-9\-]{20,128}$/', $headerSid)) {
             session_id($headerSid);
         }
 
@@ -96,6 +106,33 @@ function debug_log(string $message, string $file = ''): void {
             : 'uid=NONE';
     $line = "[$ts] [$page] [$uid] $message" . PHP_EOL;
     @file_put_contents(EAW_DEBUG_LOG, $line, FILE_APPEND | LOCK_EX);
+}
+
+// Fix #7: CSRF token verification for state-changing requests
+function verify_csrf(): void {
+    start_session();
+    $token = trim($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+    if (!$token || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+        debug_log('CSRF verify failed | token_present=' . ($token ? 'yes' : 'no'));
+        json_out(['error' => 'Invalid CSRF token. Please refresh the page and try again.'], 403);
+    }
+}
+
+// Fix #8: Whitelist of valid course slugs
+define('VALID_COURSE_SLUGS', [
+    'mechanic', 'baking', 'etiquette', 'coding', 'digital-skills',
+    'english', 'entrepreneurship', 'finance', 'health', 'sewing', 'soft-skills',
+]);
+
+// Fix #9: Rate limit file directory — one level above public_html (not web-accessible)
+function rl_dir(): string {
+    static $dir = null;
+    if ($dir === null) {
+        $candidate = dirname(__DIR__, 2) . '/eaw_storage/';
+        if (!is_dir($candidate)) @mkdir($candidate, 0700, true);
+        $dir = is_dir($candidate) ? $candidate : sys_get_temp_dir() . '/';
+    }
+    return $dir;
 }
 
 function current_user() {

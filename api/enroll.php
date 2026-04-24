@@ -45,11 +45,16 @@ if ($method === 'GET') {
 
 // POST — enroll in a course
 if ($method === 'POST') {
+    verify_csrf();
     $data = get_input();
     $slug = trim($data['course'] ?? '');
     if (!$slug) {
         debug_log("enroll.php POST: missing course slug | user_id={$user['id']}");
         json_out(['error' => 'Course slug required.'], 400);
+    }
+    if (!in_array($slug, VALID_COURSE_SLUGS)) {
+        debug_log("enroll.php POST: invalid slug | user_id={$user['id']} | slug=$slug");
+        json_out(['error' => 'Invalid course.'], 400);
     }
 
     debug_log("enroll.php POST: attempting enroll | user_id={$user['id']} | course=$slug");
@@ -72,11 +77,16 @@ if ($method === 'POST') {
 
 // DELETE — unenroll from a course
 if ($method === 'DELETE') {
+    verify_csrf();
     $data = get_input();
     $slug = trim($data['course'] ?? '');
     if (!$slug) {
         debug_log("enroll.php DELETE: missing course slug | user_id={$user['id']}");
         json_out(['error' => 'Course slug required.'], 400);
+    }
+    if (!in_array($slug, VALID_COURSE_SLUGS)) {
+        debug_log("enroll.php DELETE: invalid slug | user_id={$user['id']} | slug=$slug");
+        json_out(['error' => 'Invalid course.'], 400);
     }
 
     debug_log("enroll.php DELETE: attempting unenroll | user_id={$user['id']} | course=$slug");
