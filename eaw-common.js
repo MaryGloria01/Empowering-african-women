@@ -354,20 +354,44 @@ function _eawUpdateAuthNav() {
 // Fix #7: CSRF token — populated from user.php GET response on every page load
 window._eawCsrf = '';
 
+// In-flight promise so parallel mutations share one token fetch instead of racing
+var _eawCsrfFetch = null;
+
+/* Ensure window._eawCsrf is set. If it's already set this is a no-op.
+   If not (race window on slow mobile), fetches user.php, extracts the header,
+   and deduplicates concurrent calls so only one network request fires. */
+function _ensureCsrf() {
+ if (window._eawCsrf) return Promise.resolve();
+ if (_eawCsrfFetch) return _eawCsrfFetch;
+ var sid = localStorage.getItem('eaw_sid') || '';
+ var hdrs = sid ? { 'X-Session-Id': sid } : {};
+ _eawCsrfFetch = fetch('api/user.php?_=' + Date.now(), { credentials: 'include', headers: hdrs })
+ .then(function(res) {
+ var token = res.headers.get('X-CSRF-Token');
+ if (token) window._eawCsrf = token;
+ _eawCsrfFetch = null;
+ })
+ .catch(function() { _eawCsrfFetch = null; });
+ return _eawCsrfFetch;
+}
+
 /* ─── authFetch: wraps fetch() with session-id header + credentials ──────
    Coursera/Udemy pattern: store session token in localStorage, send as header
    so auth works across tabs and browsers on the same device. */
-function authFetch(url, options) {
+async function authFetch(url, options) {
  options = options || {};
  options.credentials = 'include';
  var sid = localStorage.getItem('eaw_sid');
  if (sid) {
  options.headers = Object.assign({}, options.headers || {}, { 'X-Session-Id': sid });
  }
- // Fix #7: include CSRF token for all state-changing requests
+ // Fix #7: for mutations, guarantee the CSRF token is ready before sending
  var method = (options.method || 'GET').toUpperCase();
- if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS' && window._eawCsrf) {
+ if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+ await _ensureCsrf();
+ if (window._eawCsrf) {
  options.headers = Object.assign({}, options.headers || {}, { 'X-CSRF-Token': window._eawCsrf });
+ }
  }
  // Cache-bust all GET requests to prevent LiteSpeed serving stale 401 responses
  if (!options.method || options.method === 'GET') {
