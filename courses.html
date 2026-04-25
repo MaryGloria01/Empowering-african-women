@@ -332,7 +332,7 @@ removeConfirm.addEventListener('click', () => {
  if (_idx >= 0) { _users[_idx].enrollments = user.enrollments; localStorage.setItem('eaw_users', JSON.stringify(_users)); }
  }
  _enrolledSlugs = _enrolledSlugs.filter(s => s !== _removePendingId);
- try { fetch('api/enroll.php', {method:'DELETE',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({course:_removePendingId})}).catch(function(){}); } catch(e) {}
+ authFetch('api/enroll.php', {method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:_removePendingId})}).catch(function(){});
  if (_removePendingBtn) {
  _removePendingBtn.textContent = 'Enrol Now';
  _removePendingBtn.className = 'btn btn-blue btn-sm';
@@ -457,8 +457,8 @@ refreshEnrolButtons();
 (async function() {
  try {
  const [enrollRes, certRes] = await Promise.all([
- fetch('api/enroll.php', { credentials: 'include' }),
- fetch('api/certificate.php',{ credentials: 'include' })
+ authFetch('api/enroll.php'),
+ authFetch('api/certificate.php')
  ]);
  const enrollData = await enrollRes.json();
  const certData = await certRes.json();
