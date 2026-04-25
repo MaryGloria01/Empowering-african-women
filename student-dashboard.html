@@ -650,7 +650,9 @@ document.addEventListener('DOMContentLoaded', async () => {
  if (!cu.certificates) cu.certificates = [];
  certData.certificates.forEach(sc => {
  _serverCertSlugs.add(sc.id);
- if (!cu.certificates.find(c => c.id === sc.id)) cu.certificates.push(sc);
+ const idx = cu.certificates.findIndex(c => c.id === sc.id);
+ if (idx === -1) cu.certificates.push(sc);
+ else cu.certificates[idx] = sc;
  });
  saveUser(cu);
  // Re-render search cards now that server cert data is in localStorage
