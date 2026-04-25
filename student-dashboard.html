@@ -107,6 +107,10 @@
  <span class="badge-count" id="coursesBadge">0</span>
  </button>
 
+ <button class="sb-link" id="nav-completedCourses" onclick="showSection('completedCourses')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+ Completed Courses
+ </button>
+
  <button class="sb-link" id="nav-certificates" onclick="showSection('certificates')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
  Certificates
  <span class="badge-count" id="certsBadge">0</span>
@@ -162,7 +166,8 @@
  <!-- QUICK ACTIONS -->
  <div class="quick-actions-row"><a href="courses" class="quick-action-btn"><span></span><span>Browse Courses</span></a>
  <button class="quick-action-btn" onclick="showSection('myCourses')"><span></span><span>Continue Learning</span></button>
- <button class="quick-action-btn" onclick="showSection('certificates')"><span>✓</span><span>My Certificates</span></button>
+ <button class="quick-action-btn" onclick="showSection('completedCourses')"><span>✓</span><span>Completed Courses</span></button>
+ <button class="quick-action-btn" onclick="showSection('certificates')"><span>🎓</span><span>My Certificates</span></button>
  <button class="quick-action-btn" onclick="showSection('profile')"><span></span><span>My Profile</span></button>
  </div>
 
@@ -206,6 +211,13 @@
  </div>
  <div style="margin-bottom:20px;"><a href="courses" class="btn btn-blue btn-sm">+ Enrol in New Course</a></div>
  <div id="myCoursesGrid"></div>
+ </div>
+
+ <!-- ── COMPLETED COURSES ── -->
+ <div id="sec-completedCourses"><div class="dash-greeting"><h1>Completed Courses</h1>
+ <p>Courses you have fully completed. Download or print your certificates from here.</p>
+ </div>
+ <div id="completedCoursesGrid"></div>
  </div>
 
  <!-- ── CERTIFICATES ── -->
@@ -323,6 +335,7 @@ function showSection(section) {
  closeSidebar();
  // refresh data when switching tabs
  if (section === 'myCourses') renderCourseList(buildEnrollments(), 'myCoursesGrid');
+ if (section === 'completedCourses') renderCompletedCourses();
  if (section === 'certificates') renderCertList(getUser().certificates || [], 'certsGrid');
  if (section === 'progress') renderProgressGrid(buildEnrollments(), 'progressGrid');
  if (section === 'referrals') loadReferrals();
@@ -484,6 +497,21 @@ function renderCourseList(enrollments, containerId) {
  }).join('');
 }
 
+function renderCompletedCourses() {
+ const _localCertIds = new Set((getUser().certificates||[]).map(c => c.id));
+ const completed = buildEnrollments().filter(e => {
+ const pct = e.progress || 0;
+ return pct === 100 || _serverCertSlugs.has(e.courseId) || _localCertIds.has(e.courseId);
+ });
+ const c = document.getElementById('completedCoursesGrid');
+ if (!c) return;
+ if (!completed.length) {
+ c.innerHTML = `<div class="empty-state"><div class="empty-icon">🎓</div><h3>No completed courses yet</h3><p>Keep learning! Complete a course to see it here and earn your certificate.</p><a href="courses" class="btn btn-blue">Browse Courses →</a></div>`;
+ return;
+ }
+ renderCourseList(completed, 'completedCoursesGrid');
+}
+
 // ── MODERN DIALOG SYSTEM ──
 let _dialogResolve = null;
 function _showDialog(opts) {
@@ -530,6 +558,7 @@ async function unenrolCourse(courseId) {
  const enrollments = buildEnrollments();
  renderCourseList(enrollments, 'myCoursesGrid');
  renderCourseList(enrollments, 'overviewCourses');
+ renderCompletedCourses();
  renderRecommended();
  document.getElementById('statEnrolled').textContent = enrollments.length;
  document.getElementById('coursesBadge').textContent = enrollments.length;
@@ -550,6 +579,7 @@ async function unenrolCourse(courseId) {
  const rolled = buildEnrollments();
  renderCourseList(rolled, 'myCoursesGrid');
  renderCourseList(rolled, 'overviewCourses');
+ renderCompletedCourses();
  renderRecommended();
  document.getElementById('statEnrolled').textContent = rolled.length;
  document.getElementById('coursesBadge').textContent = rolled.length;
@@ -719,6 +749,7 @@ document.addEventListener('DOMContentLoaded', async () => {
  `;
 
  renderCourseList(enrollments, 'overviewCourses');
+ renderCompletedCourses();
 
  // Auto-refresh progress from DB every 30 seconds
  setInterval(async function() {
@@ -731,6 +762,7 @@ document.addEventListener('DOMContentLoaded', async () => {
  const fresh = buildEnrollments();
  renderCourseList(fresh, 'myCoursesGrid');
  renderCourseList(fresh, 'overviewCourses');
+ renderCompletedCourses();
  document.getElementById('statEnrolled').textContent = fresh.length;
  const activeSection = document.querySelector('.sidebar-link.active');
  if (activeSection && activeSection.dataset.section === 'progress') renderProgressGrid(fresh, 'progressGrid');
