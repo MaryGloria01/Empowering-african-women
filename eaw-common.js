@@ -318,15 +318,18 @@ function _eawUpdateAuthNav() {
  if (!user || !user.id) {
  // Not logged in — restore default links (handles sign-out redirect)
  signInLink.href = 'login';
- signInLink.textContent = 'Sign In';
- signInLink.className = 'btn btn-ghost btn-sm';
  var joinLink = cta.querySelector('a[href="signup"], a.eaw-nav-signout');
  if (joinLink) {
- joinLink.href = 'signup';
- joinLink.textContent = 'Join for Free \u2192';
- joinLink.className = 'btn btn-blue btn-sm';
- joinLink.removeAttribute('data-eaw-signout');
- joinLink.onclick = null;
+  signInLink.textContent = 'Sign In';
+  signInLink.className = 'btn btn-ghost btn-sm';
+  joinLink.href = 'signup';
+  joinLink.textContent = 'Join for Free →';
+  joinLink.className = 'btn btn-blue btn-sm';
+  joinLink.removeAttribute('data-eaw-signout');
+  joinLink.onclick = null;
+ } else {
+  signInLink.textContent = 'Sign In →';
+  signInLink.className = 'btn btn-blue btn-sm';
  }
  return;
  }
