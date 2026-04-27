@@ -334,7 +334,7 @@ function showSection(section) {
  if (navBtn) navBtn.classList.add('active');
  closeSidebar();
  // refresh data when switching tabs
- if (section === 'myCourses') renderCourseList(buildEnrollments(), 'myCoursesGrid');
+ if (section === 'myCourses') renderInProgressCourses('myCoursesGrid');
  if (section === 'completedCourses') renderCompletedCourses();
  if (section === 'certificates') renderCertList(getUser().certificates || [], 'certsGrid');
  if (section === 'progress') renderProgressGrid(buildEnrollments(), 'progressGrid');
@@ -512,6 +512,21 @@ function renderCompletedCourses() {
  renderCourseList(completed, 'completedCoursesGrid');
 }
 
+function renderInProgressCourses(containerId) {
+ const _localCertIds = new Set((getUser().certificates||[]).map(c => c.id));
+ const inProgress = buildEnrollments().filter(e => {
+ const pct = e.progress || 0;
+ return !(pct === 100 || _serverCertSlugs.has(e.courseId) || _localCertIds.has(e.courseId));
+ });
+ const c = document.getElementById(containerId);
+ if (!c) return;
+ if (!inProgress.length) {
+ c.innerHTML = `<div class="empty-state"><div class="empty-icon">🎉</div><h3>All caught up!</h3><p>You've completed all your enrolled courses. Browse new ones to keep learning.</p><a href="courses" class="btn btn-blue">Browse Courses →</a></div>`;
+ return;
+ }
+ renderCourseList(inProgress, containerId);
+}
+
 // ── MODERN DIALOG SYSTEM ──
 let _dialogResolve = null;
 function _showDialog(opts) {
@@ -556,8 +571,8 @@ async function unenrolCourse(courseId) {
  }
  _serverEnrollments = _serverEnrollments.filter(s => s !== courseId);
  const enrollments = buildEnrollments();
- renderCourseList(enrollments, 'myCoursesGrid');
- renderCourseList(enrollments, 'overviewCourses');
+ renderInProgressCourses('myCoursesGrid');
+ renderInProgressCourses('overviewCourses');
  renderCompletedCourses();
  renderRecommended();
  document.getElementById('statEnrolled').textContent = enrollments.length;
@@ -577,8 +592,8 @@ async function unenrolCourse(courseId) {
  if (ru) { ru.enrollments = prevEnrollments; saveUser(ru); }
  _serverEnrollments = prevServerEnrollments;
  const rolled = buildEnrollments();
- renderCourseList(rolled, 'myCoursesGrid');
- renderCourseList(rolled, 'overviewCourses');
+ renderInProgressCourses('myCoursesGrid');
+ renderInProgressCourses('overviewCourses');
  renderCompletedCourses();
  renderRecommended();
  document.getElementById('statEnrolled').textContent = rolled.length;
@@ -748,7 +763,7 @@ document.addEventListener('DOMContentLoaded', async () => {
  </div>
  `;
 
- renderCourseList(enrollments, 'overviewCourses');
+ renderInProgressCourses('overviewCourses');
  renderCompletedCourses();
 
  // Auto-refresh progress from DB every 30 seconds
@@ -760,8 +775,8 @@ document.addEventListener('DOMContentLoaded', async () => {
  if (data.progress) _serverProgress = data.progress;
  if (data.progressDetails) _serverProgressDetails = data.progressDetails;
  const fresh = buildEnrollments();
- renderCourseList(fresh, 'myCoursesGrid');
- renderCourseList(fresh, 'overviewCourses');
+ renderInProgressCourses('myCoursesGrid');
+ renderInProgressCourses('overviewCourses');
  renderCompletedCourses();
  document.getElementById('statEnrolled').textContent = fresh.length;
  const activeSection = document.querySelector('.sidebar-link.active');
