@@ -97,7 +97,7 @@
  <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:8px;">Videos by Crash Course (Complexly), freely available on YouTube</div>
  </div>
  <div class="course-card-box"><div class="course-price"><span class="free-tag">Free</span></div>
- <button onclick="enrollCourse()" class="enrol-btn">Enrol Now, It's Free</button>
+ <button onclick="enrollCourse()" class="enrol-btn">Start Learning →</button>
  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-top:8px;">No payment required · Free certificate · Lifetime access</p>
  <div class="course-includes"><h4>This course includes:</h4>
  <div class="ci-item">5 professional modules</div>
@@ -411,7 +411,7 @@ function updateEnrolBtn() {
  if (first) { if (!first.classList.contains('active')) first.click(); first.scrollIntoView({ behavior:'smooth', block:'start' }); }
  };
  } else {
- btn.textContent = 'Enrol Now, It\'s Free!';
+ btn.textContent = 'Start Learning →';
  btn.style.background = '';
  btn.onclick = enrollCourse;
  }

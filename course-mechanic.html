@@ -208,7 +208,7 @@
  <span style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;color:var(--green);">₦0</span>
  </div>
  <p style="font-size:13px;color:var(--text-light);margin-bottom:18px;">No credit card · No fees · No catch</p>
- <button onclick="enrollCourse('mechanic')" class="enrol-btn">Enrol Now, It's Free!</button>
+ <button onclick="enrollCourse('mechanic')" class="enrol-btn">Start Learning →</button>
  <div class="course-includes"><h4>This course includes:</h4>
  <div class="ci-item"><span style="color:var(--green);font-weight:700;">✓</span> 4 comprehensive modules</div>
  <div class="ci-item"><span style="color:var(--green);font-weight:700;">✓</span> Practical auto care skills</div>
@@ -423,7 +423,7 @@
  <div style="margin-top:32px;background:linear-gradient(135deg,#0d1b2a,#1b3a5c);color:#fff;border-radius:var(--r-xl);padding:32px;text-align:center;"><div style="font-size:48px;margin-bottom:12px;">✓</div>
  <h3 style="font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;margin-bottom:10px;color:#fff;">Complete any course to earn your certificate</h3>
  <p style="color:rgba(255,255,255,.88);margin-bottom:20px;">Finish all modules and pass the final quiz to receive your official EAW Certificate of Completion in Auto Mechanics.</p>
- <button onclick="enrollCourse('mechanic')" class="btn btn-white btn-lg">Start Course Now →</button>
+ <button onclick="enrollCourse('mechanic')" class="btn btn-white btn-lg">Start Learning →</button>
  </div>
  </div>
 </section>
@@ -517,7 +517,7 @@ function updateEnrolBtn() {
  if (first) { if (!first.classList.contains('active')) first.click(); first.scrollIntoView({ behavior:'smooth', block:'start' }); }
  };
  } else {
- btn.textContent = 'Enrol Now, It\'s Free!';
+ btn.textContent = 'Start Learning →';
  btn.style.background = '';
  btn.onclick = enrollCourse;
  }

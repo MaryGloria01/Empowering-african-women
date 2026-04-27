@@ -297,7 +297,7 @@ function _eawRefreshEnrollBadges() {
  btn.style.backgroundImage = 'none';
  btn.style.color = '#fff';
  } else if (enrolled.has(slug)) {
- btn.textContent = 'Continue →';
+ btn.textContent = 'Start Learning →';
  btn.className = 'btn btn-sm';
  btn.style.background = '#1D4ED8';
  btn.style.backgroundImage = 'none';
