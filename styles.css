@@ -937,11 +937,16 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
   .course-hero { padding: 76px 16px 48px; }
   .accordion-header { font-size: 14px; padding: 13px 14px; }
   .accordion-body { padding: 14px; }
-  .cert-modal { padding: 24px 16px; }
-  .cert-student-name { font-size: 24px; }
-  .cert-frame { padding: 24px 16px; }
-  .cert-sigs { flex-direction: column; gap: 16px; align-items: center; }
-  .cert-sig-line { min-width: 0; width: 100%; max-width: 200px; }
+  .cert-modal-overlay { padding: 12px; }
+  .cert-modal { padding: 16px 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
+  .cert-frame { padding: 18px 14px; margin-bottom: 16px; }
+  .cert-title { font-size: 10px; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .cert-of { font-size: 19px; }
+  .cert-awarded { font-size: 12px; margin-bottom: 10px; }
+  .cert-student-name { font-size: 18px; padding-bottom: 6px; margin-bottom: 10px; }
+  .cert-course-name { font-size: 15px; }
+  .cert-sigs { margin-top: 16px; gap: 8px; justify-content: space-around; }
+  .cert-sig-line { min-width: 0; font-size: 11px; }
 }
 
 /* ===== 5 — SMALL PHONE (max-width: 360px) ===== */
@@ -995,8 +1000,11 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
   /* ── COURSE PAGES ── */
   .accordion-header { font-size: 13px; padding: 12px; }
   .accordion-body { padding: 12px; }
-  .cert-modal { padding: 18px 12px; }
-  .cert-student-name { font-size: 20px; }
+  .cert-modal { padding: 12px 8px; }
+  .cert-frame { padding: 14px 10px; }
+  .cert-of { font-size: 16px; }
+  .cert-student-name { font-size: 15px; }
+  .cert-course-name { font-size: 13px; }
 }
 
 /* ===== SUBTLE CSS-ONLY ANIMATIONS ===== */
@@ -1035,7 +1043,7 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
 .module-complete-btn:disabled { background: var(--green); cursor: default; transform: none; box-shadow: none; }
 
 /* ===== CERTIFICATE MODAL (course pages) ===== */
-.cert-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+.cert-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
 .cert-modal-overlay.open { display: flex; }
 .cert-modal { background: #fff; border-radius: var(--r-xl); max-width: 600px; width: 100%; padding: 44px; text-align: center; position: relative; }
 .cert-frame { border: 8px double var(--gold-vivid); border-radius: var(--r-xl); padding: 36px; margin-bottom: 24px; background: linear-gradient(135deg, #fffdf0, #fff); }
