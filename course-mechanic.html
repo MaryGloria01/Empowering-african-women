@@ -629,8 +629,6 @@ function issueCertificate() {
  const enrol = (user.enrollments||[]).find(e => e.courseId === COURSE_ID);
  const _hasCert = (user.certificates||[]).some(c => c.id === COURSE_ID);
  if (!((enrol && enrol.quizPassed) || _hasCert || !!_certified)) { window.location.href = QUIZ_URL; return; }
-
- }
  if (!user.certificates) user.certificates = [];
  // Store cert with original issue date once, reuse it forever
  let cert = user.certificates.find(c => c.id === COURSE_ID);
