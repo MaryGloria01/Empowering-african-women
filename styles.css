@@ -1055,6 +1055,27 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
 .cert-sigs { display: flex; justify-content: space-around; margin-top: 24px; }
 .cert-sig-line { font-size: 13px; color: var(--text-mid); border-top: 1px solid var(--gray-300); padding-top: 8px; text-align: center; min-width: 120px; }
 
+/* ===== SESSION TIMEOUT WARNING MODAL ===== */
+.eaw-timeout-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.eaw-timeout-overlay.open { opacity: 1; pointer-events: auto; }
+.eaw-timeout-dialog { background: #fff; border-radius: 20px; padding: 36px 32px 28px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.25); transform: scale(.95) translateY(8px); transition: transform .25s; }
+.eaw-timeout-overlay.open .eaw-timeout-dialog { transform: scale(1) translateY(0); }
+.eaw-timeout-icon { font-size: 40px; margin-bottom: 12px; }
+.eaw-timeout-title { font-family: 'Source Serif 4', serif; font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+.eaw-timeout-msg { font-size: 14px; color: var(--text-mid); margin-bottom: 4px; }
+.eaw-timeout-countdown { font-family: 'Source Serif 4', serif; font-size: 48px; font-weight: 900; color: var(--blue); margin: 8px 0 4px; letter-spacing: 2px; }
+.eaw-timeout-sub { font-size: 13px; color: var(--text-mid); margin-bottom: 24px; }
+.eaw-timeout-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.eaw-timeout-stay { background: var(--blue); color: #fff; border: none; border-radius: 10px; padding: 11px 28px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background .15s; font-family: inherit; }
+.eaw-timeout-stay:hover { background: var(--blue-dark); }
+.eaw-timeout-out { background: var(--gray-100); color: var(--text-mid); border: none; border-radius: 10px; padding: 11px 24px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s; font-family: inherit; }
+.eaw-timeout-out:hover { background: var(--gray-200); }
+body.dark-mode .eaw-timeout-dialog { background: #1E293B; }
+body.dark-mode .eaw-timeout-title { color: #F1F5F9; }
+body.dark-mode .eaw-timeout-msg, body.dark-mode .eaw-timeout-sub { color: #CBD5E1; }
+body.dark-mode .eaw-timeout-out { background: #334155; color: #E2E8F0; }
+body.dark-mode .eaw-timeout-out:hover { background: #475569; }
+
 /* ===== STUDENT DASHBOARD — WELCOME BANNER ===== */
 .dash-welcome-banner { background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 60%, #2563EB 100%); border-radius: var(--r-xl); padding: 28px 32px; margin-bottom: 28px; color: #fff; position: relative; overflow: hidden; }
 .dash-welcome-banner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 90% 50%, rgba(96,165,250,.3) 0%, transparent 60%); pointer-events: none; }

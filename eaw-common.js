@@ -347,7 +347,7 @@ function _eawUpdateAuthNav() {
  joinLink2.onclick = function(ev) {
  ev.preventDefault();
  try { fetch('api/logout.php', { credentials: 'include' }).catch(function(){}); } catch(e2) {}
- try { localStorage.removeItem('eaw_user'); sessionStorage.clear(); } catch(e3) {}
+ try { localStorage.removeItem('eaw_user'); localStorage.removeItem('eaw_last_active'); sessionStorage.clear(); } catch(e3) {}
  window.location.href = '/';
  };
  }
@@ -485,6 +485,147 @@ async function _eawRestoreSession() {
 }
 
 /* ─── Init ────────────────────────────────────────────────────────────── */
+
+/* ─── Session Timeout (3-day idle) ───────────────────────────────────────────── */
+var _EAW_TIMEOUT_MS   = 3 * 24 * 60 * 60 * 1000; // 3 days of inactivity
+var _EAW_WARN_MS      = 5 * 60 * 1000;             // show warning 5 min before
+var _EAW_ACTIVITY_KEY = 'eaw_last_active';
+var _eawLastWrite     = 0;
+var _eawWarnInterval  = null;
+
+function _eawRecordActivity() {
+ var now = Date.now();
+ if (now - _eawLastWrite < 60000) return; // throttle: write at most once per minute
+ _eawLastWrite = now;
+ var user;
+ try { user = JSON.parse(localStorage.getItem('eaw_user') || 'null'); } catch(e) { user = null; }
+ if (!user || !user.id) return;
+ try { localStorage.setItem(_EAW_ACTIVITY_KEY, String(now)); } catch(e) {}
+ _eawHideTimeoutWarn();
+}
+
+function _eawSessionSignOut() {
+ _eawHideTimeoutWarn();
+ try { fetch('api/logout.php', { credentials: 'include' }).catch(function(){}); } catch(e) {}
+ try {
+  localStorage.removeItem('eaw_user');
+  localStorage.removeItem('eaw_sid');
+  localStorage.removeItem(_EAW_ACTIVITY_KEY);
+ } catch(e) {}
+ window.location.href = 'login';
+}
+window._eawSessionSignOut = _eawSessionSignOut;
+
+function _eawStayLoggedIn() {
+ _eawLastWrite = 0; // bypass throttle so the write goes through immediately
+ _eawRecordActivity();
+ _eawHideTimeoutWarn();
+}
+window._eawStayLoggedIn = _eawStayLoggedIn;
+
+function _eawUpdateCountdown(seconds) {
+ var el = document.getElementById('eawTimeoutCountdown');
+ if (!el) return;
+ var m = Math.floor(seconds / 60);
+ var s = seconds % 60;
+ el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function _eawBuildTimeoutModal() {
+ if (document.getElementById('eawTimeoutOverlay')) return;
+ var el = document.createElement('div');
+ el.id = 'eawTimeoutOverlay';
+ el.className = 'eaw-timeout-overlay';
+ el.innerHTML = [
+  '<div class="eaw-timeout-dialog" role="alertdialog" aria-modal="true" aria-labelledby="eawTimeoutTitle">',
+  '<div class="eaw-timeout-icon">⏱️</div>',
+  '<div class="eaw-timeout-title" id="eawTimeoutTitle">Session About to Expire</div>',
+  '<div class="eaw-timeout-msg">You will be automatically signed out in</div>',
+  '<div class="eaw-timeout-countdown" id="eawTimeoutCountdown">5:00</div>',
+  '<div class="eaw-timeout-sub">due to inactivity. Tap below to stay logged in.</div>',
+  '<div class="eaw-timeout-actions">',
+  '<button class="eaw-timeout-stay" onclick="_eawStayLoggedIn()">Stay Logged In</button>',
+  '<button class="eaw-timeout-out" onclick="_eawSessionSignOut()">Sign Out Now</button>',
+  '</div>',
+  '</div>'
+ ].join('');
+ document.body.appendChild(el);
+}
+
+function _eawShowTimeoutWarn(secondsLeft) {
+ _eawBuildTimeoutModal();
+ var overlay = document.getElementById('eawTimeoutOverlay');
+ if (overlay && !overlay.classList.contains('open')) {
+  overlay.classList.add('open');
+ }
+ _eawUpdateCountdown(secondsLeft);
+ if (_eawWarnInterval) clearInterval(_eawWarnInterval);
+ var remaining = secondsLeft;
+ _eawWarnInterval = setInterval(function() {
+  remaining--;
+  if (remaining <= 0) {
+   clearInterval(_eawWarnInterval);
+   _eawWarnInterval = null;
+   _eawSessionSignOut();
+  } else {
+   _eawUpdateCountdown(remaining);
+  }
+ }, 1000);
+}
+
+function _eawHideTimeoutWarn() {
+ var overlay = document.getElementById('eawTimeoutOverlay');
+ if (overlay) overlay.classList.remove('open');
+ if (_eawWarnInterval) { clearInterval(_eawWarnInterval); _eawWarnInterval = null; }
+}
+
+function _eawCheckTimeout() {
+ var user;
+ try { user = JSON.parse(localStorage.getItem('eaw_user') || 'null'); } catch(e) { user = null; }
+ if (!user || !user.id) { _eawHideTimeoutWarn(); return; }
+
+ var lastActive;
+ try { lastActive = parseInt(localStorage.getItem(_EAW_ACTIVITY_KEY) || '0', 10); } catch(e) { lastActive = 0; }
+
+ if (!lastActive) {
+  // First ever visit after deploy — seed the timestamp now
+  try { localStorage.setItem(_EAW_ACTIVITY_KEY, String(Date.now())); } catch(e) {}
+  _eawLastWrite = Date.now();
+  return;
+ }
+
+ var elapsed = Date.now() - lastActive;
+
+ if (elapsed >= _EAW_TIMEOUT_MS) {
+  _eawSessionSignOut();
+ } else if (elapsed >= _EAW_TIMEOUT_MS - _EAW_WARN_MS) {
+  var secondsLeft = Math.ceil((_EAW_TIMEOUT_MS - elapsed) / 1000);
+  var overlay = document.getElementById('eawTimeoutOverlay');
+  if (!overlay || !overlay.classList.contains('open')) {
+   _eawShowTimeoutWarn(secondsLeft);
+  }
+ } else {
+  _eawHideTimeoutWarn();
+ }
+}
+
+function _eawInitTimeout() {
+ // Track any user interaction to reset the idle timer
+ ['click', 'keydown', 'mousemove', 'touchstart', 'scroll'].forEach(function(evt) {
+  document.addEventListener(evt, _eawRecordActivity, { passive: true });
+ });
+ // Page load counts as activity
+ var user;
+ try { user = JSON.parse(localStorage.getItem('eaw_user') || 'null'); } catch(e) { user = null; }
+ if (user && user.id) {
+  _eawLastWrite = 0;
+  _eawRecordActivity();
+ }
+ // Immediate check then repeat every 60 seconds
+ _eawCheckTimeout();
+ setInterval(_eawCheckTimeout, 60000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
  buildSearchModal();
  injectNavButtons();
@@ -498,6 +639,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
  // Then restore/validate session from server (updates localStorage + nav if session is active)
  _eawRestoreSession();
+
+ // Session idle timeout: sign out after 3 days of inactivity
+ _eawInitTimeout();
 
  // On course pages: poll DB every 60 s + refresh when tab regains focus
  if (typeof loadProgressFromDB === 'function') {
