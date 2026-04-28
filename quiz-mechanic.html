@@ -556,6 +556,8 @@ function issueCertificate() {
 }
 
 // ── Init ──
+// Enrollment gate: redirect unenrolled users to the course page
+(function(){try{var _qu=JSON.parse(localStorage.getItem('eaw_user')||'null');if(_qu){var _enr=(_qu.enrollments||[]).some(function(e){return(e.courseId||e)===QUIZ.courseId;});var _hc=(_qu.certificates||[]).some(function(c){return(c.id||c)===QUIZ.courseId;});if(!_enr&&!_hc)window.location.replace('course-'+QUIZ.courseId);}}catch(e){}})();
 document.getElementById('hamburger')?.addEventListener('click', () => {
  document.getElementById('navLinks').classList.toggle('open');
  document.getElementById('hamburger').classList.toggle('open');

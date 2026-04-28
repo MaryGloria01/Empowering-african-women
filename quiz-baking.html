@@ -281,6 +281,8 @@ function issueCertificate(){
  }
  }catch(e){}
 }
+// Enrollment gate: redirect unenrolled users to the course page
+(function(){try{var _qu=JSON.parse(localStorage.getItem('eaw_user')||'null');if(_qu){var _enr=(_qu.enrollments||[]).some(function(e){return(e.courseId||e)===QUIZ.courseId;});var _hc=(_qu.certificates||[]).some(function(c){return(c.id||c)===QUIZ.courseId;});if(!_enr&&!_hc)window.location.replace('course-'+QUIZ.courseId);}}catch(e){}})();
 document.getElementById('hamburger')?.addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
 (function(){try{const user=getUser();if(user&&user.firstName){document.addEventListener('DOMContentLoaded',function(){const navCta=document.querySelector('.nav-cta');if(navCta){const dl=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard':'student-dashboard';navCta.innerHTML=`<a href="${dl}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="/" class="btn btn-ghost btn-sm" onclick="fetch('api/logout.php',{credentials:'include'});localStorage.removeItem('eaw_user')">Sign Out</a>`;}});}}catch(e){}})();
 </script>

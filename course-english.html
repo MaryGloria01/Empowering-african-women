@@ -262,6 +262,7 @@ function saveUser(u) {
 function toggleAcc(header) { header.classList.toggle('active'); header.nextElementSibling.classList.toggle('open'); }
 function enrollCourse() {
  const user = getUser(); if (!user) { window.location.href = 'signup'; return; }
+ document.querySelectorAll('.enrol-btn').forEach(function(b){b.disabled=true;b.textContent='Enrolling…';});
  if (!user.enrollments) user.enrollments = [];
  if (!user.enrollments.find(e => e.courseId === COURSE_ID)) { user.enrollments.push({ courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }); saveUser(user); authFetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:COURSE_ID})}); }
  updateEnrolBtn();
@@ -301,6 +302,7 @@ function updateEnrolBtn() {
 function enrollFree() { enrollCourse(); }
 async function completeModule(moduleNum) {
  const user = getUser(); if (!user) { window.location.href = 'signup'; return; }
+ document.querySelectorAll('.enrol-btn').forEach(function(b){b.disabled=true;b.textContent='Enrolling…';});
  if (!user.enrollments) user.enrollments = [];
  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
  if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); }
@@ -323,6 +325,7 @@ async function completeModule(moduleNum) {
 }
 function goToQuiz() {
  const user = getUser(); if (!user) { window.location.href = 'signup'; return; }
+ document.querySelectorAll('.enrol-btn').forEach(function(b){b.disabled=true;b.textContent='Enrolling…';});
  if (!user.enrollments) user.enrollments = [];
  let enrol = user.enrollments.find(e => e.courseId === COURSE_ID);
  if (!enrol) { enrol = { courseId: COURSE_ID, progress: 0, completedModules: [], enrolledAt: new Date().toISOString() }; user.enrollments.push(enrol); saveUser(user); }
@@ -501,6 +504,8 @@ document.addEventListener('DOMContentLoaded', async () => {
  if(user&&user.firstName){const navCta=document.querySelector('.nav-cta');if(navCta){const dashLink=user.role==='tutor'||user.role==='tutor-pending'?'tutor-dashboard':'student-dashboard';navCta.innerHTML=`<a href="${dashLink}" class="btn btn-blue btn-sm">My Dashboard →</a><a href="/" class="btn btn-ghost btn-sm" onclick="authFetch('api/logout.php');localStorage.removeItem('eaw_user')">Sign Out</a>`;}}
 });
 </script>
+<button class="btt-btn" id="bttBtn" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+<script>window.addEventListener('scroll',function(){var b=document.getElementById('bttBtn');if(b)b.classList.toggle('visible',window.scrollY>400);},{passive:true});</script>
 <script src="eaw-common.js?v=5"></script>
 </body>
 </html>

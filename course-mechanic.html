@@ -483,6 +483,7 @@ function toggleAcc(header) {
 function enrollCourse(courseId) {
  const user = getUser();
  if (!user) { window.location.href = 'signup'; return; }
+ document.querySelectorAll('.enrol-btn').forEach(function(b){b.disabled=true;b.textContent='Enrolling…';});
  if (!user.enrollments) user.enrollments = [];
  if (!user.enrollments.find(e => e.courseId === (courseId||COURSE_ID))) {
  user.enrollments.push({ courseId: courseId||COURSE_ID, progress: 0, enrolledAt: new Date().toISOString() });
@@ -939,6 +940,8 @@ document.addEventListener('DOMContentLoaded', async () => {
  <button class="et-close" onclick="document.getElementById('eawToast').classList.remove('show')">×</button>
  <div class="et-bar"></div>
 </div>
+<button class="btt-btn" id="bttBtn" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+<script>window.addEventListener('scroll',function(){var b=document.getElementById('bttBtn');if(b)b.classList.toggle('visible',window.scrollY>400);},{passive:true});</script>
 <script src="eaw-common.js?v=5"></script>
 </body>
 </html>

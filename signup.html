@@ -194,6 +194,8 @@
 </div>
 
 <script>
+// Redirect already-logged-in users
+(function(){try{var u=JSON.parse(localStorage.getItem('eaw_user')||'null');if(u&&u.id&&u.role)window.location.replace('student-dashboard');}catch(e){}})();
 // ─── Google Sign-In ───────────────────────────────────────────────────────────
 const GOOGLE_CLIENT_ID = '628340119385-bg1k4gkadmu7ngpha69o44us9fhvlefe.apps.googleusercontent.com';
 
