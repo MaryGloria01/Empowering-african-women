@@ -282,7 +282,8 @@ body.dark-mode .section-hdr-center::before {
 .cc-meta { font-size: 14px; color: #1E293B; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 .cc-rating { color: var(--gold-vivid); font-weight: 800; }
 .cc-body p { display: none; }
-.cc-footer { padding: 10px 18px; border-top: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; background: var(--gray-50); margin-top: auto; }
+.cc-footer { padding: 10px 18px; border-top: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--gray-50); margin-top: auto; }
+.cc-footer .btn { padding: 5px 12px; font-size: 12px; border-radius: var(--r-md); white-space: nowrap; }
 
 /* ===== FILTERS ===== */
 .filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px; }
