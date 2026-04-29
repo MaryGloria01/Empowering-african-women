@@ -1,5 +1,12 @@
 /* ── EAW Preloader — inject immediately on script parse ── */
 (function () {
+ // Step 1: hide body IMMEDIATELY so nothing flashes before the overlay covers it.
+ // This fires synchronously while the browser is still parsing <head>.
+ var hideStyle = document.createElement('style');
+ hideStyle.id = 'eaw-preload-hide';
+ hideStyle.textContent = 'body{visibility:hidden!important}';
+ document.head.appendChild(hideStyle);
+
  var style = document.createElement('style');
  style.textContent = [
  '#eaw-preloader{',
@@ -31,44 +38,54 @@
  document.head.appendChild(style);
 
  function buildLoader() {
- var el = document.createElement('div');
- el.id = 'eaw-preloader';
- el.innerHTML =
- '<div class="epl-logo">' +
- '<img src="eaw_icon.png" alt="EAW">' +
- '<div class="epl-logo-text">Empowering African Women<span>DBTWTEi · Nigeria</span></div>' +
- '</div>' +
- '<div class="epl-spinner"></div>' +
- '<div class="epl-tagline">Loading your learning experience...</div>';
- document.body.insertBefore(el, document.body.firstChild);
+  // Remove the body-hiding style — the overlay div takes over covering the page
+  var hs = document.getElementById('eaw-preload-hide');
+  if (hs && hs.parentNode) hs.parentNode.removeChild(hs);
+
+  var el = document.createElement('div');
+  el.id = 'eaw-preloader';
+  el.innerHTML =
+   '<div class="epl-logo">' +
+   '<img src="eaw_icon.png" alt="EAW">' +
+   '<div class="epl-logo-text">Empowering African Women<span>DBTWTEi · Nigeria</span></div>' +
+   '</div>' +
+   '<div class="epl-spinner"></div>' +
+   '<div class="epl-tagline">Loading your learning experience...</div>';
+  document.body.insertBefore(el, document.body.firstChild);
  }
 
- if (document.body) {
- buildLoader();
+ // Use readyState instead of checking document.body — works regardless of when
+ // this script executes relative to DOM parsing (head, body, or late-arriving).
+ if (document.readyState !== 'loading') {
+  buildLoader();
  } else {
- document.addEventListener('DOMContentLoaded', buildLoader);
+  document.addEventListener('DOMContentLoaded', buildLoader);
  }
 
- var MIN_MS = 2000; // minimum time the preloader stays visible
+ var MIN_MS = 600; // reduced from 2000ms — just long enough to avoid flash
  var startTime = Date.now();
  var pageLoaded = false;
 
  function dismiss() {
- var el = document.getElementById('eaw-preloader');
- if (!el) return;
- el.classList.add('hide');
- setTimeout(function () { el.parentNode && el.parentNode.removeChild(el); }, 520);
+  // Safety net: remove body-hide if buildLoader never ran (e.g. JS error mid-way)
+  var hs = document.getElementById('eaw-preload-hide');
+  if (hs && hs.parentNode) hs.parentNode.removeChild(hs);
+
+  var el = document.getElementById('eaw-preloader');
+  if (!el) return;
+  el.classList.add('hide');
+  setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 520);
  }
 
  window.addEventListener('load', function () {
- pageLoaded = true;
- var elapsed = Date.now() - startTime;
- var remaining = MIN_MS - elapsed;
- if (remaining > 0) {
- setTimeout(dismiss, remaining);
- } else {
- dismiss();
- }
+  pageLoaded = true;
+  var elapsed = Date.now() - startTime;
+  var remaining = MIN_MS - elapsed;
+  if (remaining > 0) {
+   setTimeout(dismiss, remaining);
+  } else {
+   dismiss();
+  }
  });
 
  // Safety fallback: never block longer than 5 seconds
