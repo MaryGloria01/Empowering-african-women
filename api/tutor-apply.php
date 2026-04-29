@@ -21,6 +21,14 @@ $phone     = substr(preg_replace('/[^0-9+\-\s()]/', '', $data['phone'] ?? ''), 0
 $expertise = substr(trim($data['expertise'] ?? ''), 0, 100);
 $bio       = substr(trim($data['bio'] ?? ''), 0, 1000);
 
+// Validate and sanitise proposed courses
+$rawCourses      = is_array($data['proposedCourses'] ?? null) ? $data['proposedCourses'] : [];
+$proposedCourses = array_values(array_filter($rawCourses, fn($s) => in_array($s, VALID_COURSE_SLUGS, true)));
+if (empty($proposedCourses)) {
+    json_out(['error' => 'Please select at least one course to teach.'], 400);
+}
+$proposedCoursesJson = json_encode($proposedCourses);
+
 if (!$firstName || !$lastName || !$email)
     json_out(['error' => 'Name and email are required.'], 400);
 
@@ -46,8 +54,8 @@ if ($existing) {
 }
 
 // Insert application
-$stmt = $pdo->prepare('INSERT INTO tutor_applications (first_name, last_name, email, phone, expertise, bio) VALUES (?, ?, ?, ?, ?, ?)');
-$stmt->execute([$firstName, $lastName, $email, $phone, $expertise, $bio]);
+$stmt = $pdo->prepare('INSERT INTO tutor_applications (first_name, last_name, email, phone, expertise, bio, proposed_courses) VALUES (?, ?, ?, ?, ?, ?, ?)');
+$stmt->execute([$firstName, $lastName, $email, $phone, $expertise, $bio, $proposedCoursesJson]);
 
 // Increment rate limit counter
 $rl['count'] = ($rl['count'] ?? 0) + 1;

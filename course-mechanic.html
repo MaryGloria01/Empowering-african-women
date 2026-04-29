@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>Female Mechanic Incubator | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=5">
+ <link rel="stylesheet" href="styles.css?v=6">
  <script src="preloader.js"></script>
 </head>
 <body>
@@ -454,6 +454,23 @@
  <span>Km 22 LEKKI Epe Expressway, Ajah, Lagos</span>
  </div>
 </footer>
+<div class="cert-modal-overlay" id="certModal"><div class="cert-modal"><div class="cert-frame"><div class="cert-title">Empowering African Women · EAW</div>
+ <div class="cert-of">Certificate of Completion</div>
+ <div class="cert-awarded">This is to certify that</div>
+ <div class="cert-student-name" id="certName">Student Name</div>
+ <div class="cert-awarded">has successfully completed</div>
+ <div class="cert-course-name">Female Mechanic Incubator</div>
+ <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate">Date</span></div>
+ <div class="cert-sigs"><div class="cert-sig-line">EAW Administration<br>EAW Founder &amp; Director</div>
+ <div class="cert-sig-line">Iria Florence<br>Course Instructor</div>
+ </div>
+ </div>
+ <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"><button onclick="window.print()" class="btn btn-blue">Print Certificate</button>
+ <a href="student-dashboard" class="btn btn-outline">Go to Dashboard &rarr;</a>
+ <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+ </div>
+ </div>
+</div>
 
 <script>
 document.getElementById('hamburger')?.addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
@@ -643,7 +660,7 @@ function issueCertificate() {
  };
  user.certificates.push(cert);
  saveUser(user);
- authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(()=>{});
+ authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); });
  }
  const m = document.getElementById('certModal');
  if (m) {
@@ -942,6 +959,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 <button class="btt-btn" id="bttBtn" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 <script>window.addEventListener('scroll',function(){var b=document.getElementById('bttBtn');if(b)b.classList.toggle('visible',window.scrollY>400);},{passive:true});</script>
-<script src="eaw-common.js?v=5"></script>
+<script src="eaw-common.js?v=6"></script>
 </body>
 </html>

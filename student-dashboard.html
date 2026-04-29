@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>Student Dashboard | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=5">
+ <link rel="stylesheet" href="styles.css?v=6">
  <script src="preloader.js"></script>
  <style>
  [id^="sec-"] { display: none; }
@@ -858,19 +858,19 @@ function _genRefCode(email) {
 function _renderReferralUI(code, count, referred) {
  const el = document.getElementById('referralContent');
  if (!el) return;
- const link = `${location.origin}/signup.html?ref=${code}`;
+ const link = `${location.origin}/signup?ref=${code}`;
  el.innerHTML = `
  <div style="background:linear-gradient(135deg,#1D4ED8,#0F766E);border-radius:var(--r-xl);padding:28px;color:#fff;margin-bottom:24px;"><div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-bottom:8px;">Your Referral Link</div>
  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="flex:1;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-size:13px;word-break:break-all;min-width:0;">${esc(link)}</div>
- <button onclick="navigator.clipboard.writeText('${esc(link)}').then(()=>{this.textContent='✓ Copied!';setTimeout(()=>this.textContent='Copy Link',2000)})" style="background:#fff;color:#1D4ED8;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Copy Link</button>
+ <button onclick="navigator.clipboard.writeText('${esc(link)}').then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy Link',2000)})" style="background:#fff;color:#1D4ED8;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Copy Link</button>
  </div>
  <div style="margin-top:16px;font-size:13px;opacity:.8;">Your code: <strong>${esc(code)}</strong></div>
  </div>
  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;"><div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--blue);">${esc(String(count))}</div>
  <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Friends Invited</div>
  </div>
- <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--green);"></div>
- <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Growing Africa Together</div>
+ <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--green);">${EAW_COURSES.length}</div>
+ <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Free Courses Available</div>
  </div>
  </div>
  ${referred.length ? `
@@ -913,7 +913,7 @@ async function loadReferrals() {
  _renderReferralUI(refData.code, (refData.referred||[]).length, refData.referred||[]);
 }
 </script>
-<script src="eaw-common.js?v=5"></script>
+<script src="eaw-common.js?v=6"></script>
 <script>
  document.addEventListener('DOMContentLoaded', function() {
  if (typeof eawSearch === 'function') eawSearch('', 'dashSearchResults');

@@ -6,15 +6,6 @@ cors();
 start_session();
 if (empty($_SESSION['is_admin'])) json_out(['error' => 'Forbidden'], 403);
 
-// ── CSRF protection for all state-changing (POST) requests ───────────────────
-function verify_csrf() {
-    $token   = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? (json_decode(file_get_contents('php://input'), true)['_csrf'] ?? '');
-    $session = $_SESSION['csrf_token'] ?? '';
-    if (!$token || !$session || !hash_equals($session, $token)) {
-        json_out(['error' => 'Invalid CSRF token.'], 403);
-    }
-}
-
 // Issue a fresh CSRF token on each GET (admin JS reads it from a header/response)
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -92,12 +83,25 @@ if ($method === 'POST') {
             if (!$id) json_out(['error' => 'ID required.'], 400);
             $stmt = $pdo->prepare("UPDATE tutor_applications SET status='approved' WHERE id=?");
             $stmt->execute([$id]);
-            $stmt = $pdo->prepare("SELECT email FROM tutor_applications WHERE id=?");
+            $stmt = $pdo->prepare("SELECT email, proposed_courses FROM tutor_applications WHERE id=?");
             $stmt->execute([$id]);
-            $email = $stmt->fetchColumn();
-            if ($email) {
-                $pdo->prepare("UPDATE users SET role='tutor' WHERE email=?")->execute([$email]);
-                audit_log($pdo, 'approve-tutor', "id={$id} email={$email}");
+            $app = $stmt->fetch();
+            if ($app && $app['email']) {
+                $pdo->prepare("UPDATE users SET role='tutor' WHERE email=?")->execute([$app['email']]);
+                // Assign courses: insert into tutor_courses
+                $tutorRow = $pdo->prepare("SELECT id FROM users WHERE email=?");
+                $tutorRow->execute([$app['email']]);
+                $tutorId = (int)$tutorRow->fetchColumn();
+                if ($tutorId && $app['proposed_courses']) {
+                    $courses = json_decode($app['proposed_courses'], true) ?: [];
+                    $ins = $pdo->prepare("INSERT IGNORE INTO tutor_courses (tutor_id, course_slug) VALUES (?, ?)");
+                    foreach ($courses as $slug) {
+                        if (in_array($slug, VALID_COURSE_SLUGS, true)) {
+                            $ins->execute([$tutorId, $slug]);
+                        }
+                    }
+                }
+                audit_log($pdo, 'approve-tutor', "id={$id} email={$app['email']}");
             }
             json_out(['success' => true]);
 
@@ -129,6 +133,8 @@ if ($method === 'POST') {
                 $pdo->beginTransaction();
                 $pdo->prepare('DELETE FROM enrollments WHERE user_id=?')->execute([$id]);
                 $pdo->prepare('DELETE FROM progress WHERE user_id=?')->execute([$id]);
+                $pdo->prepare('DELETE FROM certificates WHERE user_id=?')->execute([$id]);
+                $pdo->prepare('DELETE FROM tutor_courses WHERE tutor_id=?')->execute([$id]);
                 $pdo->prepare('DELETE FROM users WHERE id=?')->execute([$id]);
                 $pdo->commit();
             } catch (Exception $e) {

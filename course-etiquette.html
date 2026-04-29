@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>Social & Business Etiquette | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=5">
+ <link rel="stylesheet" href="styles.css?v=6">
  <script src="preloader.js"></script>
  <style>
  .module-ppt-link { display: inline-flex; align-items: center; gap: 8px; background: var(--blue-pale); border: 1px solid var(--blue-light); border-radius: var(--r-md); padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--blue); text-decoration: none; margin-top: 12px; transition: var(--ease); }
@@ -460,6 +460,23 @@
  <span>Km 22 LEKKI Epe Expressway, Ajah, Lagos</span>
  </div>
 </footer>
+<div class="cert-modal-overlay" id="certModal"><div class="cert-modal"><div class="cert-frame"><div class="cert-title">Empowering African Women · EAW</div>
+ <div class="cert-of">Certificate of Completion</div>
+ <div class="cert-awarded">This is to certify that</div>
+ <div class="cert-student-name" id="certName">Student Name</div>
+ <div class="cert-awarded">has successfully completed</div>
+ <div class="cert-course-name">Social &amp; Business Etiquette for Professionals</div>
+ <div style="font-size:13px;color:var(--text-mid);margin-top:8px;">Issued on <span id="certDate">Date</span></div>
+ <div class="cert-sigs"><div class="cert-sig-line">EAW Administration<br>EAW Founder &amp; Director</div>
+ <div class="cert-sig-line">Oluchi Arinze<br>Course Instructor</div>
+ </div>
+ </div>
+ <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"><button onclick="window.print()" class="btn btn-blue">Print Certificate</button>
+ <a href="student-dashboard" class="btn btn-outline">Go to Dashboard &rarr;</a>
+ <button onclick="document.getElementById('certModal').classList.remove('open')" class="btn btn-ghost">Close</button>
+ </div>
+ </div>
+</div>
 
 <script>
 document.getElementById('hamburger')?.addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
@@ -617,7 +634,7 @@ function issueCertificate() {
  if (!user.certificates.find(c => c.id === COURSE_ID)) {
  user.certificates.push({ id: COURSE_ID, title: 'Social & Business Etiquette for Professionals', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() });
  saveUser(user);
- authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: COURSE_ID, title: 'Social & Business Etiquette for Professionals', score: '' }) }).catch(()=>{});
+ authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: COURSE_ID, title: 'Social & Business Etiquette for Professionals', score: '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); });
  }
  const m = document.getElementById('certModal');
  if (m) {
@@ -916,6 +933,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 </div>
 <button class="btt-btn" id="bttBtn" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 <script>window.addEventListener('scroll',function(){var b=document.getElementById('bttBtn');if(b)b.classList.toggle('visible',window.scrollY>400);},{passive:true});</script>
-<script src="eaw-common.js?v=5"></script>
+<script src="eaw-common.js?v=6"></script>
 </body>
 </html>

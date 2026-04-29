@@ -62,7 +62,7 @@ function buildSearchModal() {
  '<div class="esm-header">',
  '<div class="esm-header-glow"></div>',
  '<div class="esm-header-content">',
- '<span class="esm-eyebrow">EAW Course Library · 11 Free Courses</span>',
+ '<span class="esm-eyebrow">EAW Course Library · ' + EAW_COURSES.length + ' Free Courses</span>',
  '<h2 class="esm-heading">What do you want to learn?</h2>',
  '<p class="esm-subhead">Search by skill, topic or keyword — all courses are 100% free.</p>',
  '</div>',
@@ -139,12 +139,12 @@ function esmRender(query) {
  el.innerHTML = results.map(function(c) {
  return '<a href="' + c.link + '" class="esm-result-card" onclick="closeEawSearch()">'
  + '<div class="esm-result-thumb" style="background:' + c.bg + '">'
- + (c.img ? '<img src="' + c.img + '" alt="' + c.title + '" style="width:100%;height:100%;object-fit:cover;">' : '')
+ + (c.img ? '<img src="' + c.img + '" alt="' + escHtml(c.title) + '" style="width:100%;height:100%;object-fit:cover;">' : '')
  + '</div>'
  + '<div class="esm-result-info">'
- + '<span class="esm-result-cat">' + c.cat + '</span>'
- + '<strong class="esm-result-title">' + c.title + '</strong>'
- + '<span class="esm-result-desc">' + c.desc + '</span>'
+ + '<span class="esm-result-cat">' + escHtml(c.cat) + '</span>'
+ + '<strong class="esm-result-title">' + escHtml(c.title) + '</strong>'
+ + '<span class="esm-result-desc">' + escHtml(c.desc) + '</span>'
  + '</div></a>';
  }).join('');
 }
@@ -204,12 +204,12 @@ window.eawSearch = function(query, resultsId) {
  return '<a href="' + c.link + '" class="dash-search-card" style="position:relative;">'
  + (done ? '<span style="position:absolute;top:8px;right:8px;background:#059669;color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;z-index:2;letter-spacing:.3px;">✓ Done</span>' : '')
  + '<div class="dash-search-thumb" style="background:' + c.bg + ';">'
- + (c.img ? '<img src="' + c.img + '" alt="' + c.title + '" style="width:100%;height:100%;object-fit:cover;">' : '')
+ + (c.img ? '<img src="' + c.img + '" alt="' + escHtml(c.title) + '" style="width:100%;height:100%;object-fit:cover;">' : '')
  + '</div>'
  + '<div class="dash-search-info">'
- + '<div class="dash-search-cat">' + c.cat + '</div>'
- + '<strong class="dash-search-title">' + c.title + '</strong>'
- + '<span class="dash-search-desc">' + c.desc + '</span>'
+ + '<div class="dash-search-cat">' + escHtml(c.cat) + '</div>'
+ + '<strong class="dash-search-title">' + escHtml(c.title) + '</strong>'
+ + '<span class="dash-search-desc">' + escHtml(c.desc) + '</span>'
  + '</div></a>';
  }).join('')
  + '</div>';
@@ -625,6 +625,21 @@ function _eawInitTimeout() {
  _eawCheckTimeout();
  setInterval(_eawCheckTimeout, 60000);
 }
+
+/* ─── Error toast for background save failures ────────────────────────────── */
+window._eawToastError = function(msg) {
+ var t = document.getElementById('_eawErrToast');
+ if (!t) {
+ t = document.createElement('div');
+ t.id = '_eawErrToast';
+ t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#7f1d1d;color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);display:none;max-width:90vw;text-align:center;';
+ document.body.appendChild(t);
+ }
+ t.textContent = msg;
+ t.style.display = 'block';
+ clearTimeout(t._hide);
+ t._hide = setTimeout(function() { t.style.display = 'none'; }, 5000);
+};
 
 document.addEventListener('DOMContentLoaded', function() {
  buildSearchModal();

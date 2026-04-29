@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>Apply as Tutor | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=5">
+ <link rel="stylesheet" href="styles.css?v=6">
  <script src="preloader.js"></script>
  <style>
  .pw-wrap { position: relative; }
@@ -120,8 +120,21 @@
  <div class="form-group"><label class="form-label">Professional Bio *</label>
  <textarea id="tBio" class="form-input" style="min-height:100px;resize:vertical;" placeholder="Briefly describe your professional background, qualifications, and relevant experience." required maxlength="1000"></textarea>
  </div>
- <div class="form-group"><label class="form-label">Proposed Course or Topic *</label>
- <input type="text" id="tCourse" class="form-input" placeholder="e.g. Digital Marketing for Small Businesses" required maxlength="100">
+ <div class="form-group"><label class="form-label">Which courses would you like to teach? * <span style="font-size:12px;font-weight:400;color:var(--text-light);">Select all that apply</span></label>
+ <div id="tCoursesWrap" class="course-check-grid">
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="mechanic"> Female Mechanic Incubator</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="baking"> Baking &amp; Cooking</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="etiquette"> Business Etiquette</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="coding"> Coding &amp; Web Dev</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="digital-skills"> Digital Skills</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="english"> English Communication</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="entrepreneurship"> Entrepreneurship</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="finance"> Personal Finance</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="health"> Health &amp; Wellness</label>
+ <label class="course-check-label"><input type="checkbox" name="tCourses" value="sewing"> Fashion &amp; Sewing</label>
+ <label class="course-check-label full-row"><input type="checkbox" name="tCourses" value="soft-skills"> Soft Skills</label>
+ </div>
+ <div id="tCoursesErr" style="display:none;color:var(--red);font-size:13px;margin-top:4px;">Please select at least one course.</div>
  </div>
  <div class="form-group"><label class="form-label">Password *</label>
  <div class="pw-wrap"><input type="password" id="tPassword" class="form-input" placeholder="Create a password for your account" required oninput="checkStrength(this.value)" maxlength="128">
@@ -258,12 +271,18 @@ async function startVerification() {
  const phone = _tCode + document.getElementById('tPhone').value.trim();
  const expertise = document.getElementById('tExpertise').value;
  const bio = document.getElementById('tBio').value.trim();
- const course = document.getElementById('tCourse').value.trim();
+ const proposedCourses = Array.from(document.querySelectorAll('input[name="tCourses"]:checked')).map(cb => cb.value);
  const password = document.getElementById('tPassword').value;
  const terms = document.getElementById('tTerms').checked;
 
- if (!firstName || !lastName || !email || !phone || !expertise || !bio || !course || !password) {
+ document.getElementById('tCoursesErr').style.display = 'none';
+ if (!firstName || !lastName || !email || !phone || !expertise || !bio || !password) {
  showTErr('Please fill in all required fields.'); return;
+ }
+ if (proposedCourses.length === 0) {
+ document.getElementById('tCoursesErr').style.display = 'block';
+ document.getElementById('tCoursesWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+ return;
  }
  if (!terms) { showTErr('Please accept the Terms of Service.'); return; }
 
@@ -291,7 +310,7 @@ async function startVerification() {
  return;
  }
 
- _pendingApp = { firstName, lastName, email, phone, expertise, bio, proposedCourse: course, password, role: 'tutor-pending', approved: false, emailVerified: false, phoneVerified: false, enrollments: [], certificates: [], createdAt: new Date().toISOString() };
+ _pendingApp = { firstName, lastName, email, phone, expertise, bio, proposedCourses, password, role: 'tutor-pending', approved: false, emailVerified: false, phoneVerified: false, enrollments: [], certificates: [], createdAt: new Date().toISOString() };
 
  const btn = document.getElementById('submitBtn');
  btn.textContent = 'Sending code…';
@@ -341,8 +360,7 @@ async function verifyOTP() {
  lastName: _pendingApp.lastName,
  email: _pendingApp.email,
  phone: _pendingApp.phone,
- password: _pendingApp.password,
- role: 'tutor-pending'
+ password: _pendingApp.password
  })
  });
  const regData = await regRes.json();
@@ -361,7 +379,8 @@ async function verifyOTP() {
  email: _pendingApp.email,
  phone: _pendingApp.phone,
  expertise: _pendingApp.expertise,
- bio: _pendingApp.bio
+ bio: _pendingApp.bio,
+ proposedCourses: _pendingApp.proposedCourses
  })
  });
  } catch (e) { /* continue */ }
@@ -386,6 +405,6 @@ function showOTPErr(msg) {
  el.style.display = 'block';
 }
 </script>
-<script src="eaw-common.js?v=5"></script>
+<script src="eaw-common.js?v=6"></script>
 </body>
 </html>

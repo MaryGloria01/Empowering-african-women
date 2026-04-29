@@ -689,8 +689,8 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
   .hero-inner { grid-template-columns: 1fr; gap: 28px; }
   .hero-img-col { order: -1; }
   .hero-main-img { aspect-ratio: 16/9; border-radius: var(--r-lg); }
-  .hero-title { font-size: clamp(17px, 4.6vw, 22px); text-align: center; }
-  .hero-sub { font-size: 15px; margin-bottom: 24px; max-width: 100%; text-align: center; }
+  .hero-title { font-size: clamp(26px, 5.5vw, 34px); text-align: center; }
+  .hero-sub { font-size: 16px; margin-bottom: 24px; max-width: 100%; text-align: center; }
   .hero-badge { display: flex; justify-content: center; }
   .hero-actions { gap: 12px; justify-content: center; }
   .hero-actions .btn { width: 100%; justify-content: center; text-align: center; }
@@ -824,8 +824,8 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
 
   /* ── HERO ── */
   .hero { padding: 76px 16px 52px; }
-  .hero-title { font-size: clamp(16px, 4.4vw, 20px); }
-  .hero-sub { font-size: 14px; line-height: 1.7; }
+  .hero-title { font-size: clamp(24px, 6vw, 30px); }
+  .hero-sub { font-size: 15px; line-height: 1.7; }
   .hero-badge { font-size: 12px; padding: 6px 12px; letter-spacing: .2px; white-space: normal; text-align: center; }
   .hero-stats { gap: 8px; padding: 14px; }
   .h-stat-num { font-size: 22px; }
@@ -939,14 +939,14 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
   .accordion-body { padding: 14px; }
   .cert-modal-overlay { padding: 12px; }
   .cert-modal { padding: 16px 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
-  .cert-frame { padding: 18px 14px; margin-bottom: 16px; }
-  .cert-title { font-size: 10px; letter-spacing: 1.5px; margin-bottom: 10px; }
-  .cert-of { font-size: 19px; }
-  .cert-awarded { font-size: 12px; margin-bottom: 10px; }
-  .cert-student-name { font-size: 18px; padding-bottom: 6px; margin-bottom: 10px; }
-  .cert-course-name { font-size: 15px; }
-  .cert-sigs { margin-top: 16px; gap: 8px; justify-content: space-around; }
-  .cert-sig-line { min-width: 0; font-size: 11px; }
+  .cert-frame { padding: 14px 10px; margin-bottom: 10px; }
+  .cert-title { font-size: 9px; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .cert-of { font-size: 16px; margin-bottom: 2px; }
+  .cert-awarded { font-size: 11px; margin-bottom: 6px; }
+  .cert-student-name { font-size: 22px; padding-bottom: 5px; margin-bottom: 6px; }
+  .cert-course-name { font-size: 13px; margin-bottom: 2px; }
+  .cert-sigs { margin-top: 10px; gap: 6px; justify-content: space-around; flex-wrap: nowrap; }
+  .cert-sig-line { min-width: 0; font-size: 10px; padding-top: 5px; }
 }
 
 /* ===== 5 — SMALL PHONE (max-width: 360px) ===== */
@@ -957,7 +957,7 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
 
   /* ── HERO ── */
   .hero { padding: 72px 12px 44px; }
-  .hero-title { font-size: clamp(15px, 4.2vw, 18px); }
+  .hero-title { font-size: clamp(22px, 5.8vw, 26px); }
   .hero-sub { font-size: 14px; }
   .hero-stats { flex-direction: column; align-items: flex-start; gap: 10px; }
   .h-stat-item { min-width: 0; flex-direction: row; align-items: center; gap: 8px; }
@@ -1420,6 +1420,8 @@ body.dark-mode .tab-btn { color: #94A3B8; border-bottom-color: transparent; }
 body.dark-mode .tab-btn.active { color: #60A5FA; border-bottom-color: #60A5FA; }
 
 /* Approval cards (tutor/course/payment cards in admin) */
+body.dark-mode .course-check-label { border-color: #334155; color: #E2E8F0; }
+body.dark-mode .course-check-label:hover { border-color: #3B82F6; background: #1E3A5F; }
 body.dark-mode .approval-card { background: #1E293B; border-color: #334155; }
 body.dark-mode .approval-card.pending { background: linear-gradient(to right, #1c1a0f, #1E293B); border-left-color: var(--gold); }
 body.dark-mode .approval-card.approved { background: linear-gradient(to right, #0a1f12, #1E293B); border-left-color: var(--green); }
@@ -1765,6 +1767,17 @@ body.dark-mode .cc-body { background: transparent; }
 body.dark-mode .cc-meta { color: #94A3B8; }
 body.dark-mode .cc-desc { color: #CBD5E1; }
 body.dark-mode .cc-footer { background: transparent; color: #94A3B8; }
+
+/* ===== DASHBOARD LOADING STATE ===== */
+.dash-loading { text-align: center; padding: 40px; color: var(--text-light); }
+
+/* ===== TUTOR APPLICATION — COURSE CHECKBOXES ===== */
+.course-check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+.course-check-label { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1.5px solid var(--gray-200); border-radius: var(--r-md); cursor: pointer; font-size: 14px; transition: border-color .15s, background .15s; }
+.course-check-label:hover { border-color: var(--blue); background: var(--blue-pale); }
+.course-check-label input[type="checkbox"] { width: auto; accent-color: var(--blue); flex-shrink: 0; }
+.course-check-label.full-row { grid-column: 1 / -1; }
+@media (max-width: 480px) { .course-check-grid { grid-template-columns: 1fr; } .course-check-label.full-row { grid-column: auto; } }
 
 /* ===== BACK TO TOP BUTTON ===== */
 .btt-btn { position: fixed; bottom: 28px; right: 24px; width: 44px; height: 44px; border-radius: 50%; background: var(--blue); color: #fff; border: none; font-size: 20px; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0,0,0,.25); z-index: 500; transition: background .15s; }

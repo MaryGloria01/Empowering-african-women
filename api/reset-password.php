@@ -12,9 +12,10 @@ if ($method === 'GET') {
         json_out(['error' => 'Invalid email.'], 400);
     }
     $pdo  = getDB();
-    $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id, first_name FROM users WHERE email = ? LIMIT 1');
     $stmt->execute([$email]);
-    json_out(['exists' => (bool)$stmt->fetch()]);
+    $row = $stmt->fetch();
+    json_out(['exists' => (bool)$row, 'name' => $row ? $row['first_name'] : '']);
 }
 
 // POST — update password after OTP verified client-side

@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>Tutor Dashboard | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=5">
+ <link rel="stylesheet" href="styles.css?v=6">
  <script src="preloader.js"></script>
  <style>
  [id^="sec-"] { display: none; }
@@ -70,7 +70,7 @@
  <button class="sb-link" id="nav-addCourse" onclick="showSection('addCourse')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
  Add New Course
  </button>
- <button class="sb-link" id="nav-students" onclick="showSection('students')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+ <button class="sb-link" id="nav-students" onclick="showSection('students')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
  My Students
  </button>
  <button class="sb-link" id="nav-analytics" onclick="showSection('analytics')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -253,13 +253,15 @@
  </div>
 
  <!-- STUDENTS -->
- <div id="sec-students"><div class="dash-greeting"><h1>My Students</h1></div>
- <div class="empty-state"><div class="empty-icon">✓</div><h3>No students yet</h3><p>Once your course is approved and students enrol, you'll see their progress here.</p></div>
+ <div id="sec-students">
+ <div class="dash-greeting"><h1>My Students</h1></div>
+ <div id="studentsContent"><div class="dash-loading">Loading…</div></div>
  </div>
 
  <!-- ANALYTICS -->
- <div id="sec-analytics"><div class="dash-greeting"><h1>Analytics</h1></div>
- <div class="empty-state"><div class="empty-icon"></div><h3>Analytics available after publishing</h3><button onclick="showSection('addCourse')" class="btn btn-blue">Add Your First Course</button></div>
+ <div id="sec-analytics">
+ <div class="dash-greeting"><h1>Analytics</h1></div>
+ <div id="analyticsContent"><div class="dash-loading">Loading…</div></div>
  </div>
 
  <!-- PROFILE -->
@@ -300,6 +302,8 @@ function showSection(section) {
  closeSidebar();
  if (section === 'addCourse' && document.getElementById('modulesContainer').children.length === 0) initModules();
  if (section === 'referrals') loadReferrals();
+ if (section === 'students') loadStudents();
+ if (section === 'analytics') loadStudents('analytics');
 }
 
 function handleCatChange(sel) {
@@ -566,19 +570,19 @@ function _genRefCode(email) {
 function _renderReferralUI(code, count, referred) {
  const el = document.getElementById('referralContent');
  if (!el) return;
- const link = `${location.origin}/signup.html?ref=${code}`;
+ const link = `${location.origin}/signup?ref=${code}`;
  el.innerHTML = `
  <div style="background:linear-gradient(135deg,#1D4ED8,#0F766E);border-radius:var(--r-xl);padding:28px;color:#fff;margin-bottom:24px;"><div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-bottom:8px;">Your Referral Link</div>
  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="flex:1;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-size:13px;word-break:break-all;min-width:0;">${esc(link)}</div>
- <button onclick="navigator.clipboard.writeText('${esc(link)}').then(()=>{this.textContent='✓ Copied!';setTimeout(()=>this.textContent='Copy Link',2000)})" style="background:#fff;color:#1D4ED8;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Copy Link</button>
+ <button onclick="navigator.clipboard.writeText('${esc(link)}').then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy Link',2000)})" style="background:#fff;color:#1D4ED8;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Copy Link</button>
  </div>
  <div style="margin-top:16px;font-size:13px;opacity:.8;">Your code: <strong>${esc(code)}</strong></div>
  </div>
  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;"><div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--blue);">${count}</div>
  <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Friends Invited</div>
  </div>
- <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--green);"></div>
- <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Growing Africa Together</div>
+ <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:20px;text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--green);">${EAW_COURSES.length}</div>
+ <div style="font-size:13px;color:var(--text-mid);font-weight:600;">Free Courses Available</div>
  </div>
  </div>
  ${referred.length ? `
@@ -598,7 +602,7 @@ async function loadReferrals() {
 
  // Try server first
  try {
- const res = await fetch('api/referral.php', { credentials: 'include' });
+ const res = await authFetch('api/referral.php');
  const data = await res.json();
  if (data.success) {
  _renderReferralUI(data.referral_code, data.referred_count, data.referred);
@@ -620,8 +624,76 @@ async function loadReferrals() {
  }
  _renderReferralUI(refData.code, (refData.referred||[]).length, refData.referred||[]);
 }
+
+// ── MY STUDENTS + ANALYTICS ──────────────────────────────────────────────────
+let _studentsCache = null;
+
+async function loadStudents(target) {
+ if (_studentsCache) { _renderStudents(_studentsCache, target); return; }
+ try {
+ const res = await authFetch('api/tutor-students.php');
+ const data = await res.json();
+ if (!data.success) throw new Error(data.error || 'Failed to load');
+ _studentsCache = data;
+ _renderStudents(data, target);
+ } catch(e) {
+ const el = document.getElementById(target === 'analytics' ? 'analyticsContent' : 'studentsContent');
+ if (el) el.innerHTML = `<div class="empty-state"><h3>Could not load data</h3><p>${esc(e.message)}</p></div>`;
+ }
+}
+
+function _renderStudents(data, target) {
+ if (!target || target === 'students') _buildStudentsUI(data);
+ if (target === 'analytics') _buildAnalyticsUI(data);
+}
+
+function _buildStudentsUI(data) {
+ const el = document.getElementById('studentsContent');
+ if (!el) return;
+ if (!data.students || data.students.length === 0) {
+ el.innerHTML = `<div class="empty-state"><h3>No students yet</h3><p>Once your course is approved and students enrol, they will appear here.</p></div>`;
+ return;
+ }
+ const rows = data.students.map(s => `
+ <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--gray-100);">
+ <div class="sb-avatar" style="width:40px;height:40px;font-size:15px;flex-shrink:0;">${esc((s.first_name||'?')[0])}${esc((s.last_name||'?')[0])}</div>
+ <div style="flex:1;min-width:0;">
+ <div style="font-weight:600;">${esc(s.first_name)} ${esc(s.last_name)}</div>
+ </div>
+ <div style="font-size:13px;color:var(--text-mid);text-align:right;">
+ <div style="font-weight:600;">${esc(s.course_slug)}</div>
+ <div>${s.lessons_done} lesson${s.lessons_done !== 1 ? 's' : ''} done${s.has_cert ? ' · Certified' : ''}</div>
+ </div>
+ </div>`).join('');
+ el.innerHTML = `<div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);overflow:hidden;">${rows}</div>`;
+}
+
+function _buildAnalyticsUI(data) {
+ const el = document.getElementById('analyticsContent');
+ if (!el) return;
+ const stats = data.stats || {};
+ // Per-course breakdown
+ const bySlug = {};
+ (data.students || []).forEach(s => {
+ if (!bySlug[s.course_slug]) bySlug[s.course_slug] = { enrolled: 0, certs: 0 };
+ bySlug[s.course_slug].enrolled++;
+ if (s.has_cert) bySlug[s.course_slug].certs++;
+ });
+ const courseRows = Object.entries(bySlug).map(([slug, d]) => `
+ <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--gray-100);">
+ <div style="font-weight:600;">${esc(slug)}</div>
+ <div style="font-size:13px;color:var(--text-mid);">${d.enrolled} enrolled · ${d.certs} certified</div>
+ </div>`).join('');
+ el.innerHTML = `
+ <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;">
+ <div class="impact-num-card"><div class="impact-num" style="color:var(--blue);">${stats.total_enrolled || 0}</div><div class="impact-label">Total Students</div></div>
+ <div class="impact-num-card"><div class="impact-num" style="color:var(--green);">${stats.total_certificates || 0}</div><div class="impact-label">Certificates Issued</div></div>
+ <div class="impact-num-card"><div class="impact-num" style="color:var(--gold);">${(data.courses||[]).length}</div><div class="impact-label">Courses Teaching</div></div>
+ </div>
+ ${courseRows ? `<div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r-lg);overflow:hidden;"><div style="padding:14px 18px;font-weight:700;border-bottom:1px solid var(--gray-100);">Per-Course Breakdown</div>${courseRows}</div>` : ''}`;
+}
 </script>
-<script src="eaw-common.js?v=5"></script>
+<script src="eaw-common.js?v=6"></script>
 <script>
  document.addEventListener('DOMContentLoaded', function() {
  if (typeof eawSearch === 'function') eawSearch('', 'dashSearchResults');

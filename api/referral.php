@@ -15,9 +15,13 @@ if ($method === 'GET') {
     $code = $stmt->fetchColumn();
 
     if (!$code) {
-        // Generate unique code
-        $code = strtoupper(substr(base_convert(sha1(uniqid($user['id'], true)), 16, 36), 0, 8));
-        $pdo->prepare("UPDATE users SET referral_code = ? WHERE id = ?")->execute([$code, $user['id']]);
+        $newCode = strtoupper(substr(base_convert(sha1(uniqid($user['id'], true)), 16, 36), 0, 8));
+        $pdo->prepare("UPDATE users SET referral_code = ? WHERE id = ? AND referral_code IS NULL")
+            ->execute([$newCode, $user['id']]);
+        // Re-fetch: if a concurrent request already set a code, use that one
+        $stmt = $pdo->prepare("SELECT referral_code FROM users WHERE id = ?");
+        $stmt->execute([$user['id']]);
+        $code = $stmt->fetchColumn();
     }
 
     // Count referred users

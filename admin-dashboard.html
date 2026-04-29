@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>Admin Dashboard | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=5">
+ <link rel="stylesheet" href="styles.css?v=6">
  <script src="preloader.js"></script>
  <style>
  [id^="sec-"] { display: none; }
@@ -517,6 +517,7 @@ async function renderTutors(filter) {
  <div class="av-info"><div class="av-name">${esc(app.first_name)} ${esc(app.last_name)} <span class="status-badge status-${esc(app.status)}">${esc(app.status)}</span></div>
  <div class="av-meta">${esc(app.email)} · ${esc(app.phone||'N/A')} · ${fmtDate(app.submitted_at)}</div>
  <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px;"><strong>Expertise:</strong> ${esc(app.expertise||'N/A')}</div>
+ <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px;"><strong>Courses applied for:</strong> ${(()=>{try{const c=JSON.parse(app.proposed_courses||'[]');return c.length?c.map(s=>esc(s)).join(', '):'N/A';}catch{return 'N/A';}})()}</div>
  <div class="av-desc">${esc(app.bio||'N/A')}</div>
  ${app.status === 'pending' ? `<div class="av-actions"><button class="btn-approve" onclick="approveTutor(${parseInt(app.id,10)})">✓ Approve Tutor</button>
  <button class="btn-reject" onclick="rejectTutor(${app.id})">✗ Reject</button>
@@ -706,6 +707,6 @@ if (window.location.hash) {
  if (document.getElementById('sec-'+s)) setTimeout(() => showSection(s), 100);
 }
 </script>
-<script src="eaw-common.js?v=5"></script>
+<script src="eaw-common.js?v=6"></script>
 </body>
 </html>

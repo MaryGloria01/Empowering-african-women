@@ -9,7 +9,7 @@
  <meta name="theme-color" content="#0F172A">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>Health &amp; Body Awareness | Empowering African Women</title>
- <link rel="stylesheet" href="styles.css?v=5">
+ <link rel="stylesheet" href="styles.css?v=6">
  <script src="preloader.js"></script>
 </head>
 <body>
@@ -433,7 +433,7 @@ function issueCertificate() {
  if (!((enrol && enrol.quizPassed) || _hasCert || !!_certified)) { window.location.href = QUIZ_URL; return; }
  if (!user.certificates) user.certificates = [];
  let cert = user.certificates.find(c => c.id === COURSE_ID);
- if (!cert) { cert = { id: COURSE_ID, title: 'Health & Body Awareness', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() }; user.certificates.push(cert); saveUser(user); authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{}); }
+ if (!cert) { cert = { id: COURSE_ID, title: 'Health & Body Awareness', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() }; user.certificates.push(cert); saveUser(user); authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); }); }
  const m = document.getElementById('certModal'); if (m) { m.classList.add('open'); document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || ''); document.getElementById('certDate').textContent = cert.date; }
 }
 const CONTENT_MODULES = [1,2,3,4,5];
@@ -589,6 +589,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 </script>
 <button class="btt-btn" id="bttBtn" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 <script>window.addEventListener('scroll',function(){var b=document.getElementById('bttBtn');if(b)b.classList.toggle('visible',window.scrollY>400);},{passive:true});</script>
-<script src="eaw-common.js?v=5"></script>
+<script src="eaw-common.js?v=6"></script>
 </body>
 </html>
