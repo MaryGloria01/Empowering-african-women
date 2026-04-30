@@ -547,6 +547,10 @@ function issueCertificate() {
  cert = { id: QUIZ.courseId, title: QUIZ.courseTitle, score: score + '/' + QUIZ.questions.length, date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() };
  user.certificates.push(cert); saveUser(user);
  authFetch('api/certificate.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:cert.id,title:cert.title,score:cert.score||''})}).catch(function(){});
+ } else if (!cert.score && score > 0) {
+ cert.score = score + '/' + QUIZ.questions.length;
+ saveUser(user);
+ authFetch('api/certificate.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:cert.id,title:cert.title,score:cert.score})}).catch(function(){});
  }
  const m = document.getElementById('certModal'); if (m) {
  m.classList.add('open');
