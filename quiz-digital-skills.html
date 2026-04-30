@@ -181,8 +181,8 @@
 <div class="quiz-hero"><div style="font-size:56px;margin-bottom:12px;"></div>
  <h1>Computer Science &amp; Digital Skills, Final Assessment</h1>
  <p>Test your knowledge across all 5 modules covering computing, data, software, the internet, and cybersecurity.</p>
- <div class="quiz-meta"><span>10 Questions</span>
- <span>Pass Mark: 7/10 (70%)</span>
+ <div class="quiz-meta"><span>20 Questions</span>
+ <span>Pass Mark: 14/20 (70%)</span>
  <span>Unlimited Retakes</span>
  <span>✓ Certificate on Pass</span>
  </div>
@@ -192,10 +192,10 @@
  <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
  <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 5 modules: How Computers Work, Data & Numbers, Software & Programming, The Internet, and Security & AI.</p>
  <div style="background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;"><div style="font-weight:700;margin-bottom:10px;color:var(--blue);">Before you start:</div>
- <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 10 questions<br>
+ <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 20 questions<br>
  ✓ Each question has one correct answer<br>
  ✓ You'll see explanations after each answer<br>
- ✓ Score 7+ to unlock your certificate<br>
+ ✓ Score 14+ to unlock your certificate<br>
  ✓ You can retake as many times as needed
  </div>
  </div>
@@ -268,36 +268,36 @@ const QUIZ = {
  {
  module: 1,
  text: "What fundamental concept do computers use at the hardware level to represent ALL information?",
- options: ["Decimal numbers (0–9)", "Binary, only the digits 0 and 1", "Letters of the alphabet", "Hexadecimal numbers (0–F)"],
- correct: 1,
+ options: ["Binary, only the digits 0 and 1", "Decimal numbers (0–9)", "Letters of the alphabet", "Hexadecimal numbers (0–F)"],
+ correct: 0,
  explanation: "Computers use binary (base-2) at the hardware level because transistors have two states: on (1) and off (0). Every piece of data, text, images, video, is ultimately stored and processed as sequences of 0s and 1s."
  },
  {
  module: 1,
  text: "Which of these was a key milestone in making computers smaller, faster and cheaper?",
- options: ["The invention of the printing press", "The development of vacuum tubes", "The invention of the transistor and later the integrated circuit (microchip)", "The creation of the internet"],
- correct: 2,
+ options: ["The invention of the printing press", "The invention of the transistor and later the integrated circuit (microchip)", "The development of vacuum tubes", "The creation of the internet"],
+ correct: 1,
  explanation: "The transistor (1947) replaced vacuum tubes, and integrated circuits (microchips) packed millions of transistors onto a tiny chip. This miniaturisation is why modern smartphones are more powerful than room-sized computers from the 1960s."
  },
  {
  module: 2,
  text: "In Boolean logic, what is the result of TRUE AND FALSE?",
- options: ["TRUE", "FALSE", "MAYBE", "It depends on the context"],
- correct: 1,
+ options: ["TRUE", "MAYBE", "FALSE", "It depends on the context"],
+ correct: 2,
  explanation: "In Boolean logic, AND requires BOTH inputs to be TRUE to output TRUE. Since one input is FALSE, the result is FALSE. This is the foundation of all computer logic circuits."
  },
  {
  module: 2,
  text: "What does the CPU (Central Processing Unit) primarily do?",
- options: ["Stores data permanently on the hard drive", "Displays images on the screen", "Fetches, decodes and executes instructions, it is the 'brain' of the computer", "Connects the computer to the internet"],
- correct: 2,
+ options: ["Stores data permanently on the hard drive", "Displays images on the screen", "Connects the computer to the internet", "Fetches, decodes and executes instructions — it is the 'brain' of the computer"],
+ correct: 3,
  explanation: "The CPU fetches instructions from memory, decodes them, and executes them. It performs arithmetic/logic operations using the ALU and coordinates all other components. It's rightly called the brain of the computer."
  },
  {
  module: 3,
  text: "What is an algorithm?",
- options: ["A type of computer virus", "A step-by-step set of instructions for solving a problem or completing a task", "A programming language developed by Google", "A type of computer memory"],
- correct: 1,
+ options: ["A step-by-step set of instructions for solving a problem or completing a task", "A type of computer virus", "A programming language developed by Google", "A type of computer memory"],
+ correct: 0,
  explanation: "An algorithm is a precise, step-by-step set of instructions for solving a problem. Recipes, GPS directions, and sorting a list of names are all everyday examples of algorithms. All computer programs are ultimately algorithms."
  },
  {
@@ -310,22 +310,22 @@ const QUIZ = {
  {
  module: 4,
  text: "What does IP stand for in the context of computer networks?",
- options: ["Internet Protocol", "Internal Processor", "Information Package", "Integrated Platform"],
- correct: 0,
+ options: ["Internal Processor", "Information Package", "Internet Protocol", "Integrated Platform"],
+ correct: 2,
  explanation: "IP stands for Internet Protocol. Every device on a network has an IP address, a unique numerical label that identifies it. IP is the fundamental protocol that routes data packets across the internet."
  },
  {
  module: 4,
  text: "What is the World Wide Web (WWW)?",
- options: ["The physical cables and hardware that make up the internet", "A system of web pages and hyperlinks that runs ON TOP of the internet", "The same thing as the internet", "An email service created by Tim Berners-Lee"],
- correct: 1,
+ options: ["The physical cables and hardware that make up the internet", "The same thing as the internet", "An email service created by Tim Berners-Lee", "A system of web pages and hyperlinks that runs ON TOP of the internet"],
+ correct: 3,
  explanation: "The internet is the physical network infrastructure; the World Wide Web is a service (application) that runs on it. Tim Berners-Lee invented the Web in 1989, it's the system of HTML pages connected by hyperlinks that you access via a browser."
  },
  {
  module: 5,
  text: "What is phishing?",
- options: ["A type of computer virus that destroys files", "A cybersecurity attack where criminals trick people into revealing passwords or personal data via fake emails or websites", "A method of encrypting data", "A tool for network monitoring"],
- correct: 1,
+ options: ["A cybersecurity attack where criminals trick people into revealing passwords or personal data via fake emails or websites", "A type of computer virus that destroys files", "A method of encrypting data to protect it", "A tool for monitoring network traffic"],
+ correct: 0,
  explanation: "Phishing is a social engineering attack where criminals impersonate trusted organisations (banks, email providers) via fake messages or websites to steal login credentials, financial data, or personal information. It's one of the most common cyberattacks."
  },
  {
@@ -334,6 +334,76 @@ const QUIZ = {
  options: ["Machine learning is slower and less accurate than traditional programming", "In traditional programming, rules are written by humans; in machine learning, the computer learns rules from data", "Machine learning only works for image recognition", "They are the same thing with different names"],
  correct: 1,
  explanation: "Traditional programming: a human writes explicit rules → computer follows them. Machine learning: you feed the computer data and desired outputs → it learns the rules itself. This allows AI to do things too complex for humans to program explicitly, like recognising faces or translating languages."
+ },
+ {
+ module: 1,
+ text: "What is the difference between RAM and storage (SSD/HDD)?",
+ options: ["RAM and storage are the same type of memory", "Storage is faster than RAM for running programs", "RAM (Random Access Memory) is fast temporary memory used while programs run and is cleared when powered off; storage (SSD/HDD) is slower permanent memory that retains data — having more RAM allows more programs to run simultaneously", "RAM stores your files permanently while storage is only used for the operating system"],
+ correct: 2,
+ explanation: "RAM is like your desk — it holds what you're actively working on right now. Storage (SSD or HDD) is like your filing cabinet — it stores everything permanently. When you open a program, it loads from storage into RAM for fast access. Insufficient RAM causes slowdowns; insufficient storage means you can't save files."
+ },
+ {
+ module: 1,
+ text: "What is an operating system?",
+ options: ["A browser that lets you access the internet", "The physical hardware components inside a computer", "A programming language used to write all applications", "Software that manages computer hardware resources and provides common services for all other programs — examples include Windows, macOS, Linux, Android, and iOS"],
+ correct: 3,
+ explanation: "The operating system is the foundational software layer between hardware and applications. It manages the CPU, memory, storage, input/output devices, and security. Without an OS, application software couldn't communicate with hardware. Understanding the OS is fundamental to digital literacy."
+ },
+ {
+ module: 4,
+ text: "What is cloud computing?",
+ options: ["The delivery of computing services (servers, storage, databases, software) over the internet, allowing access to resources on demand without owning physical hardware", "A method of cooling server hardware using atmospheric moisture", "A type of wireless networking technology like Bluetooth", "The process of compressing files to reduce their storage size"],
+ correct: 0,
+ explanation: "Cloud computing provides on-demand computing resources via the internet. Instead of owning and maintaining servers, you pay for what you use. Major providers include AWS, Google Cloud, and Microsoft Azure. Cloud enables Nigerian startups to launch globally without buying hardware — only an internet connection and a credit card are needed."
+ },
+ {
+ module: 5,
+ text: "What is two-factor authentication (2FA)?",
+ options: ["Having two separate passwords for the same account", "A security method requiring two forms of verification (e.g., password plus a one-time code sent to your phone) — significantly reducing account compromise risk even if your password is stolen", "A system that requires two people to approve each login", "An encryption standard for protecting data files"],
+ correct: 1,
+ explanation: "2FA adds a second layer: even if a criminal steals your password, they cannot access your account without the second factor (phone, email code, authenticator app). Enabling 2FA on email, banking, and social media accounts is one of the single most effective personal cybersecurity steps you can take."
+ },
+ {
+ module: 5,
+ text: "What is a relational database?",
+ options: ["A database that stores only images and media files", "A database that runs only on cloud servers, not local machines", "A database that organises data into tables with defined relationships between them — queried using SQL; examples include MySQL and PostgreSQL used to store user accounts, enrollments, and transactions", "A spreadsheet tool like Microsoft Excel used for simple data entry"],
+ correct: 2,
+ explanation: "Relational databases store data in structured tables with rows and columns, linked by keys. SQL (Structured Query Language) lets you retrieve, filter, and join data: `SELECT * FROM users WHERE role='student'`. They underpin almost every web application — banking systems, e-commerce, healthcare records, learning platforms."
+ },
+ {
+ module: 3,
+ text: "What is the difference between a compiler and an interpreter?",
+ options: ["A compiler is faster to write code with; an interpreter is more accurate", "Compilers are only used for old programming languages like COBOL", "Interpreters produce a standalone executable file; compilers do not", "A compiler translates the entire source code into machine code before execution; an interpreter translates and executes code line by line — Python is interpreted, C++ is compiled"],
+ correct: 3,
+ explanation: "Compiled languages (C, C++, Go) are translated entirely before running, producing a fast executable. Interpreted languages (Python, JavaScript) translate and run line by line, which is slower but faster to develop with and easier to debug. Many modern languages (Java, Python) use a hybrid approach — compiling to bytecode first, then interpreting."
+ },
+ {
+ module: 5,
+ text: "What is encryption and why does it matter for data security?",
+ options: ["Encryption converts readable data into an unreadable format using a key — only someone with the correct key can decrypt and read it, protecting sensitive data in transit and at rest", "Encryption permanently deletes data so it cannot be recovered", "Encryption only applies to data sent over the internet, not stored files", "Encryption slows down computers so much it is only used for government data"],
+ correct: 0,
+ explanation: "Encryption is the foundation of internet security. HTTPS uses TLS encryption to protect data between your browser and servers. End-to-end encryption in messaging apps (WhatsApp, Signal) means only you and the recipient can read messages. Full-disk encryption protects files on stolen laptops. Without encryption, every password and payment would be visible to anyone intercepting network traffic."
+ },
+ {
+ module: 4,
+ text: "What is an IP address and how does DNS work?",
+ options: ["An IP address is a website's name; DNS converts it to a physical server location", "An IP address is a unique numerical label identifying each device on a network; DNS (Domain Name System) translates human-readable domain names like google.com into IP addresses so browsers can find the correct server", "DNS is a type of malware that redirects web traffic", "An IP address is only assigned to websites, not personal devices"],
+ correct: 1,
+ explanation: "Every device on the internet has a unique IP address (e.g., 142.250.185.46). DNS is the internet's phone book — when you type google.com, your browser asks a DNS server for the IP address, then connects to it. Without DNS, you'd need to memorise numbers instead of domain names. DNS attacks (hijacking) can redirect users to fake sites."
+ },
+ {
+ module: 3,
+ text: "What is open-source software?",
+ options: ["Software that is automatically free but has no support", "Software developed exclusively by government agencies", "Software whose source code is publicly available for anyone to view, modify, and distribute — examples include Linux, Firefox, and WordPress, enabling community collaboration and innovation", "Software that can only run on computers connected to the internet"],
+ correct: 2,
+ explanation: "Open-source software (OSS) is developed collaboratively by global communities. The Linux kernel powers most of the internet's servers and Android phones. WordPress powers 43% of all websites. Open-source enables innovation without patents blocking progress — developers can build on each other's work freely, subject to license terms."
+ },
+ {
+ module: 5,
+ text: "What is the difference between a virus and ransomware?",
+ options: ["They are the same type of malware with different names", "Viruses are more dangerous than ransomware in all cases", "Ransomware only affects mobile phones, while viruses only affect computers", "A virus self-replicates and spreads to other files/computers; ransomware encrypts the victim's files and demands payment for the decryption key — ransomware is currently one of the most financially damaging forms of cyberattack"],
+ correct: 3,
+ explanation: "Viruses attach to legitimate files and spread when shared. Ransomware is a specific, devastating attack: it encrypts your entire system and demands payment (usually cryptocurrency) for the key. Ransomware has shut down hospitals, schools, and governments worldwide. Prevention: regular backups, updated software, strong email filtering, and never clicking unknown attachments."
  }
  ]
 };

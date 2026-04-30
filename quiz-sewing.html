@@ -181,8 +181,8 @@
 <div class="quiz-hero"><div style="font-size:56px;margin-bottom:12px;"></div>
  <h1>Sewing &amp; Fashion Design, Final Assessment</h1>
  <p>Test your knowledge across all 4 modules covering sewing fundamentals, garment construction, patterns, and fashion design.</p>
- <div class="quiz-meta"><span>10 Questions</span>
- <span>Pass Mark: 7/10 (70%)</span>
+ <div class="quiz-meta"><span>20 Questions</span>
+ <span>Pass Mark: 14/20 (70%)</span>
  <span>Unlimited Retakes</span>
  <span>✓ Certificate on Pass</span>
  </div>
@@ -192,10 +192,10 @@
  <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
  <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 4 modules of the Sewing &amp; Fashion Design course including sewing basics, machine use, garment construction, and pattern reading.</p>
  <div style="background:#faf5ff;border:1px solid #d8b4fe;border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;"><div style="font-weight:700;margin-bottom:10px;color:#7e22ce;">Before you start:</div>
- <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 10 questions<br>
+ <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 20 questions<br>
  ✓ Each question has one correct answer<br>
  ✓ You'll see explanations after each answer<br>
- ✓ Score 7+ to unlock your certificate<br>
+ ✓ Score 14+ to unlock your certificate<br>
  ✓ You can retake as many times as needed
  </div>
  </div>
@@ -269,8 +269,8 @@ const QUIZ = {
  module: 1,
  difficulty: 'Easy',
  text: "What is a 'seam allowance'?",
- options: ["The decorative edging on a finished garment", "The extra fabric between the stitching line and the cut edge of the fabric", "The amount of thread left on a spool", "A measurement for buying fabric"],
- correct: 1,
+ options: ["The extra fabric between the stitching line and the cut edge of the fabric","The decorative edging on a finished garment","The amount of thread left on a spool","A measurement for buying fabric at market"],
+ correct: 0,
  explanation: "Seam allowance is the strip of fabric between your stitch line and the fabric's edge. Standard seam allowance is 1.5cm (5/8 inch). It's what holds seams together and allows them to be pressed open."
  },
  {
@@ -285,24 +285,24 @@ const QUIZ = {
  module: 1,
  difficulty: 'Easy',
  text: "What is the 'grain' of fabric?",
- options: ["The colour pattern of the fabric", "The direction of the woven threads, running parallel to the selvage is the straight grain", "The texture of the fabric surface", "The brand name of the fabric"],
- correct: 1,
+ options: ["The colour pattern printed on the fabric surface","The texture of the fabric surface that you can feel","The direction of the woven threads — running parallel to the selvage is the straight grain; cutting off-grain causes garments to twist and hang poorly","The brand name and quality grade of the fabric"],
+ correct: 2,
  explanation: "Fabric grain refers to the direction of the woven threads. Cutting on the straight grain (parallel to the selvage) ensures a garment hangs and drapes correctly. Cutting off-grain leads to garments that twist and don't sit right."
  },
  {
  module: 2,
  difficulty: 'Medium',
  text: "What does 'right sides together' (RST) mean?",
- options: ["Matching the right side of the pattern pieces", "Placing the printed/patterned sides of fabric facing each other so the seam is hidden when turned right-side-out", "Sewing from right to left", "Using the right side of the sewing machine"],
- correct: 1,
+ options: ["Matching the right side of the pattern pieces on a table","Sewing from right to left for better tension","Using the right side of the sewing machine foot","Placing the printed/patterned sides of fabric facing each other so seams are hidden when turned right-side-out"],
+ correct: 3,
  explanation: "RST means folding fabric so the 'right side' (the presentable outer face) faces inward, with the wrong sides facing out. When you sew and turn the piece, the seam is hidden inside. This is used for almost all construction seams."
  },
  {
  module: 2,
  difficulty: 'Medium',
  text: "What is the function of the presser foot on a sewing machine?",
- options: ["To thread the needle", "To hold the fabric flat against the feed dogs as you sew", "To control the tension of the bobbin thread", "To cut excess thread after sewing"],
- correct: 1,
+ options: ["To hold the fabric flat against the feed dogs, ensuring even feeding and preventing puckering — different presser feet are used for zips, buttonholes, and hemming","To thread the needle automatically","To control the tension of the bobbin thread","To cut excess thread after each seam is completed"],
+ correct: 0,
  explanation: "The presser foot holds the fabric firmly against the feed dogs (the teeth that move fabric through the machine), ensuring even feeding and preventing puckering. Different presser feet are used for different tasks: zips, buttonholes, hemming."
  },
  {
@@ -317,33 +317,113 @@ const QUIZ = {
  module: 3,
  difficulty: 'Hard',
  text: "What is the difference between woven and knit fabrics, and why does it matter for sewing?",
- options: ["They look the same and are sewn the same way", "Woven fabrics (like cotton poplin) have no stretch and use straight stitches; knit fabrics (like jersey) have stretch and need stretch stitches or a serger", "Knit fabrics are always thicker than woven fabrics", "Woven fabrics are only used for home furnishings"],
- correct: 1,
+ options: ["They look the same and are sewn in exactly the same way","Knit fabrics are always thicker and heavier than woven fabrics","Woven fabrics (like cotton poplin) have no stretch and use straight stitches; knit fabrics (like jersey) stretch in multiple directions and require stretch stitches or a serger to prevent seams from breaking","Woven fabrics are only used for home furnishings, never for garments"],
+ correct: 2,
  explanation: "Woven fabrics are made by interlacing threads at right angles, they have little stretch. Knit fabrics have interlocking loops that stretch in multiple directions. Using a straight stitch on a knit can cause the stitches to break when the fabric stretches. Beginners should start with woven fabrics."
  },
  {
  module: 4,
  difficulty: 'Hard',
  text: "What is a 'notch' on a sewing pattern, and what does it indicate?",
- options: ["A mistake in the pattern", "A small triangular marking cut into the seam allowance that marks matching points on different pattern pieces", "The brand symbol of the pattern company", "A marking that shows where to place buttons"],
- correct: 1,
+ options: ["A mistake in the pattern that needs to be corrected before cutting","The brand symbol of the pattern company printed on the envelope","A marking that shows where to place buttons or snaps","A small triangular marking cut into the seam allowance that marks matching points — when two pieces share a seam, their notches align to prevent assembly errors"],
+ correct: 3,
  explanation: "Notches are small V or triangle shapes cut into the seam allowance at strategic points. When two pattern pieces share a seam, their notches should match up, they tell you which pieces go together and which way they're oriented, preventing assembly errors."
  },
  {
  module: 4,
  difficulty: 'Hard',
  text: "When reading a commercial sewing pattern, what does 'ease' refer to?",
- options: ["How easy the pattern is to sew", "The extra room built into a garment's measurements beyond the body measurements, to allow for comfort and movement", "The amount of hemming required", "A simplified cutting method"],
- correct: 1,
+ options: ["The extra room built into a garment's measurements beyond body measurements — wearing ease (2–5cm) allows comfort and movement; design ease adds style volume; always check finished garment measurements not body measurements when selecting a pattern size","How easy or difficult the pattern is rated for beginner sewers","The amount of hemming required at the bottom of the garment","A simplified cutting method for patterns with fewer pieces"],
+ correct: 0,
  explanation: "Ease is the difference between your body measurements and the garment measurements. 'Wearing ease' (2-5cm) allows comfort and movement. 'Design ease' adds extra volume for style. Always compare your measurements to the pattern's finished measurements, not your body measurements."
  },
  {
  module: 3,
  difficulty: 'Hard',
  text: "What is the best stitch to use when hemming a garment so the stitches are nearly invisible from the right side?",
- options: ["A long straight machine stitch", "A zigzag stitch", "A slip stitch or blind hem stitch", "A running stitch"],
- correct: 2,
+ options: ["A long straight machine stitch set to maximum length","A slip stitch or blind hem stitch — catches only a few threads of the outer fabric, making the hem nearly invisible from the right side; it is the professional standard for dresses, trousers, and skirts","A zigzag stitch at maximum width","A running stitch sewn by hand in matching thread"],
+ correct: 1,
  explanation: "A slip stitch (hand-sewn) or blind hem stitch (machine or hand) catches only a few threads of the outer fabric, making the hem nearly invisible from the right side. It's the professional standard for hemming dresses, trousers, and skirts."
+ },
+ {
+ module: 2,
+ difficulty: 'Medium',
+ text: "What is a 'serger' (overlocker) and what does it do?",
+ options: ["A serger is a specialised ironing tool for pressing seams","A serger is a type of fabric cutting mat","A serger is a sewing machine that simultaneously trims the fabric edge, encloses the raw edge with thread, and sews a seam in one pass — creating professional-looking, fray-proof edges; it is essential for working with knit fabrics","A serger is a device for measuring and marking straight cutting lines"],
+ correct: 2,
+ explanation: "A serger (overlocker) uses 3–5 threads to simultaneously trim the seam allowance, encase the raw edge, and sew a flexible seam. It creates the neat, professional finish found inside ready-to-wear clothing. For knit fabrics, the serger's differential feed prevents wavy seams. It's not a replacement for a regular sewing machine but an essential companion."
+ },
+ {
+ module: 3,
+ difficulty: 'Hard',
+ text: "What is 'interfacing' in garment construction and when is it used?",
+ options: ["Interfacing is the lining fabric used inside sleeves for warmth","Interfacing is a decorative trim sewn along necklines","Interfacing is thread used specifically for sewing buttons and closures","Interfacing is a stabilising material fused or sewn to the wrong side of fabric to add structure and firmness to areas like collars, cuffs, waistbands, and button plackets — without it, these areas would be floppy and collapse under daily wear"],
+ correct: 3,
+ explanation: "Interfacing comes in fusible (iron-on) and sew-in versions, woven and non-woven. It's selected to match the weight of the fashion fabric. Too heavy an interfacing makes areas stiff; too light provides insufficient support. Collar and cuff interfacing is what gives tailored garments their crisp, professional shape."
+ },
+ {
+ module: 4,
+ difficulty: 'Hard',
+ text: "What is pattern grading and why is it important for a professional seamstress?",
+ options: ["Pattern grading is the process of increasing or decreasing a pattern's size proportionally to create multiple sizes from a single master pattern — essential for any seamstress producing garments for clients of different body measurements","Pattern grading is a technique for adding decorative stitching to pattern pieces","Pattern grading is the system for rating pattern difficulty from beginner to advanced","Pattern grading is the process of making all pattern pieces the same size for easier cutting"],
+ correct: 0,
+ explanation: "Grading allows one master pattern to become a size range. Grading rules define how much each point on the pattern moves between sizes. Professional dressmakers and small production businesses use grading to serve clients of different sizes without drafting entirely new patterns. Understanding grading is essential for scaling a sewing business."
+ },
+ {
+ module: 1,
+ difficulty: 'Medium',
+ text: "What does the fabric care label symbol of a circle inside a square indicate?",
+ options: ["The fabric must be dry-cleaned only and cannot be washed in water","The garment can be tumble dried — a dot inside the circle indicates the heat setting allowed; following care label instructions prevents shrinkage, colour loss, and fabric damage","The garment must be washed in cold water only","The fabric requires ironing at the highest heat setting"],
+ correct: 1,
+ explanation: "International care symbols: circle in square = tumble dry. Dots inside indicate temperature: one dot = low heat, two dots = medium, three dots = high. An X through the symbol means do not tumble dry. Understanding care symbols is essential for professional finishing advice — giving clients incorrect care instructions damages your professional reputation."
+ },
+ {
+ module: 3,
+ difficulty: 'Hard',
+ text: "What is a 'French seam' and when is it used?",
+ options: ["A seam technique used only for heavy denim and canvas fabrics","A seam that requires a special presser foot attachment","A seam technique that encloses the raw edges completely inside the seam for a clean finish on both sides of the fabric — ideal for sheer, delicate fabrics and garments where the inside must look as neat as the outside","A seam sewn at a 45-degree angle for decorative purposes"],
+ correct: 2,
+ explanation: "A French seam is sewn twice: first with wrong sides together (narrow seam), then turning and sewing again with right sides together, encasing the raw edges. The result is a clean finish on both sides with no exposed raw edges. It's the professional choice for sheer fabrics (chiffon, organza), lingerie, and luxury garments where the inside must be as beautiful as the outside."
+ },
+ {
+ module: 4,
+ difficulty: 'Hard',
+ text: "How do you calculate how much fabric to buy for a garment?",
+ options: ["Always buy exactly 2 metres regardless of the garment style","Buy the same amount as your body measurements in centimetres","Only buy what the pattern envelope recommends without any additional consideration","Check the pattern envelope for the required fabric quantity at your garment size, then add 10–15% extra for pattern matching, shrinkage allowance, and cutting mistakes — also consider fabric width as narrower fabric requires more length"],
+ correct: 3,
+ explanation: "Pattern envelopes show fabric requirements for each size at different fabric widths (90cm, 115cm, 150cm). Striped or checked fabrics require extra for matching (up to 25% more). Pre-wash fabric before cutting to account for shrinkage. Adding a buffer prevents running short mid-project — a professional seamstress always calculates fabric needs precisely."
+ },
+ {
+ module: 2,
+ difficulty: 'Medium',
+ text: "What is the correct way to press (iron) seams for a professional finish?",
+ options: ["Press each seam open or to one side as you sew, using a hot iron and pressing cloth if needed — pressing as you go rather than at the end is what separates professional-quality garments from homemade-looking ones","Always press all seams in the same direction regardless of the design","Press seams only after the entire garment is assembled to save time","Ironing is only necessary for fabric before cutting, not for seams during construction"],
+ correct: 0,
+ explanation: "Pressing as you go is the single most important technique for professional-looking garments. Each seam is pressed immediately after sewing — before crossing it with another seam — to embed it flat. Use a pressing cloth to protect delicate fabrics. Steam helps set seams. Pressing differs from ironing: press (lift and lower) rather than sliding the iron."
+ },
+ {
+ module: 3,
+ difficulty: 'Medium',
+ text: "What does 'stay stitching' prevent and when should it be done?",
+ options: ["Stay stitching prevents the sewing machine needle from breaking on thick seams","Stay stitching is a line of stitches sewn within the seam allowance of curved or bias-cut edges (like necklines and armholes) immediately after cutting — it prevents the fabric from stretching and distorting before the garment is assembled","Stay stitching is used to permanently hold two layers of fabric together","Stay stitching prevents thread from unravelling at the beginning and end of a seam"],
+ correct: 1,
+ explanation: "Stay stitching is the very first sewing step after cutting. Curved edges (necklines, armholes, waistlines) are on the bias and prone to stretching under their own weight. A single line of stitching within the seam allowance stabilises these curves. Without it, necklines can stretch by 1–2cm before you've even started assembling the garment."
+ },
+ {
+ module: 4,
+ difficulty: 'Hard',
+ text: "What is a 'bias cut' in fashion and why is it used?",
+ options: ["A bias cut means cutting fabric along the straight grain for maximum stability","A bias cut means cutting fabric at 90 degrees to the selvage","A bias cut means cutting fabric at a 45-degree angle to the grain — the bias direction has the most stretch and drape, allowing fabric to cling and flow beautifully around the body; Madeleine Vionnet pioneered it for elegant, form-fitting evening wear","A bias cut is a cost-saving technique that reduces fabric waste"],
+ correct: 2,
+ explanation: "On the bias (45 degrees to grain), woven fabric has maximum stretch and drape. Bias-cut garments mould to the body's curves without darts or shaping seams. The technique requires: more fabric (the garment is larger when cut on the bias), careful handling (bias edges stretch easily), and precise cutting. It's labour-intensive but produces uniquely fluid, body-skimming silhouettes."
+ },
+ {
+ module: 4,
+ difficulty: 'Hard',
+ text: "How do you cost a garment for selling professionally?",
+ options: ["Charge whatever the customer offers without a set calculation","Price based only on the materials cost without including labour","Match competitor prices without calculating your own costs","Add up the cost of all materials (fabric, thread, interfacing, notions), add your labour time × your hourly rate, add overhead (electricity, machine maintenance, transport), then add your desired profit margin — pricing below your true cost means you lose money on every garment sold"],
+ correct: 3,
+ explanation: "Professional garment costing: Cost of Materials + Labour (hours × hourly rate) + Overhead + Profit Margin = Selling Price. Many new seamstresses severely undercharge because they forget to include their time at a fair hourly rate. If you work for 8 hours but charge only for fabric, you're effectively working for free. Understanding your true cost is essential for a sustainable sewing business."
  }
  ]
 };

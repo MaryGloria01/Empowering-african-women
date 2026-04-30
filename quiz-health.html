@@ -181,8 +181,8 @@
 <div class="quiz-hero"><div style="font-size:56px;margin-bottom:12px;"></div>
  <h1>Health &amp; Body Awareness, Final Assessment</h1>
  <p>Test your knowledge across all 5 modules covering anatomy, tissues, the nervous system, nutrition, and the immune system.</p>
- <div class="quiz-meta"><span>10 Questions</span>
- <span>Pass Mark: 7/10 (70%)</span>
+ <div class="quiz-meta"><span>20 Questions</span>
+ <span>Pass Mark: 14/20 (70%)</span>
  <span>Unlimited Retakes</span>
  <span>✓ Certificate on Pass</span>
  </div>
@@ -192,10 +192,10 @@
  <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
  <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 5 modules: Introduction to Your Body, Your Skin, The Nervous System, Nutrition &amp; Metabolism, and The Immune System.</p>
  <div style="background:var(--green-pale);border:1px solid var(--green);border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;"><div style="font-weight:700;margin-bottom:10px;color:#059669;">Before you start:</div>
- <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 10 questions<br>
+ <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 20 questions<br>
  ✓ Each question has one correct answer<br>
  ✓ You'll see explanations after each answer<br>
- ✓ Score 7+ to unlock your certificate<br>
+ ✓ Score 14+ to unlock your certificate<br>
  ✓ You can retake as many times as needed
  </div>
  </div>
@@ -269,8 +269,8 @@ const QUIZ = {
  module: 1,
  difficulty: 'Easy',
  text: "How many basic tissue types are in the human body?",
- options: ["2, hard and soft", "4, epithelial, connective, muscle and nervous", "6, including skin and bone", "1, all tissue is the same"],
- correct: 1,
+ options: ["4, epithelial, connective, muscle and nervous", "2, hard and soft", "6, including skin and bone", "1, all tissue is the same"],
+ correct: 0,
  explanation: "The human body has four fundamental tissue types: epithelial (lining), connective (support), muscle (movement), and nervous (signalling). Every organ is made of combinations of these four types."
  },
  {
@@ -285,24 +285,24 @@ const QUIZ = {
  module: 3,
  difficulty: 'Medium',
  text: "What is a neuron?",
- options: ["A type of red blood cell", "The basic structural and functional unit of the nervous system", "A hormone produced by the brain", "A type of connective tissue"],
- correct: 1,
+ options: ["A type of red blood cell", "A hormone produced by the brain", "The basic structural and functional unit of the nervous system", "A type of connective tissue"],
+ correct: 2,
  explanation: "Neurons are specialised cells that transmit electrical and chemical signals throughout the body. The human brain contains approximately 86 billion neurons, forming trillions of connections."
  },
  {
  module: 3,
  difficulty: 'Medium',
  text: "What is an action potential?",
- options: ["A chemical released by muscles during exercise", "A temporary change in electrical charge across a neuron's membrane that transmits a nerve signal", "The force exerted by the heart", "A type of immune response"],
- correct: 1,
+ options: ["A chemical released by muscles during exercise", "The force exerted by the heart", "A type of immune response", "A temporary change in electrical charge across a neuron's membrane that transmits a nerve signal"],
+ correct: 3,
  explanation: "An action potential is the electrical impulse that travels along a neuron. It's an 'all-or-nothing' event triggered when a neuron reaches its threshold. This is how all nerve signals travel through your body."
  },
  {
  module: 5,
  difficulty: 'Medium',
  text: "What is the primary function of the immune system's first line of defence?",
- options: ["Producing antibodies", "Physical and chemical barriers, like skin and mucus, that prevent pathogens from entering the body", "Destroying infected cells", "Storing white blood cells"],
- correct: 1,
+ options: ["Physical and chemical barriers, like skin and mucus, that prevent pathogens from entering the body", "Producing antibodies", "Destroying infected cells", "Storing white blood cells"],
+ correct: 0,
  explanation: "The first line of defence is innate and non-specific: skin acts as a physical barrier, stomach acid destroys pathogens in food, and mucus traps particles in the respiratory tract. These defences don't need to 'learn', they're always active."
  },
  {
@@ -317,24 +317,24 @@ const QUIZ = {
  module: 5,
  difficulty: 'Hard',
  text: "What is the difference between innate and adaptive immunity?",
- options: ["They are the same thing", "Innate immunity is fast and general; adaptive immunity is slower but specifically targets particular pathogens and has memory", "Adaptive immunity is faster than innate immunity", "Innate immunity involves antibodies; adaptive does not"],
- correct: 1,
+ options: ["They are the same thing", "Adaptive immunity is faster than innate immunity", "Innate immunity is fast and general; adaptive immunity is slower but specifically targets particular pathogens and has memory", "Innate immunity involves antibodies; adaptive does not"],
+ correct: 2,
  explanation: "Innate immunity is the first rapid response, it's non-specific and attacks any pathogen. Adaptive immunity takes longer (days) to develop but creates antibodies specific to each pathogen. Crucially, adaptive immunity 'remembers' past infections, which is why vaccines work."
  },
  {
  module: 3,
  difficulty: 'Hard',
  text: "What is a synapse?",
- options: ["A type of brain cell", "The junction between two neurons where nerve signals pass from one to another via neurotransmitters", "The protective covering around neurons", "A part of the spinal cord"],
- correct: 1,
+ options: ["A type of brain cell", "The protective covering around neurons", "A part of the spinal cord", "The junction between two neurons where nerve signals pass from one to another via neurotransmitters"],
+ correct: 3,
  explanation: "A synapse is the tiny gap between neurons. When an electrical signal reaches the end of a neuron, it triggers the release of chemical neurotransmitters (like dopamine and serotonin) that cross the gap and trigger (or inhibit) the next neuron."
  },
  {
  module: 5,
  difficulty: 'Hard',
  text: "How do vaccines work?",
- options: ["They kill all bacteria in the body", "They introduce a weakened, inactivated pathogen or its components to stimulate the adaptive immune system to create memory cells without causing disease", "They increase body temperature to fight infection", "They replace damaged immune cells"],
- correct: 1,
+ options: ["They introduce a weakened, inactivated pathogen or its components to stimulate the adaptive immune system to create memory cells without causing disease", "They kill all bacteria in the body", "They increase body temperature to fight infection", "They replace damaged immune cells"],
+ correct: 0,
  explanation: "Vaccines train your adaptive immune system. By exposing it to a harmless form of a pathogen, the immune system creates antibodies and memory B cells. If you encounter the real pathogen later, your body recognises and destroys it rapidly before you become sick."
  },
  {
@@ -344,6 +344,86 @@ const QUIZ = {
  options: ["Macronutrients are unhealthy; micronutrients are healthy", "Macronutrients (carbs, proteins, fats) are needed in large amounts for energy and structure; micronutrients (vitamins, minerals) are needed in small amounts for regulation and health", "Micronutrients provide more energy than macronutrients", "They are the same; the terms are interchangeable"],
  correct: 1,
  explanation: "Macronutrients are the main fuel and building materials: carbohydrates (energy), proteins (structure/repair), and fats (energy/hormones). Micronutrients like vitamin C, iron, and calcium are needed in tiny amounts but are critical for immunity, bone health, and thousands of biochemical reactions."
+ },
+ {
+ module: 4,
+ difficulty: 'Medium',
+ text: "What is the primary function of haemoglobin in the blood?",
+ options: ["Destroys harmful bacteria in the bloodstream", "Controls blood pressure in the arteries", "Carries oxygen from the lungs to body tissues and returns carbon dioxide from tissues back to the lungs", "Regulates blood sugar levels throughout the body"],
+ correct: 2,
+ explanation: "Haemoglobin is the iron-containing protein in red blood cells. It binds to oxygen in the lungs (forming oxyhaemoglobin) and releases it to tissues that need it. Iron deficiency anaemia reduces haemoglobin levels, causing fatigue, weakness, and breathlessness — a significant health issue for women of childbearing age."
+ },
+ {
+ module: 4,
+ difficulty: 'Hard',
+ text: "Which of the following accurately describes Type 2 diabetes?",
+ options: ["An autoimmune condition where the body attacks insulin-producing cells (that is Type 1)", "A condition caused exclusively by eating too much sugar in childhood", "A condition only affecting elderly people over 70", "A metabolic condition where the body becomes resistant to insulin or doesn't produce enough, causing high blood glucose; key risk factors include excess body weight, physical inactivity, and a diet high in refined carbohydrates"],
+ correct: 3,
+ explanation: "Type 2 diabetes is the most common form, accounting for over 90% of diabetes cases. Unlike Type 1 (autoimmune), Type 2 is largely preventable and manageable through lifestyle changes: regular physical activity, healthy diet, and maintaining a healthy body weight. Nigeria has one of the highest rates of undiagnosed diabetes in Africa."
+ },
+ {
+ module: 4,
+ difficulty: 'Medium',
+ text: "According to WHO guidelines, how much physical activity should adults aim for each week?",
+ options: ["At least 150 minutes of moderate-intensity activity per week (e.g., brisk walking) or 75 minutes of vigorous activity, plus muscle-strengthening on 2 or more days", "30 minutes of running every single day without rest days", "10 minutes of stretching per day is sufficient for full health benefits", "Physical activity guidelines apply only to people who are overweight"],
+ correct: 0,
+ explanation: "WHO recommends 150–300 minutes of moderate-intensity aerobic activity (or 75–150 minutes vigorous) weekly, plus muscle-strengthening activities on 2+ days. Regular physical activity reduces risk of heart disease, Type 2 diabetes, depression, and several cancers. Even brisk walking counts as moderate-intensity activity."
+ },
+ {
+ module: 5,
+ difficulty: 'Medium',
+ text: "How is malaria transmitted, and why does it remain a major health challenge in Nigeria?",
+ options: ["Malaria is a bacterial infection spread through contaminated water", "Malaria is caused by Plasmodium parasites transmitted by the bite of infected female Anopheles mosquitoes; it remains one of Nigeria's leading causes of death", "Malaria is a viral infection spread through respiratory droplets", "Malaria is caused by poor nutrition and can only be prevented through diet alone"],
+ correct: 1,
+ explanation: "Nigeria accounts for approximately 25% of global malaria cases. The Plasmodium falciparum parasite (the most deadly species) is transmitted by the female Anopheles mosquito which bites at night. Prevention includes insecticide-treated bed nets, indoor residual spraying, and antimalarial prophylaxis. Children under 5 and pregnant women face the highest risk."
+ },
+ {
+ module: 1,
+ difficulty: 'Medium',
+ text: "What is BMI and what is its key limitation as a health measurement?",
+ options: ["BMI measures the exact percentage of body fat with high precision", "BMI predicts a person's risk of every disease with complete accuracy", "BMI is a simple screening tool (weight in kg ÷ height in m²); its key limitation is that it cannot distinguish between muscle and fat, so muscular athletes may be incorrectly classified as overweight", "BMI is only relevant for children and adolescents, not adults"],
+ correct: 2,
+ explanation: "BMI (Body Mass Index) is a quick population-level screening tool: underweight <18.5, healthy 18.5–24.9, overweight 25–29.9, obese ≥30. Its limitation is that it measures weight relative to height, not fat specifically. A muscular person may have a high BMI but low body fat. For individual clinical assessment, waist circumference and body composition measures provide additional insight."
+ },
+ {
+ module: 5,
+ difficulty: 'Hard',
+ text: "What are the leading causes of maternal mortality in Nigeria, and what are the most effective interventions?",
+ options: ["Malaria is the single leading cause; insecticide-treated nets are sufficient prevention", "Anaemia is the only leading cause; iron supplements alone are the solution", "HIV/AIDS is the leading cause; antiretrovirals prevent all maternal deaths", "Haemorrhage (severe bleeding) is a leading cause, along with hypertension and unsafe abortions; skilled birth attendance and emergency obstetric care are the most effective interventions"],
+ correct: 3,
+ explanation: "Nigeria has one of the world's highest maternal mortality rates. The leading direct causes are haemorrhage, hypertensive disorders (pre-eclampsia/eclampsia), sepsis, and complications from unsafe abortions. Key interventions include skilled birth attendance, access to emergency obstetric care, antenatal monitoring for hypertension, and iron/folate supplementation."
+ },
+ {
+ module: 4,
+ difficulty: 'Hard',
+ text: "What is the relationship between chronic stress, cortisol, and physical health?",
+ options: ["Chronic stress triggers repeated cortisol release; sustained high cortisol suppresses immunity, disrupts sleep, raises blood pressure, promotes abdominal fat storage, and increases risk of heart disease and depression", "Stress only affects mental health and has no measurable physical effects on the body", "Cortisol is only released during exercise, not during emotional or psychological stress", "Stress always improves physical health by keeping people alert and motivated"],
+ correct: 0,
+ explanation: "Cortisol is the primary stress hormone. Short-term cortisol release is adaptive (fight-or-flight). But chronic stress — common in high-pressure work environments — keeps cortisol elevated, suppressing the immune system, disrupting sleep and digestion, increasing blood pressure, promoting visceral fat accumulation, and increasing risk of cardiovascular disease and depression."
+ },
+ {
+ module: 4,
+ difficulty: 'Medium',
+ text: "What is the difference between saturated and unsaturated dietary fats?",
+ options: ["Saturated fats are always healthy; unsaturated fats are always harmful", "Saturated fats (found in palm oil, red meat, full-fat dairy) raise LDL cholesterol when consumed in excess; unsaturated fats (found in fish, nuts, avocado) support heart health", "Unsaturated fats contain significantly more calories per gram than saturated fats", "Both fat types are chemically identical and affect the body in exactly the same way"],
+ correct: 1,
+ explanation: "Saturated fats are solid at room temperature (e.g., butter, palm oil, lard) and raise LDL ('bad') cholesterol when eaten in excess, increasing cardiovascular risk. Unsaturated fats — monounsaturated (olive oil, avocado) and polyunsaturated (fish, nuts) — lower LDL and support heart and brain health. The type of fat matters, not just the quantity."
+ },
+ {
+ module: 5,
+ difficulty: 'Hard',
+ text: "How does HIV affect the immune system, and what does antiretroviral therapy (ART) achieve?",
+ options: ["HIV is a bacterial infection cured with a 2-week antibiotic course", "HIV cannot affect women who are not intravenous drug users", "HIV is a virus that attacks CD4 T-cells of the immune system; ART suppresses viral replication to undetectable levels, allowing people with HIV to live long healthy lives and reducing transmission risk to near zero", "ART is a vaccine preventing HIV infection in unexposed people"],
+ correct: 2,
+ explanation: "HIV (Human Immunodeficiency Virus) attacks CD4+ T-cells, the coordinators of adaptive immunity. Without treatment, the immune system deteriorates over years into AIDS. ART (antiretroviral therapy) suppresses the virus to undetectable levels. People on ART live near-normal lifespans and with an undetectable viral load, have effectively zero risk of sexually transmitting the virus (U=U)."
+ },
+ {
+ module: 5,
+ difficulty: 'Hard',
+ text: "What is the distinction between communicable and non-communicable diseases (NCDs), and why are NCDs a growing concern in Nigeria?",
+ options: ["Non-communicable diseases are always more serious than communicable diseases", "Communicable diseases only occur in poor countries; NCDs only occur in wealthy countries", "NCDs are rare in Nigeria and communicable diseases are being rapidly eliminated", "Communicable diseases (malaria, TB, typhoid) spread person to person or via vectors; NCDs (diabetes, hypertension, cancer) arise from genetic, lifestyle, or environmental factors and cannot be transmitted — NCDs are the fastest-growing health challenge in Nigeria"],
+ correct: 3,
+ explanation: "Nigeria faces a double burden: high rates of communicable diseases (malaria, TB, cholera) AND rapidly rising NCDs. Urbanisation, processed food diets, physical inactivity, and tobacco/alcohol use are driving Nigeria's NCD epidemic. Hypertension affects approximately 38% of Nigerian adults; many are undiagnosed. NCDs now account for a growing share of mortality and healthcare costs."
  }
  ]
 };

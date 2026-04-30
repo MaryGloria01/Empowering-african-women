@@ -188,9 +188,9 @@
 <!-- QUIZ HERO -->
 <div class="quiz-hero"><div class="breadcrumb"><a href="course-mechanic">Female Mechanic Incubator</a> › Final Assessment</div>
  <h1>Final Assessment</h1>
- <p>Test your knowledge from all 4 modules. Score 7/10 (70%) or above to earn your official EAW Certificate.</p>
- <div class="quiz-meta"><span>10 Questions</span>
- <span>~10 minutes</span>
+ <p>Test your knowledge from all 4 modules. Score 14/20 (70%) or above to earn your official EAW Certificate.</p>
+ <div class="quiz-meta"><span>20 Questions</span>
+ <span>~20 minutes</span>
  <span>Pass mark: 70%</span>
  <span>Unlimited retakes</span>
  </div>
@@ -202,10 +202,10 @@
  <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
  <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 4 modules: Kitchen Essentials, AutoCare, Fire Safety, and Skills in Practice. Read each question carefully before answering.</p>
  <div style="background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;"><div style="font-weight:700;margin-bottom:10px;color:var(--blue);">Before you start:</div>
- <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 10 questions<br>
+ <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 20 questions<br>
  ✓ Each question has one correct answer<br>
  ✓ You'll see explanations after each answer<br>
- ✓ Score 7+ to unlock your certificate<br>
+ ✓ Score 14+ to unlock your certificate<br>
  ✓ You can retake as many times as needed
  </div>
  </div>
@@ -294,12 +294,12 @@ const QUIZ = {
  module: 1,
  text: "What is the primary reason EAW partnered with DT Autocafe Ltd for the Female Mechanic Incubator programme?",
  options: [
- "To sell car parts to EAW students",
  "To provide hands-on auto mechanics training and real workshop experience for women",
+ "To sell car parts to EAW students",
  "To offer free car repairs to EAW staff",
  "To produce an advertisement for DT Autocafe"
  ],
- correct: 1,
+ correct: 0,
  explanation: "DT Autocafe Ltd, located at Km 22 LEKKI, is EAW's founding partner for this programme, providing practical workshop training, mentorship, and internship opportunities for female mechanics."
  },
  // Module 2: AutoCare 101
@@ -333,23 +333,23 @@ const QUIZ = {
  text: "Which of the following is the MOST common cause of car fires according to Module 3?",
  options: [
  "Tyres overheating from driving",
- "Electrical faults, faulty wiring and short circuits",
  "Air conditioning failure",
- "Sunlight heating the dashboard"
+ "Sunlight heating the dashboard",
+ "Electrical faults, faulty wiring and short circuits"
  ],
- correct: 1,
+ correct: 3,
  explanation: "Electrical faults (faulty wiring, short circuits, and damaged insulation) are the most common cause of car fires. Regular electrical system inspections are Prevention Method #1."
  },
  {
  module: 3,
  text: "If your car catches fire while driving, what is the FIRST thing you should do?",
  options: [
+ "Pull over safely, turn off the engine, get everyone out, and move at least 30 metres away from the vehicle before calling emergency services",
  "Open the bonnet immediately to check the engine",
  "Continue driving to find the nearest mechanic",
- "Pull over safely, turn off the engine, get everyone out, and move away from the vehicle",
  "Call a friend for advice before doing anything"
  ],
- correct: 2,
+ correct: 0,
  explanation: "Safety first: pull over, switch off the engine (cuts fuel flow), evacuate all passengers, move at least 30 metres away, then call emergency services. Never open the bonnet, it feeds oxygen to the fire."
  },
  {
@@ -357,11 +357,11 @@ const QUIZ = {
  text: "Which of these is Prevention Method #2 for car fires as taught in Module 3?",
  options: [
  "Checking tyre pressure every week",
+ "Regular fuel system and hose checks for leaks — cracked hoses and loose connections near hot engine parts must be replaced immediately",
  "Regular electrical system inspection by a certified mechanic",
- "Regular fuel system and hose checks for leaks",
  "Keeping the car clean and wax-polished"
  ],
- correct: 2,
+ correct: 1,
  explanation: "Prevention Method #2 is regular fuel system and hose checks. Fuel leaks near hot engine parts are extremely dangerous. Cracked hoses and loose connections should be replaced immediately."
  },
  // Module 4: Skills in Practice
@@ -382,23 +382,23 @@ const QUIZ = {
  text: "According to Module 4, what is the approximate cost to register a sole proprietor business with the CAC in Nigeria?",
  options: [
  "₦500 – ₦1,000",
- "₦10,000 – ₦25,000",
  "₦100,000 – ₦200,000",
- "₦1,000,000 or more"
+ "₦1,000,000 or more",
+ "₦10,000 – ₦25,000"
  ],
- correct: 1,
+ correct: 3,
  explanation: "CAC (Corporate Affairs Commission) sole proprietor registration typically costs ₦10,000–₦25,000. This is an affordable and important step to legitimise your business from day one."
  },
  {
  module: 4,
  text: "EAW is registered in Nigeria as:",
  options: [
+ "DBTWTEi, Digital Business Tutelage for Women Empowerment Initiative, Incorporated Trustees",
  "A private limited company (Ltd)",
  "A public listed company",
- "DBTWTEi, Digital Business Tutelage for Women Empowerment Initiative, Incorporated Trustees",
  "A government agency under the Ministry of Women Affairs"
  ],
- correct: 2,
+ correct: 0,
  explanation: "EAW is officially registered as DBTWTEi, Digital Business Tutelage for Women Empowerment Initiative, as Incorporated Trustees in Nigeria. This registration allows EAW to access government grants and operate officially."
  },
  {
@@ -406,12 +406,133 @@ const QUIZ = {
  text: "What is the BEST FREE marketing tool for a new female mechanic starting her business, according to Module 4?",
  options: [
  "Expensive newspaper advertising",
+ "WhatsApp Business profile — set up a professional profile, showcase your work with photos, offer free first checks to build trust, and ask satisfied customers for referrals",
  "Hiring a marketing agency immediately",
- "WhatsApp Business profile, offer free first checks and ask for referrals",
  "Waiting for customers to find you naturally"
  ],
- correct: 2,
+ correct: 1,
  explanation: "WhatsApp Business is free, widely used in Nigeria, and highly effective for local service businesses. Combined with free first checks and asking satisfied clients for referrals, it can rapidly build your client base."
+ },
+ // Q11-Q20: Advanced mechanics and business knowledge
+ {
+ module: 2,
+ text: "What does an engine oil viscosity rating like '5W-30' mean?",
+ options: [
+ "The colour of the oil",
+ "The brand and origin country of the oil",
+ "The oil's resistance to flow — the first number (5W) is cold-weather viscosity, the second (30) is operating temperature viscosity; using the wrong grade can reduce engine protection",
+ "The number of kilometres the oil lasts before needing replacement"
+ ],
+ correct: 2,
+ explanation: "Viscosity measures how easily oil flows. '5W' means the oil flows well in cold weather (W = winter). '30' is the viscosity at engine operating temperature. The correct grade balances protection at startup (cold) and under load (hot). Always use the grade specified in the owner's manual — using too thin an oil can cause wear, too thick can impede cold starts."
+ },
+ {
+ module: 2,
+ text: "What is an OBD-II (On-Board Diagnostics) scanner used for?",
+ options: [
+ "To measure tyre pressure on modern vehicles",
+ "To check the level of brake fluid in the reservoir",
+ "To test battery charge level before jump-starting",
+ "To read fault codes stored by the car's computer when a warning light appears — the code identifies which system has a fault, allowing targeted diagnosis without removing components"
+ ],
+ correct: 3,
+ explanation: "All petrol cars made after 2001 and diesels after 2004 have an OBD-II port (usually under the dashboard). When a warning light comes on, a scanner reads the stored Diagnostic Trouble Codes (DTCs). A mechanic with an OBD-II scanner can identify the fault in minutes rather than guessing. This tool is essential for any professional auto technician."
+ },
+ {
+ module: 2,
+ text: "What does a car's ABS (Anti-lock Braking System) do?",
+ options: [
+ "ABS prevents the wheels from locking up during emergency braking, allowing the driver to maintain steering control while stopping — without ABS, locked wheels cause the car to slide uncontrollably",
+ "ABS increases brake pad temperature for faster stopping",
+ "ABS replaces the need for brake fluid in modern vehicles",
+ "ABS is only fitted to four-wheel drive vehicles"
+ ],
+ correct: 0,
+ explanation: "When you brake hard without ABS, the wheels can lock and the car skids in a straight line regardless of steering input. ABS automatically pulses brake pressure (up to 15 times per second) to keep wheels rotating, maintaining directional control. The driver feels a vibration in the brake pedal — this is normal. ABS can reduce stopping distances significantly on wet or loose surfaces."
+ },
+ {
+ module: 2,
+ text: "What is the correct way to jump-start a car with a flat battery?",
+ options: [
+ "Connect negative terminal of dead battery to positive terminal of good battery first",
+ "Connect positive to positive first, then negative to negative; start the good car, then start the dead car; remove cables in reverse order (negative first) — connecting in the wrong order can damage the electrical systems or cause sparks",
+ "Connect both batteries directly terminal-to-terminal simultaneously",
+ "Always replace a flat battery immediately; jump-starting causes permanent damage"
+ ],
+ correct: 1,
+ explanation: "Jump-start sequence: Red cable (positive): dead+ to good+. Black cable (negative): good− to unpainted metal on dead car (NOT battery terminal, avoids spark near hydrogen gas). Start the good car, then the dead car. Remove in reverse. Connecting in wrong order risks shorting the electrical system or causing a spark near the battery — which can ignite hydrogen gas."
+ },
+ {
+ module: 2,
+ text: "What causes a car to overheat, and what should you do immediately if it happens?",
+ options: [
+ "Overheating is caused only by driving on hot days; open all windows and continue driving",
+ "Overheating means the oil needs changing immediately",
+ "Overheating is commonly caused by low coolant, a failed thermostat, or a faulty radiator fan; if the temperature gauge enters the red zone, pull over safely, turn off the engine, and let it cool completely before adding coolant — never open a hot radiator cap",
+ "Overheating is normal in Nigerian traffic and can be ignored as long as the car keeps moving"
+ ],
+ correct: 2,
+ explanation: "Engine overheating causes catastrophic damage — warped cylinder heads, blown head gaskets, seized pistons — requiring thousands of naira to repair. The moment the temperature gauge enters the red, stop the car and switch off the engine. Never open the radiator cap while hot (pressurised, scalding steam). Wait until completely cool, then check and refill coolant to the correct level."
+ },
+ {
+ module: 2,
+ text: "What is the purpose of the timing belt/chain in an engine?",
+ options: [
+ "To connect the steering wheel to the front axle",
+ "To drive the alternator that charges the car battery",
+ "To control fuel injection timing into the cylinders",
+ "To synchronise the rotation of the crankshaft and camshaft so the engine's valves open and close at exactly the right time — a broken timing belt causes catastrophic engine damage and is one of the most expensive repairs if ignored"
+ ],
+ correct: 3,
+ explanation: "The timing belt/chain is the most critical maintenance item in most engines. It ensures valves open at the precise moment in the combustion cycle. When it fails, pistons and valves collide — destroying the engine. Timing belt replacement intervals are typically 60,000–100,000km. This is a high-value service that builds trust with customers."
+ },
+ {
+ module: 2,
+ text: "What are the warning signs that brake pads need replacing?",
+ options: [
+ "A high-pitched squealing or grinding noise when braking, increased stopping distance, or the brake pedal feeling soft or spongy — worn brake pads are one of the most critical safety issues and must be addressed immediately",
+ "Brake pads only need replacing when the brake warning light comes on",
+ "The steering wheel shaking at high speeds is the main sign of worn brake pads",
+ "Brake pads last the lifetime of the vehicle and never need replacing"
+ ],
+ correct: 0,
+ explanation: "Most brake pads have a built-in wear indicator that creates a high-pitched squeal when they reach minimum thickness. Ignoring this leads to metal-on-metal grinding, which damages the more expensive brake disc. Soft/spongy pedal indicates air or brake fluid leakage in the hydraulic system — a brake failure risk that requires immediate attention."
+ },
+ {
+ module: 2,
+ text: "What does a car's alternator do, and what happens when it fails?",
+ options: [
+ "The alternator stores electricity in the battery for later use",
+ "The alternator converts mechanical energy from the running engine into electricity to power all electrical systems and recharge the battery; when it fails, the battery drains and the car eventually stops even if the battery is new",
+ "The alternator only powers the headlights and radio",
+ "A failed alternator causes the engine to overheat immediately"
+ ],
+ correct: 1,
+ explanation: "The alternator is driven by a belt from the engine crankshaft. It generates AC electricity, which the rectifier converts to DC. Warning signs of alternator failure: battery warning light, dim headlights at idle, electrical systems flickering. A car with a dead alternator will run until the battery is depleted — typically 30–60 minutes. Diagnosing alternator vs battery issues is a core mechanic skill."
+ },
+ {
+ module: 2,
+ text: "What is wheel alignment and why does it matter?",
+ options: [
+ "Wheel alignment is adjusting tyre pressure on all four wheels simultaneously",
+ "Wheel alignment is a cosmetic adjustment that only affects how the car looks",
+ "Wheel alignment ensures all four wheels are angled correctly relative to each other and the road — misaligned wheels cause uneven tyre wear, pulling to one side while driving, poor fuel efficiency, and reduced handling safety",
+ "Wheel alignment is only necessary after a car accident, not as routine maintenance"
+ ],
+ correct: 2,
+ explanation: "Wheel alignment (specifically camber, toe, and caster angles) ensures tyres contact the road optimally. Misalignment can be caused by hitting potholes, kerbs, or worn suspension components. Signs: car pulls left or right, uneven tyre wear (worn on one edge). Regular alignment checks extend tyre life significantly and improve fuel economy — a tangible saving for customers."
+ },
+ {
+ module: 2,
+ text: "What is the difference between a petrol and a diesel engine, and why does it matter for maintenance?",
+ options: [
+ "Diesel engines require more frequent oil changes than petrol engines of the same size",
+ "Petrol engines are always more fuel-efficient than diesel engines in Nigerian driving conditions",
+ "Diesel and petrol engines have identical maintenance requirements",
+ "Diesel engines use compression ignition (no spark plugs) and require diesel fuel, diesel-specific oil, and fuel filter maintenance; petrol engines use spark ignition and require petrol — mixing fuel types causes immediate and severe engine damage"
+ ],
+ correct: 3,
+ explanation: "Diesel engines compress air until it gets hot enough to ignite fuel (compression ignition) — no spark plugs needed, but glow plugs help in cold starts. Diesel engines need diesel engine oil (different formulation), diesel fuel filters replaced more frequently, and injector maintenance. Petrol engines have spark plugs that need periodic replacement. Knowing the difference is essential before performing any maintenance or service."
  }
  ]
 };

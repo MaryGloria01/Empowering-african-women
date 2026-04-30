@@ -164,14 +164,14 @@
 <div class="quiz-hero"><div style="font-size:56px;margin-bottom:12px;"></div>
  <h1>Baking & Cooking Essentials, Final Assessment</h1>
  <p>Test your knowledge of baking techniques, Nigerian recipes, nutrition, food safety, and culinary skills.</p>
- <div class="quiz-meta"><span>10 Questions</span><span>Pass Mark: 7/10</span><span>Unlimited Retakes</span><span>✓ Certificate on Pass</span></div>
+ <div class="quiz-meta"><span>20 Questions</span><span>Pass Mark: 14/20</span><span>Unlimited Retakes</span><span>✓ Certificate on Pass</span></div>
 </div>
 
 <div class="quiz-wrap"><div id="startScreen" style="text-align:center;padding:40px 0;"><div style="font-size:72px;margin-bottom:20px;"></div>
  <h2 style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;margin-bottom:12px;">Ready to take the quiz?</h2>
  <p style="color:var(--text-mid);max-width:500px;margin:0 auto 28px;">This assessment covers all 4 modules: Introduction to Cooking & Baking, Baking Fundamentals, Nigerian Recipes & Techniques, and Nutrition, Health & Food Safety.</p>
  <div style="background:#fffbf0;border:1px solid #f9ab0044;border-radius:16px;padding:20px 24px;max-width:460px;margin:0 auto 28px;text-align:left;"><div style="font-weight:700;margin-bottom:10px;color:#8b4513;">Before you start:</div>
- <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 10 questions<br>✓ One correct answer per question<br>✓ Explanations shown after each answer<br>✓ Score 7+ to unlock your certificate<br>✓ Unlimited retakes</div>
+ <div style="font-size:14px;color:var(--text-mid);line-height:2;">✓ Answer all 20 questions<br>✓ One correct answer per question<br>✓ Explanations shown after each answer<br>✓ Score 14+ to unlock your certificate<br>✓ Unlimited retakes</div>
  </div>
  <button onclick="startQuiz()" class="btn btn-gold btn-lg">Start Assessment →</button>
  </div>
@@ -235,8 +235,8 @@ const QUIZ = {
  {
  module:1,
  text:"What is the correct order of steps when preparing ingredients before baking a cake?",
- options:["Mix everything together at once","Read the recipe, gather and measure all ingredients, then begin mixing","Start baking first, then measure ingredients as needed","Add ingredients directly from their containers without measuring"],
- correct:1,
+ options:["Read the recipe, gather and measure all ingredients, then begin mixing","Mix everything together at once","Start baking first, then measure ingredients as needed","Add ingredients directly from their containers without measuring"],
+ correct:0,
  explanation:"Proper preparation (called 'mise en place') means reading the full recipe first, then measuring and gathering all ingredients before you begin. This prevents mistakes like forgetting an ingredient, adding too much, or discovering mid-bake that you've run out of something. Accurate measuring is especially important in baking, where proportions affect texture and rise."
  },
  {
@@ -249,22 +249,22 @@ const QUIZ = {
  {
  module:2,
  text:"What does 'folding' mean in baking, and why is it used?",
- options:["Folding means baking the batter in a folded pan for an even shape","Folding is a gentle mixing technique used to combine delicate ingredients, like whipped cream or egg whites, without losing the air beaten into them","Folding means doubling the recipe to make more servings","Folding is how you layer cake tiers on top of each other"],
- correct:1,
+ options:["Folding means baking the batter in a folded pan for an even shape","Folding means doubling the recipe to make more servings","Folding is a gentle mixing technique used to combine delicate ingredients, like whipped cream or egg whites, without losing the air beaten into them","Folding is how you layer cake tiers on top of each other"],
+ correct:2,
  explanation:"Folding uses a large spoon or spatula in a gentle cutting-and-turning motion to combine ingredients while preserving air. It's used when mixing stiff flour into whipped egg whites, or incorporating whipped cream into mousses. Vigorous stirring would collapse the air bubbles, resulting in a flat, heavy cake instead of a light, airy one."
  },
  {
  module:2,
  text:"What is the role of baking powder in a cake recipe?",
- options:["It adds sweetness to the batter","It is a leavening agent that produces carbon dioxide gas when mixed with liquid and heat, causing the cake to rise and become light and fluffy","It prevents the cake from sticking to the pan","It adds a brown colour to the crust of the cake"],
- correct:1,
+ options:["It adds sweetness to the batter","It prevents the cake from sticking to the pan","It adds a brown colour to the crust of the cake","It is a leavening agent that produces carbon dioxide gas when mixed with liquid and heat, causing the cake to rise and become light and fluffy"],
+ correct:3,
  explanation:"Baking powder is a chemical leavening agent containing baking soda, a dry acid (like cream of tartar), and starch. When it gets wet and hot, it releases CO₂ gas bubbles that get trapped in the batter, causing it to expand and rise. Too little baking powder gives a dense, flat cake; too much can cause the cake to rise rapidly and then collapse."
  },
  {
  module:2,
  text:"Why should you NOT open the oven door during the first two-thirds of a cake's baking time?",
- options:["Opening the door wastes electricity","Opening the door allows cold air in, which causes the temperature to drop suddenly, this can make the cake sink in the middle before it has set","Opening the door makes the cake brown too quickly","Opening the door makes the cake take longer to cool down"],
- correct:1,
+ options:["Opening the door allows cold air in, which causes the temperature to drop suddenly, this can make the cake sink in the middle before it has set","Opening the door wastes electricity","Opening the door makes the cake brown too quickly","Opening the door makes the cake take longer to cool down"],
+ correct:0,
  explanation:"A cake's rise depends on trapped gas bubbles and steam expanding inside the batter. While baking, the proteins in the flour and eggs are setting (coagulating) to give the cake its structure. If you open the door early, the sudden rush of cold air drops the oven temperature. The delicate, not-yet-set structure can't support itself and collapses, leaving a sunken centre."
  },
  {
@@ -277,22 +277,22 @@ const QUIZ = {
  {
  module:3,
  text:"When making a Nigerian Carrot Cake, what is the main function of grated carrots in the recipe?",
- options:["Carrots are added only for decoration on top","Grated carrots add natural moisture, sweetness, and a tender texture to the cake, they also add fibre and nutrients, making it healthier than plain cake","Carrots make the cake rise higher","Carrots replace flour completely in the recipe"],
- correct:1,
+ options:["Carrots are added only for decoration on top","Carrots make the cake rise higher","Grated carrots add natural moisture, sweetness, and a tender texture to the cake, they also add fibre and nutrients, making it healthier than plain cake","Carrots replace flour completely in the recipe"],
+ correct:2,
  explanation:"Raw grated carrots release moisture as the cake bakes, keeping it dense, moist, and tender even when cooled, carrot cakes stay fresh longer because of this. The natural sugars in carrots add sweetness without extra sugar. Carrots also provide beta-carotene (vitamin A), fibre, and give the cake its characteristic orange flecks. The oil in the recipe (rather than butter) also contributes to the moist texture."
  },
  {
  module:4,
  text:"What is the '2-hour rule' in food safety?",
- options:["All food must be cooked for at least 2 hours to be safe","Cooked food should not be left at room temperature for more than 2 hours, after that, bacteria multiply to dangerous levels and the food should be discarded","You should eat your meal within 2 hours of waking up","Food can be safely reheated up to 2 times before it must be thrown away"],
- correct:1,
+ options:["All food must be cooked for at least 2 hours to be safe","You should eat your meal within 2 hours of waking up","Food can be safely reheated up to 2 times before it must be thrown away","Cooked food should not be left at room temperature for more than 2 hours, after that, bacteria multiply to dangerous levels and the food should be discarded"],
+ correct:3,
  explanation:"The 'danger zone' for bacterial growth is 5°C to 60°C (41°F to 140°F). At room temperature, bacteria like Salmonella and Staphylococcus aureus double roughly every 20 minutes. After 2 hours in this zone, food may contain enough bacteria to cause serious food poisoning. Refrigerate or freeze leftovers within 2 hours (1 hour if the temperature is above 32°C / 90°F)."
  },
  {
  module:4,
  text:"Which of the following is the healthiest substitution for regular white sugar when baking?",
- options:["More butter to add sweetness","Honey, dates paste, or ripe banana, which add natural sweetness along with some nutrients and fibre, and have a lower glycaemic impact than refined white sugar","White sugar with added colouring","Artificial sweeteners in the same quantity as sugar"],
- correct:1,
+ options:["Honey, dates paste, or ripe banana, which add natural sweetness along with some nutrients and fibre, and have a lower glycaemic impact than refined white sugar","More butter to add sweetness","White sugar with added colouring","Artificial sweeteners in the same quantity as sugar"],
+ correct:0,
  explanation:"Natural sweeteners like honey, Medjool dates (blended into paste), or mashed ripe bananas provide sweetness while contributing vitamins, minerals, antioxidants, and fibre that refined white sugar lacks. They also have a lower glycaemic index, meaning they cause a slower rise in blood sugar. When substituting honey for sugar, use about 75% of the amount and reduce other liquids slightly, as honey adds moisture."
  },
  {
@@ -301,6 +301,76 @@ const QUIZ = {
  options:["The cake is done when it looks golden on top, no testing needed","A sponge cake is fully baked at about 96–98°C internally. Without a thermometer, insert a skewer or toothpick into the centre, if it comes out clean with no wet batter, the cake is done. The edges will also pull away from the pan slightly","Leave the cake in for exactly 30 minutes regardless of size","Press the top, if it feels hot, it is done"],
  correct:1,
  explanation:"A clean skewer test is the most reliable home method. Insert a wooden skewer or toothpick into the thickest part of the cake (the centre). If it comes out clean or with only dry crumbs, the cake is done. Wet batter on the skewer means it needs more time. Additional signs of doneness: the cake springs back when gently pressed in the centre, the edges pull away from the tin slightly, and the top is evenly golden."
+ },
+ {
+ module:3,
+ text:"What is the Maillard reaction in cooking?",
+ options:["A process where starch breaks down into simple sugars during baking","The process by which batter rises when steam is trapped inside","The chemical reaction between amino acids and reducing sugars that produces the brown colour, crust, and complex savoury-sweet flavour when food is cooked at high heat","A French technique for layering butter into pastry dough"],
+ correct:2,
+ explanation:"The Maillard reaction produces the golden crust on bread, the sear on grilled meat, the colour on toast, and the exterior of fried snacks. It requires temperatures above about 140°C and is distinct from caramelisation (which only involves sugars). Without the Maillard reaction, baked goods are pale and taste flat."
+ },
+ {
+ module:2,
+ text:"What does 'blind baking' a pastry shell mean?",
+ options:["Baking a pie with the filling but without a top crust","Baking a sponge cake without checking the oven","Baking at a very high temperature to shorten cook time","Pre-baking an empty pastry shell weighted with baking beads or dried beans to set the crust before adding a wet filling that would otherwise make the base soggy"],
+ correct:3,
+ explanation:"Blind baking prevents a soggy base. The weights keep the pastry flat and stop it puffing up or shrinking. Once the shell is partially set, the weights are removed and baking continues briefly to finish the base. It is essential for custard tarts, quiches, and lemon tarts."
+ },
+ {
+ module:3,
+ text:"In Nigerian chin-chin, what is the primary role of eggs in the recipe?",
+ options:["Eggs bind the ingredients together, add richness, and contribute to the dough's structure and the final golden crunch","Eggs make the chin-chin puff up and become airy like puff-puff","Eggs are added only for yellow colour","Eggs prevent hot oil from splattering during frying"],
+ correct:0,
+ explanation:"Eggs act as a binder in chin-chin dough, holding the flour, sugar, and butter together into a workable dough. The fat from the yolk adds richness and contributes to a crisp texture after frying. The protein in egg whites helps the dough hold its shape during cutting and frying."
+ },
+ {
+ module:2,
+ text:"What happens when you over-mix cake batter after adding flour?",
+ options:["The batter becomes sweeter from releasing more sugar","Gluten develops excessively, making the cake tough, dense, and chewy instead of tender and light","The cake bakes faster due to increased aeration","The leavening agent deactivates and the cake goes flat"],
+ correct:1,
+ explanation:"Flour contains proteins (glutenin and gliadin) that form gluten when hydrated and agitated. In bread, extensive gluten is desirable for chewiness. In cakes, minimal gluten is needed for tenderness. Over-mixing after adding flour develops long gluten strands, producing a cake with a tight, rubbery texture instead of a soft, delicate crumb."
+ },
+ {
+ module:3,
+ text:"Why do most Nigerian puff-puff recipes require warm water when activating yeast?",
+ options:["Cold water creates a crunchier exterior on the puff-puff","Hot water above 60°C produces more bubbles and a faster rise","Yeast is a living organism activated best in warm water (37–43°C); hot water kills the yeast cells, and cold water slows activation, resulting in flat, dense puff-puff","Warm water makes the batter easier to scoop into the oil"],
+ correct:2,
+ explanation:"Yeast cells (Saccharomyces cerevisiae) are living fungi. Warm water around body temperature activates the enzymes that produce CO₂, causing the batter to rise. Water that is too hot denatures the yeast proteins, killing the cells completely. Cold water does not kill yeast but dramatically slows activation, so the batter takes far longer to rise or may not rise enough."
+ },
+ {
+ module:4,
+ text:"What is the safe internal temperature chicken must reach, and why is visual checking unreliable?",
+ options:["55°C — chicken is safe once the pink colour disappears","65°C — sufficient to kill surface bacteria only","70°C — the standard for red meat, also applies to poultry","74°C (165°F) throughout, measured at the thickest part with a probe thermometer — colour and juice clarity are unreliable indicators because pigment changes can occur before all bacteria are destroyed"],
+ correct:3,
+ explanation:"Salmonella and Campylobacter can survive at temperatures below 74°C. The pink colour in chicken can disappear before the centre reaches a safe temperature. Conversely, some chicken remains pink even when fully safe. A probe thermometer inserted into the thickest part of the breast or thigh is the only reliable method."
+ },
+ {
+ module:4,
+ text:"In baking, why is salt added to sweet recipes like cakes and cookies?",
+ options:["Salt enhances flavour by suppressing bitterness, amplifying sweetness, and balancing overall taste, and strengthens the gluten structure for better texture","Salt slows down the leavening reaction, making the bake more controlled","Salt reduces the sweetness of very sugary batters to prevent them being cloying","Salt is only added for preservation; it has no effect on flavour in sweet recipes"],
+ correct:0,
+ explanation:"Salt is a flavour enhancer, not just a savoury seasoning. In cakes and cookies, it suppresses bitterness (from cocoa, baking powder, or flour), highlights sweetness, and adds complexity. Without salt, sweet baked goods taste flat and one-dimensional. Salt also slightly strengthens gluten structure, giving baked goods better hold."
+ },
+ {
+ module:3,
+ text:"What is the difference between simmering and boiling when cooking Nigerian soups?",
+ options:["They are the same process; the terms are interchangeable","Simmering (85–95°C, gentle bubbles) develops flavour slowly and keeps proteins tender; boiling (100°C, vigorous bubbles) is faster but can toughen proteins and break down delicate ingredients","Boiling always produces deeper, richer flavour than simmering","Simmering requires significantly more water than boiling"],
+ correct:1,
+ explanation:"Most Nigerian soups and stews benefit from long, slow simmering. Simmering gently extracts flavour from bones and aromatics, allows spices to bloom, and keeps meat tender by slowly converting collagen to gelatin. Hard boiling fish or tender vegetables makes them mushy and can make tough meat even tougher."
+ },
+ {
+ module:3,
+ text:"In Nigerian Suya, what is the primary role of groundnut (peanut) powder in the yaji spice mix?",
+ options:["It serves only as a filler to stretch the spice mix further","It acts as a preservative extending shelf life","Groundnut powder binds the spice coating to the meat, adds nutty flavour, and creates the characteristic dry, toasted crust when grilled over high heat","Groundnut powder tenderises the meat before grilling"],
+ correct:2,
+ explanation:"The fat content in groundnut powder helps spices adhere to the meat surface. As the suya grills at high heat, the ground peanuts toast and form the distinctive dry, nutty crust unique to suya. Without it, spices fall off during grilling and the characteristic texture and flavour are lost."
+ },
+ {
+ module:4,
+ text:"What is the correct way to test if hot oil is ready for deep-frying Nigerian snacks like akara or puff-puff?",
+ options:["Pour all the food in at once and observe whether it sizzles","Wait until wisps of smoke appear, which signals the ideal frying temperature","Touch the surface briefly with a wet finger to check heat","Drop a small piece of batter or a wooden chopstick into the oil; steady small bubbles indicate 170–180°C, which is ideal — if the oil smokes it is too hot and is degrading, producing harmful compounds"],
+ correct:3,
+ explanation:"At 170–180°C the batter drop or wooden chopstick test shows active bubbling without smoke. Oil that is too cool produces greasy, oil-soaked results because the food absorbs oil instead of searing. Smoking oil is above 200°C, has started to break down chemically, and will burn the exterior before the interior cooks through."
  }
  ]
 };
