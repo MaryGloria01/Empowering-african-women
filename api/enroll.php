@@ -78,8 +78,7 @@ if ($method === 'POST') {
 // DELETE — unenroll from a course
 if ($method === 'DELETE') {
     verify_csrf();
-    $data = get_input();
-    $slug = trim($data['course'] ?? '');
+    $slug = trim($_GET['course'] ?? '');
     if (!$slug) {
         debug_log("enroll.php DELETE: missing course slug | user_id={$user['id']}");
         json_out(['error' => 'Course slug required.'], 400);

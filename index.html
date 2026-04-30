@@ -888,7 +888,7 @@ removeConfirm.addEventListener('click', () => {
  if (_idx >= 0) { _users[_idx].enrollments = user.enrollments; localStorage.setItem('eaw_users', JSON.stringify(_users)); }
  }
  _enrolledSlugs = _enrolledSlugs.filter(s => s !== _removePendingId);
- authFetch('api/enroll.php', {method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:_removePendingId})}).catch(function(){});
+ authFetch('api/enroll.php?course=' + encodeURIComponent(_removePendingId), {method:'DELETE'}).catch(function(){});
  if (_removePendingBtn) {
  _removePendingBtn.textContent = 'Start Learning';
  _removePendingBtn.className = 'btn btn-blue btn-sm';

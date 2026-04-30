@@ -676,10 +676,8 @@ async function unenrolCourse(courseId) {
  document.getElementById('coursesBadge').textContent = enrollments.length;
  // Await DB delete — rollback UI if it fails
  try {
- const delRes = await authFetch('api/enroll.php', {
- method: 'DELETE',
- headers: {'Content-Type': 'application/json'},
- body: JSON.stringify({course: courseId})
+ const delRes = await authFetch('api/enroll.php?course=' + encodeURIComponent(courseId), {
+ method: 'DELETE'
  });
  const delData = await delRes.json();
  if (!delData.success) throw new Error('Delete failed');
