@@ -97,7 +97,7 @@ if ($method === 'GET') {
             }
 
         case 'payments':
-            $filterStatus = valid_status($_GET['status'] ?? '');
+            $filterStatus = in_array($_GET['status'] ?? '', ['pending', 'confirmed', 'rejected'], true) ? $_GET['status'] : null;
             $sql = 'SELECT id, student_email AS studentEmail, student_name AS studentName, course_id AS courseId, course_title AS courseTitle, amount, depositor_name AS depositorName, pay_date AS payDate, pay_time AS payTime, ref_code AS `ref`, receipt_data AS receiptData, status, submitted_at AS submittedAt, confirmed_at AS confirmedAt FROM payments';
             if ($filterStatus) {
                 $stmt = $pdo->prepare($sql . ' WHERE status=? ORDER BY submitted_at DESC');
@@ -228,6 +228,9 @@ if ($method === 'POST') {
             $receiptData   = $data['receiptData'] ?? null;
             if (!$studentEmail || !$depositorName || !$payDate) {
                 json_out(['error' => 'Student email, depositor name, and payment date are required.'], 400);
+            }
+            if (!filter_var($studentEmail, FILTER_VALIDATE_EMAIL)) {
+                json_out(['error' => 'Invalid student email address.'], 400);
             }
             $stmt = $pdo->prepare('INSERT INTO payments (student_email, student_name, course_id, course_title, amount, depositor_name, pay_date, pay_time, ref_code, receipt_data, status, confirmed_at) VALUES (?,?,?,?,?,?,?,?,?,?,\'confirmed\',NOW())');
             $stmt->execute([$studentEmail, $studentName, $courseId, $courseTitle, $amount, $depositorName, $payDate, $payTime, $refCode, $receiptData]);

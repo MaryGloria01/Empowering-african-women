@@ -732,7 +732,9 @@ async function renderOverview() {
    pendingPaymentItems = allPays.filter(p => p.status === 'pending');
    recentPaymentItems = allPays.slice(0, 5);
   }
- } catch(e) {}
+ } catch(e) {
+  showToast('✗ Could not load overview data: ' + e.message);
+ }
 
  document.getElementById('overviewStats').innerHTML = `
  <div class="admin-stat"><div class="admin-stat-num" style="color:var(--red);">${dbStats.pending}</div><div class="admin-stat-lbl">Pending Tutors</div></div>
