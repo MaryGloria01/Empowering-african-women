@@ -200,7 +200,7 @@ window.eawSearch = function(query, resultsId) {
 
  el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:14px;">'
  + results.map(function(c) {
- var done = completedIds.has(c.id);
+ var done = completedIds.has(c.slug);
  return '<a href="' + c.link + '" class="dash-search-card" style="position:relative;">'
  + (done ? '<span style="position:absolute;top:8px;right:8px;background:#059669;color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;z-index:2;letter-spacing:.3px;">✓ Done</span>' : '')
  + '<div class="dash-search-thumb" style="background:' + c.bg + ';">'
