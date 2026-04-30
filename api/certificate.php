@@ -58,11 +58,16 @@ if ($method === 'POST') {
     debug_log("certificate.php POST: issuing cert | user_id={$user['id']} | course=$slug | title=$title | score=$score");
     $pdo = getDB();
 
-    // Already issued? Return existing cert_code
-    $stmt = $pdo->prepare('SELECT cert_code, issued_at FROM certificates WHERE user_id = ? AND course_slug = ?');
+    // Already issued? Return existing cert_code (backfill score if it was previously empty)
+    $stmt = $pdo->prepare('SELECT cert_code, issued_at, score FROM certificates WHERE user_id = ? AND course_slug = ?');
     $stmt->execute([$user['id'], $slug]);
     $existing = $stmt->fetch();
     if ($existing) {
+        if ($score && (!$existing['score'] || $existing['score'] === '')) {
+            $pdo->prepare('UPDATE certificates SET score = ? WHERE user_id = ? AND course_slug = ?')
+                ->execute([$score, $user['id'], $slug]);
+            debug_log("certificate.php POST: score backfilled | user_id={$user['id']} | course=$slug | score=$score");
+        }
         debug_log("certificate.php POST: cert already exists | user_id={$user['id']} | course=$slug | cert_code={$existing['cert_code']}");
         json_out([
             'success'   => true,
