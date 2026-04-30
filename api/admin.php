@@ -88,6 +88,14 @@ if ($method === 'GET') {
             }
             json_out(['success' => true, 'applications' => $stmt->fetchAll()]);
 
+        case 'badges':
+            $tutorPending   = $pdo->query("SELECT COUNT(*) FROM tutor_applications WHERE status='pending'")->fetchColumn();
+            $coursePending  = (int)0;
+            try { $coursePending = $pdo->query("SELECT COUNT(*) FROM course_submissions WHERE status='pending'")->fetchColumn(); } catch(PDOException $e) {}
+            $payPending     = (int)0;
+            try { $payPending = $pdo->query("SELECT COUNT(*) FROM payments WHERE status='pending'")->fetchColumn(); } catch(PDOException $e) {}
+            json_out(['success' => true, 'tutorPending' => (int)$tutorPending, 'coursePending' => (int)$coursePending, 'paymentPending' => (int)$payPending]);
+
         case 'course-submissions':
             try {
                 $stmt = $pdo->query('SELECT id, tutor_id, tutor_name, title, category, description, pricing, modules_count, status, submitted_at FROM course_submissions ORDER BY submitted_at DESC');

@@ -775,20 +775,13 @@ async function renderOverview() {
 
 async function refreshBadges() {
  try {
-  const [tutorRes, courseRes, payRes] = await Promise.all([
-   fetch('api/admin.php?action=tutor-applications&status=pending', { credentials: 'include' }),
-   fetch('api/admin.php?action=course-submissions', { credentials: 'include' }),
-   fetch('api/admin.php?action=payments&status=pending', { credentials: 'include' })
-  ]);
-  const td = await tutorRes.json();
-  if (td.success) document.getElementById('tutorBadge').textContent = (td.applications || []).length;
-  const cd = await courseRes.json();
-  if (cd.success) document.getElementById('courseBadge').textContent = (cd.submissions || []).filter(c => c.status === 'pending').length;
-  const pd = await payRes.json();
-  if (pd.success) {
-   const payBadge = document.getElementById('paymentBadge');
-   if (payBadge) payBadge.textContent = (pd.payments || []).length;
-  }
+  const res = await fetch('api/admin.php?action=badges', { credentials: 'include' });
+  const data = await res.json();
+  if (!data.success) return;
+  document.getElementById('tutorBadge').textContent = data.tutorPending;
+  document.getElementById('courseBadge').textContent = data.coursePending;
+  const payBadge = document.getElementById('paymentBadge');
+  if (payBadge) payBadge.textContent = data.paymentPending;
  } catch(e) {}
 }
 
@@ -820,24 +813,6 @@ document.addEventListener('DOMContentLoaded', async () => {
  document.getElementById('sidebarInitial').textContent = (user.firstName || 'A').charAt(0).toUpperCase();
  document.getElementById('adminEmailDisplay').textContent = user.email || 'N/A';
 
- // Clean start: wipe any demo/old data so admin starts at zero
- // Remove this block after going live (keep real data)
- const existingData = getAdminData();
- const hasRealData = existingData.tutorApplications.some(a => !a.id.startsWith('ta-')) ||
- existingData.courseSubmissions.some(c => !c.id.startsWith('cs-')) ||
- existingData.payments.some(p => !p.id.startsWith('pay-1') && !p.id.startsWith('pay-2') && !p.id.startsWith('pay-3'));
- 
- // If only demo data exists, wipe it clean 
- const isDemoOnly = existingData.tutorApplications.every(a => ['ta-1','ta-2','ta-3'].includes(a.id)) &&
- existingData.courseSubmissions.every(c => ['cs-1','cs-2'].includes(c.id)) &&
- existingData.payments.every(p => ['pay-1','pay-2','pay-3'].includes(p.id));
- 
- if (isDemoOnly || (existingData.tutorApplications.length === 0 && existingData.courseSubmissions.length === 0)) {
- const freshData = { tutorApplications: [], courseSubmissions: [], payments: [], students: [] };
- saveAdminData(freshData);
- }
-
- seedDemoData();
  renderOverview();
  refreshBadges();
 });
