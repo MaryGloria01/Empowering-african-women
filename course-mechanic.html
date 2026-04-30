@@ -599,6 +599,7 @@ function enrollCourse(courseId) {
  if (!user.enrollments.find(e => e.courseId === (courseId||COURSE_ID))) {
  user.enrollments.push({ courseId: courseId||COURSE_ID, progress: 0, enrolledAt: new Date().toISOString() });
  saveUser(user);
+ authFetch('api/enroll.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({course:courseId||COURSE_ID})}).catch(function(){});
  }
  updateEnrolBtn();
  const first = document.querySelector('.accordion-header');

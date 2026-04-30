@@ -469,32 +469,35 @@ async function rejectCourse(id) {
  } catch (e) { showToast('✗ Error: ' + e.message); }
 }
 
-function confirmPayment(id) {
- const d = getAdminData();
- const pay = d.payments.find(p => p.id === id);
- if (!pay) return;
- pay.status = 'confirmed';
- pay.confirmedAt = new Date().toISOString();
- saveAdminData(d);
-
- // Grant course access: store in a shared payments list keyed by email+courseId
- const key = 'eaw_paid_' + pay.courseId;
- const paid = JSON.parse(localStorage.getItem(key) || '[]');
- if (!paid.includes(pay.studentEmail)) { paid.push(pay.studentEmail); localStorage.setItem(key, JSON.stringify(paid)); }
-
- renderSection('payments', 'pending');
- refreshBadges();
- showToast('✓ Payment confirmed! ' + pay.studentName + ' now has access to ' + pay.courseTitle + '.');
+async function confirmPayment(id) {
+ try {
+  const res = await fetch('api/admin.php?action=confirm-payment', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrfToken },
+   credentials: 'include',
+   body: JSON.stringify({ id })
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Failed');
+  renderSection('payments', 'pending');
+  refreshBadges();
+  showToast('✓ Payment confirmed!');
+ } catch(e) { showToast('✗ Error: ' + e.message); }
 }
 
-function rejectPayment(id) {
- const d = getAdminData();
- const pay = d.payments.find(p => p.id === id);
- if (!pay) return;
- pay.status = 'rejected';
- saveAdminData(d);
- renderSection('payments', 'pending');
- showToast('✗ Payment rejected.');
+async function rejectPayment(id) {
+ try {
+  const res = await fetch('api/admin.php?action=reject-payment', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrfToken },
+   credentials: 'include',
+   body: JSON.stringify({ id })
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Failed');
+  renderSection('payments', 'pending');
+  showToast('✗ Payment rejected.');
+ } catch(e) { showToast('✗ Error: ' + e.message); }
 }
 
 let receiptDataUrl = null;
@@ -512,7 +515,7 @@ function handleReceiptUpload(input) {
  document.getElementById('receiptZone').style.borderColor = 'var(--green)';
 }
 
-function addManualPayment() {
+async function addManualPayment() {
  const email = document.getElementById('payStudentEmail').value.trim();
  const courseId = document.getElementById('payCourseId').value;
  const depositorName = document.getElementById('payDepositorName').value.trim();
@@ -522,48 +525,39 @@ function addManualPayment() {
  const amountInput = document.getElementById('payAmount').value.trim();
 
  if (!email || !depositorName || !payDate) {
- showToast('! Please fill in Student Email, Depositor Name, and Payment Date.');
- return;
+  showToast('! Please fill in Student Email, Depositor Name, and Payment Date.');
+  return;
  }
 
- const d = getAdminData();
  const courseTitles = { etiquette: 'Social & Business Etiquette', mechanic: 'Female Mechanic Incubator', baking: 'Baking & Cooking Essentials' };
- const defaultAmount = 'Free';
- const pay = {
- id: 'pay-' + Date.now(),
- studentEmail: email,
- studentName: email,
- courseId,
- courseTitle: courseTitles[courseId] || courseId,
- amount: amountInput || defaultAmount,
- depositorName,
- ref: ref || 'Manual',
- payDate,
- payTime: payTime || 'N/A',
- receiptData: receiptDataUrl,
- status: 'confirmed',
- confirmedAt: new Date().toISOString(),
- submittedAt: new Date().toISOString()
- };
- d.payments.push(pay);
- saveAdminData(d);
+ try {
+  const res = await fetch('api/admin.php?action=add-manual-payment', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrfToken },
+   credentials: 'include',
+   body: JSON.stringify({
+    studentEmail: email, studentName: email, courseId,
+    courseTitle: courseTitles[courseId] || courseId,
+    amount: amountInput || 'Free', depositorName,
+    ref: ref || 'Manual', payDate, payTime: payTime || 'N/A',
+    receiptData: receiptDataUrl
+   })
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Failed');
 
- // Grant access immediately
- const key = 'eaw_paid_' + courseId;
- const paid = JSON.parse(localStorage.getItem(key) || '[]');
- if (!paid.includes(email)) { paid.push(email); localStorage.setItem(key, JSON.stringify(paid)); }
+  // Reset form
+  ['payStudentEmail','payDepositorName','payRef','payDate','payTime','payAmount'].forEach(fid => {
+   const el = document.getElementById(fid); if (el) el.value = '';
+  });
+  document.getElementById('receiptFileName').textContent = '';
+  document.getElementById('receiptFile').value = '';
+  document.getElementById('receiptZone').style.borderColor = '';
+  receiptDataUrl = null;
 
- // Reset form
- ['payStudentEmail','payDepositorName','payRef','payDate','payTime','payAmount'].forEach(id => {
- const el = document.getElementById(id); if (el) el.value = '';
- });
- document.getElementById('receiptFileName').textContent = '';
- document.getElementById('receiptFile').value = '';
- document.getElementById('receiptZone').style.borderColor = '';
- receiptDataUrl = null;
-
- showToast('✓ Payment confirmed! ' + email + ' now has access to ' + courseTitles[courseId] + '.');
- renderSection('payments', 'confirmed');
+  showToast('✓ Payment confirmed! ' + email + ' now has access to ' + (courseTitles[courseId] || courseId) + '.');
+  renderSection('payments', 'confirmed');
+ } catch(e) { showToast('✗ Error: ' + e.message); }
 }
 
 // ── RENDER FUNCTIONS ──
@@ -657,26 +651,32 @@ async function renderCourses(filter) {
  }
 }
 
-function renderPayments(filter) {
- const d = getAdminData();
- let pays = d.payments;
- if (filter !== 'all') pays = pays.filter(p => p.status === filter);
- pays = pays.slice().reverse(); // newest first
+async function renderPayments(filter) {
  const c = document.getElementById('paymentsContainer');
- if (!pays.length) { c.innerHTML = `<div class="empty-admin"><div class="empty-icon"></div><p>No ${filter} payments yet.</p></div>`; return; }
- c.innerHTML = pays.map(pay => `
- <div class="approval-card ${pay.status === 'confirmed' ? 'approved' : pay.status === 'rejected' ? 'rejected' : 'pending'}"><div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffd700);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;"></div>
- <div class="av-info"><div class="av-name">${esc(pay.studentName)} <span class="status-badge status-${pay.status === 'confirmed' ? 'approved' : esc(pay.status)}">${esc(pay.status)}</span></div>
- <div class="av-meta">${esc(pay.studentEmail)} · Submitted: ${fmtDate(pay.submittedAt)}</div>
- <div style="font-size:13px;color:var(--text-mid);margin-top:4px;line-height:1.8;"><strong>Course:</strong> ${esc(pay.courseTitle)}<br>
- <strong>Amount:</strong> ${esc(pay.amount)}${pay.depositorName ? ' · <strong>Depositor:</strong> ' + esc(pay.depositorName) : ''}${pay.payDate ? ' · <strong>Date:</strong> ' + esc(pay.payDate) + (pay.payTime && pay.payTime !== 'N/A' ? ' ' + esc(pay.payTime) : '') : ''}${pay.ref ? ' · <strong>Ref:</strong> ' + esc(pay.ref) : ''}
- </div>
- ${pay.receiptData && !pay.receiptData.startsWith('[PDF') ? `<div style="margin-top:10px;"><img src="${esc(pay.receiptData)}" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--gray-200);cursor:pointer;" onclick="window.open(this.src)" title="Click to view full receipt"><div style="font-size:11px;color:var(--text-light);margin-top:3px;">Payment receipt</div></div>` : pay.receiptData ? `<div style="margin-top:8px;font-size:12px;color:var(--blue);">${esc(pay.receiptData)}</div>` : ''}
- ${pay.status === 'pending' ? `<div class="av-actions"><button class="btn-approve" onclick="confirmPayment('${esc(pay.id)}')">✓ Confirm Payment & Grant Access</button>
- <button class="btn-reject" onclick="rejectPayment('${esc(pay.id)}')">✗ Reject</button>
- </div>` : `<div style="margin-top:8px;font-size:12px;color:var(--text-light);">Processed: ${fmtDate(pay.confirmedAt)}</div>`}
- </div>
- </div>`).join('');
+ c.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-light);">Loading…</div>';
+ try {
+  const url = filter && filter !== 'all' ? 'api/admin.php?action=payments&status=' + encodeURIComponent(filter) : 'api/admin.php?action=payments';
+  const res = await fetch(url, { credentials: 'include' });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Failed to load');
+  const pays = data.payments || [];
+  if (!pays.length) { c.innerHTML = `<div class="empty-admin"><div class="empty-icon"></div><p>No ${esc(filter||'all')} payments yet.</p></div>`; return; }
+  c.innerHTML = pays.map(pay => `
+  <div class="approval-card ${pay.status === 'confirmed' ? 'approved' : pay.status === 'rejected' ? 'rejected' : 'pending'}"><div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffd700);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;"></div>
+  <div class="av-info"><div class="av-name">${esc(pay.studentName)} <span class="status-badge status-${pay.status === 'confirmed' ? 'approved' : esc(pay.status)}">${esc(pay.status)}</span></div>
+  <div class="av-meta">${esc(pay.studentEmail)} · Submitted: ${fmtDate(pay.submittedAt)}</div>
+  <div style="font-size:13px;color:var(--text-mid);margin-top:4px;line-height:1.8;"><strong>Course:</strong> ${esc(pay.courseTitle)}<br>
+  <strong>Amount:</strong> ${esc(pay.amount)}${pay.depositorName ? ' · <strong>Depositor:</strong> ' + esc(pay.depositorName) : ''}${pay.payDate ? ' · <strong>Date:</strong> ' + esc(pay.payDate) + (pay.payTime && pay.payTime !== 'N/A' ? ' ' + esc(pay.payTime) : '') : ''}${pay.ref ? ' · <strong>Ref:</strong> ' + esc(pay.ref) : ''}
+  </div>
+  ${pay.receiptData && !pay.receiptData.startsWith('[PDF') ? `<div style="margin-top:10px;"><img src="${esc(pay.receiptData)}" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--gray-200);cursor:pointer;" onclick="window.open(this.src)" title="Click to view full receipt"><div style="font-size:11px;color:var(--text-light);margin-top:3px;">Payment receipt</div></div>` : pay.receiptData ? `<div style="margin-top:8px;font-size:12px;color:var(--blue);">${esc(pay.receiptData)}</div>` : ''}
+  ${pay.status === 'pending' ? `<div class="av-actions"><button class="btn-approve" onclick="confirmPayment(${pay.id})">✓ Confirm Payment & Grant Access</button>
+  <button class="btn-reject" onclick="rejectPayment(${pay.id})">✗ Reject</button>
+  </div>` : `<div style="margin-top:8px;font-size:12px;color:var(--text-light);">Processed: ${fmtDate(pay.confirmedAt)}</div>`}
+  </div>
+  </div>`).join('');
+ } catch(e) {
+  c.innerHTML = `<div class="empty-admin"><div class="empty-icon">!</div><p>Could not load payments: ${esc(e.message)}</p></div>`;
+ }
 }
 
 async function renderStudents() {
@@ -704,26 +704,34 @@ async function renderStudents() {
 }
 
 async function renderOverview() {
- const d = getAdminData();
- const pendingPayments = d.payments.filter(p => p.status === 'pending').length;
- const confirmedPayments = d.payments.filter(p => p.status === 'confirmed').length;
-
- // Fetch live stats and course submissions from DB
  let dbStats = { students: '…', tutors: '…', pending: '…' };
  let courseSubmissions = [];
  let pendingCourses = 0;
+ let pendingPayments = 0;
+ let confirmedPayments = 0;
+ let pendingPaymentItems = [];
+ let recentPaymentItems = [];
  try {
- const [statsRes, subRes] = await Promise.all([
-  fetch('api/admin.php?action=stats', { credentials: 'include' }),
-  fetch('api/admin.php?action=course-submissions', { credentials: 'include' })
- ]);
- const sd = await statsRes.json();
- if (sd.success) dbStats = sd.stats;
- const cs = await subRes.json();
- if (cs.success) {
-  courseSubmissions = cs.submissions || [];
-  pendingCourses = courseSubmissions.filter(c => c.status === 'pending').length;
- }
+  const [statsRes, subRes, payRes] = await Promise.all([
+   fetch('api/admin.php?action=stats', { credentials: 'include' }),
+   fetch('api/admin.php?action=course-submissions', { credentials: 'include' }),
+   fetch('api/admin.php?action=payments', { credentials: 'include' })
+  ]);
+  const sd = await statsRes.json();
+  if (sd.success) dbStats = sd.stats;
+  const cs = await subRes.json();
+  if (cs.success) {
+   courseSubmissions = cs.submissions || [];
+   pendingCourses = courseSubmissions.filter(c => c.status === 'pending').length;
+  }
+  const pd = await payRes.json();
+  if (pd.success) {
+   const allPays = pd.payments || [];
+   pendingPayments = allPays.filter(p => p.status === 'pending').length;
+   confirmedPayments = allPays.filter(p => p.status === 'confirmed').length;
+   pendingPaymentItems = allPays.filter(p => p.status === 'pending');
+   recentPaymentItems = allPays.slice(0, 5);
+  }
  } catch(e) {}
 
  document.getElementById('overviewStats').innerHTML = `
@@ -736,28 +744,27 @@ async function renderOverview() {
  `;
 
  const pending = [
- ...courseSubmissions.filter(c => c.status === 'pending').map(c => ({ type: 'course', label: `Course submission: &quot;${esc(c.title)}&quot; by ${esc(c.tutor_name||'')}`, date: c.submitted_at, section: 'courses' })),
- ...d.payments.filter(p => p.status === 'pending').map(p => ({ type: 'payment', label: `Payment from ${esc(p.studentName)} for ${esc(p.courseTitle)}`, date: p.submittedAt, section: 'payments' })),
+  ...courseSubmissions.filter(c => c.status === 'pending').map(c => ({ type: 'course', label: `Course submission: &quot;${esc(c.title)}&quot; by ${esc(c.tutor_name||'')}`, date: c.submitted_at, section: 'courses' })),
+  ...pendingPaymentItems.map(p => ({ type: 'payment', label: `Payment from ${esc(p.studentName)} for ${esc(p.courseTitle)}`, date: p.submittedAt, section: 'payments' })),
  ].sort((a,b) => new Date(b.date) - new Date(a.date));
 
  const pEl = document.getElementById('pendingActions');
  if (!pending.length) {
- pEl.innerHTML = `<div style="background:var(--green-pale);border:1px solid var(--green);border-radius:var(--r-lg);padding:20px;text-align:center;color:var(--green);font-weight:700;">✓ All caught up! No pending actions.</div>`;
- return;
+  pEl.innerHTML = `<div style="background:var(--green-pale);border:1px solid var(--green);border-radius:var(--r-lg);padding:20px;text-align:center;color:var(--green);font-weight:700;">✓ All caught up! No pending actions.</div>`;
+ } else {
+  const icons = { tutor:'', course:'', payment:'' };
+  pEl.innerHTML = pending.map(p => `
+  <div style="background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:8px;cursor:pointer;" onclick="showSection('${p.section}')"><span style="font-size:22px;">${icons[p.type]}</span>
+  <div style="flex:1;font-size:14px;">${p.label}</div>
+  <div style="font-size:12px;color:var(--text-light);">${fmtDate(p.date)}</div>
+  <span style="color:var(--blue);font-size:12px;font-weight:700;">Review →</span>
+  </div>`).join('');
  }
- const icons = { tutor:'', course:'', payment:'' };
- pEl.innerHTML = pending.map(p => `
- <div style="background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-lg);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:8px;cursor:pointer;" onclick="showSection('${p.section}')"><span style="font-size:22px;">${icons[p.type]}</span>
- <div style="flex:1;font-size:14px;">${p.label}</div>
- <div style="font-size:12px;color:var(--text-light);">${fmtDate(p.date)}</div>
- <span style="color:var(--blue);font-size:12px;font-weight:700;">Review →</span>
- </div>`).join('');
 
  // Recent payments
  const rp = document.getElementById('recentPayments');
- const recPays = d.payments.slice(-5).reverse();
- if (!recPays.length) { rp.innerHTML = '<p style="color:var(--text-light);font-size:14px;">No payment records yet.</p>'; return; }
- rp.innerHTML = recPays.map(p => `
+ if (!recentPaymentItems.length) { rp.innerHTML = '<p style="color:var(--text-light);font-size:14px;">No payment records yet.</p>'; return; }
+ rp.innerHTML = recentPaymentItems.map(p => `
  <div style="display:flex;align-items:center;gap:12px;padding:10px;background:#fff;border:1px solid var(--gray-200);border-radius:var(--r-lg);margin-bottom:8px;"><span style="font-size:18px;"></span>
  <div style="flex:1;font-size:13px;"><strong>${esc(p.studentName)}</strong>, ${esc(p.courseTitle)}, ${esc(p.amount)}</div>
  <span class="status-badge status-${p.status === 'confirmed' ? 'approved' : esc(p.status)}">${esc(p.status)}</span>
@@ -765,13 +772,21 @@ async function renderOverview() {
 }
 
 async function refreshBadges() {
- const d = getAdminData();
- document.getElementById('tutorBadge').textContent = d.tutorApplications.filter(a => a.status === 'pending').length;
  try {
- const res = await fetch('api/admin.php?action=course-submissions', { credentials: 'include' });
- const data = await res.json();
- const pending = (data.submissions || []).filter(c => c.status === 'pending').length;
- document.getElementById('courseBadge').textContent = pending;
+  const [tutorRes, courseRes, payRes] = await Promise.all([
+   fetch('api/admin.php?action=tutor-applications&status=pending', { credentials: 'include' }),
+   fetch('api/admin.php?action=course-submissions', { credentials: 'include' }),
+   fetch('api/admin.php?action=payments&status=pending', { credentials: 'include' })
+  ]);
+  const td = await tutorRes.json();
+  if (td.success) document.getElementById('tutorBadge').textContent = (td.applications || []).length;
+  const cd = await courseRes.json();
+  if (cd.success) document.getElementById('courseBadge').textContent = (cd.submissions || []).filter(c => c.status === 'pending').length;
+  const pd = await payRes.json();
+  if (pd.success) {
+   const payBadge = document.getElementById('paymentBadge');
+   if (payBadge) payBadge.textContent = (pd.payments || []).length;
+  }
  } catch(e) {}
 }
 

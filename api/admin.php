@@ -15,6 +15,28 @@ $pdo    = getDB();
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 
+// Auto-create payments table on first use
+try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS payments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        student_email VARCHAR(254) NOT NULL,
+        student_name VARCHAR(120),
+        course_id VARCHAR(50),
+        course_title VARCHAR(200),
+        amount VARCHAR(50),
+        depositor_name VARCHAR(120),
+        pay_date VARCHAR(20),
+        pay_time VARCHAR(20),
+        ref_code VARCHAR(100),
+        receipt_data MEDIUMTEXT,
+        status ENUM('pending','confirmed','rejected') DEFAULT 'pending',
+        submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        confirmed_at DATETIME
+    )");
+} catch (PDOException $e) {
+    debug_log("admin.php: CREATE TABLE payments failed: " . $e->getMessage());
+}
+
 // ── Helper: validate status whitelist ────────────────────────────────────────
 function valid_status($s) {
     return in_array($s, ['pending', 'approved', 'rejected'], true) ? $s : null;
@@ -73,6 +95,17 @@ if ($method === 'GET') {
             } catch (PDOException $e) {
                 json_out(['success' => true, 'submissions' => []]);
             }
+
+        case 'payments':
+            $filterStatus = valid_status($_GET['status'] ?? '');
+            $sql = 'SELECT id, student_email AS studentEmail, student_name AS studentName, course_id AS courseId, course_title AS courseTitle, amount, depositor_name AS depositorName, pay_date AS payDate, pay_time AS payTime, ref_code AS `ref`, receipt_data AS receiptData, status, submitted_at AS submittedAt, confirmed_at AS confirmedAt FROM payments';
+            if ($filterStatus) {
+                $stmt = $pdo->prepare($sql . ' WHERE status=? ORDER BY submitted_at DESC');
+                $stmt->execute([$filterStatus]);
+            } else {
+                $stmt = $pdo->query($sql . ' ORDER BY submitted_at DESC');
+            }
+            json_out(['success' => true, 'payments' => $stmt->fetchAll()]);
 
         default:
             json_out(['error' => 'Unknown action'], 400);
@@ -165,6 +198,41 @@ if ($method === 'POST') {
             }
             audit_log($pdo, 'update-submission-status', "id={$id} status={$status}");
             json_out(['success' => true]);
+
+        case 'confirm-payment':
+            $id = (int)($data['id'] ?? 0);
+            if (!$id) json_out(['error' => 'Payment ID required.'], 400);
+            $stmt = $pdo->prepare("UPDATE payments SET status='confirmed', confirmed_at=NOW() WHERE id=?");
+            $stmt->execute([$id]);
+            audit_log($pdo, 'confirm-payment', "id={$id}");
+            json_out(['success' => true]);
+
+        case 'reject-payment':
+            $id = (int)($data['id'] ?? 0);
+            if (!$id) json_out(['error' => 'Payment ID required.'], 400);
+            $stmt = $pdo->prepare("UPDATE payments SET status='rejected' WHERE id=?");
+            $stmt->execute([$id]);
+            audit_log($pdo, 'reject-payment', "id={$id}");
+            json_out(['success' => true]);
+
+        case 'add-manual-payment':
+            $studentEmail  = substr(trim($data['studentEmail']  ?? ''), 0, 254);
+            $studentName   = substr(trim($data['studentName']   ?? $studentEmail), 0, 120);
+            $courseId      = substr(trim($data['courseId']      ?? ''), 0, 50);
+            $courseTitle   = substr(trim($data['courseTitle']   ?? ''), 0, 200);
+            $amount        = substr(trim($data['amount']        ?? 'Free'), 0, 50);
+            $depositorName = substr(trim($data['depositorName'] ?? ''), 0, 120);
+            $payDate       = substr(trim($data['payDate']       ?? ''), 0, 20);
+            $payTime       = substr(trim($data['payTime']       ?? ''), 0, 20);
+            $refCode       = substr(trim($data['ref']           ?? 'Manual'), 0, 100);
+            $receiptData   = $data['receiptData'] ?? null;
+            if (!$studentEmail || !$depositorName || !$payDate) {
+                json_out(['error' => 'Student email, depositor name, and payment date are required.'], 400);
+            }
+            $stmt = $pdo->prepare('INSERT INTO payments (student_email, student_name, course_id, course_title, amount, depositor_name, pay_date, pay_time, ref_code, receipt_data, status, confirmed_at) VALUES (?,?,?,?,?,?,?,?,?,?,\'confirmed\',NOW())');
+            $stmt->execute([$studentEmail, $studentName, $courseId, $courseTitle, $amount, $depositorName, $payDate, $payTime, $refCode, $receiptData]);
+            audit_log($pdo, 'add-manual-payment', "email={$studentEmail} course={$courseId}");
+            json_out(['success' => true, 'id' => (int)$pdo->lastInsertId()]);
 
         case 'change-admin-password':
             $newPass = $data['password'] ?? '';

@@ -77,13 +77,29 @@ if ($method === 'POST') {
     json_out(['success' => true]);
 }
 
-// DELETE — remove an assigned course from tutor_courses
+// DELETE — remove an assigned course OR withdraw a pending submission
 if ($method === 'DELETE') {
     verify_csrf();
+
+    // Withdraw pending submission
+    $submissionId = (int)($_GET['submission_id'] ?? 0);
+    if ($submissionId > 0) {
+        debug_log("tutor-courses.php DELETE submission: id=$submissionId | user_id={$user['id']}");
+        $stmt = $pdo->prepare("DELETE FROM course_submissions WHERE id = ? AND tutor_id = ? AND status = 'pending'");
+        $stmt->execute([$submissionId, $user['id']]);
+        if ($stmt->rowCount() === 0) {
+            debug_log("tutor-courses.php DELETE submission: not found or not pending | id=$submissionId | user_id={$user['id']}");
+            json_out(['error' => 'Submission not found or cannot be withdrawn.'], 404);
+        }
+        debug_log("tutor-courses.php DELETE submission: withdrawn | id=$submissionId | user_id={$user['id']}");
+        json_out(['success' => true]);
+    }
+
+    // Remove an assigned course from tutor_courses
     $slug = trim($_GET['course_slug'] ?? '');
     if (!$slug) {
-        debug_log("tutor-courses.php DELETE: missing slug | user_id={$user['id']}");
-        json_out(['error' => 'Course slug required.'], 400);
+        debug_log("tutor-courses.php DELETE: missing slug or submission_id | user_id={$user['id']}");
+        json_out(['error' => 'Course slug or submission_id required.'], 400);
     }
     if (!in_array($slug, VALID_COURSE_SLUGS, true)) {
         debug_log("tutor-courses.php DELETE: invalid slug | user_id={$user['id']} | slug=$slug");

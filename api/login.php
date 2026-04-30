@@ -50,7 +50,7 @@ if ($email === strtolower($adminEmail)) {
         session_regenerate_id(true);
         $_SESSION['user_id'] = 0;
         $_SESSION['is_admin'] = true;
-        json_out(['success' => true, 'token' => bin2hex(random_bytes(16)),
+        json_out(['success' => true, 'sid' => session_id(), 'token' => bin2hex(random_bytes(16)),
             'user' => ['id' => 0, 'firstName' => 'Admin', 'lastName' => '', 'email' => $email, 'role' => 'admin']]);
     }
     debug_log("LOGIN FAIL: admin wrong password | email=$email");

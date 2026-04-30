@@ -586,9 +586,23 @@ async function loadMyCourses() {
    <div style="font-size:13px;color:var(--text-light);">${esc(s.category||'')}</div></div>
    <span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:${statusColor[s.status]||'#ccc'};color:#fff;">${esc(s.status)}</span>
    <div style="font-size:12px;color:var(--text-light);">${new Date(s.submitted_at).toLocaleDateString('en-NG')}</div>
+   ${s.status === 'pending' ? `<button onclick="withdrawSubmission(${s.id})" style="padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;background:var(--red);color:#fff;border:none;cursor:pointer;">Withdraw</button>` : ''}
    </div></div>`).join('');
  } catch(err) {
   el.innerHTML = '<div class="empty-state"><div class="empty-icon">!</div><h3>Could not load courses</h3><p>' + esc(err.message) + '</p></div>';
+ }
+}
+
+async function withdrawSubmission(id) {
+ if (!confirm('Withdraw this course submission? This cannot be undone.')) return;
+ try {
+  const res = await authFetch('api/tutor-courses.php?submission_id=' + encodeURIComponent(id), { method: 'DELETE' });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Withdraw failed');
+  showMsg('success', 'Submission withdrawn.');
+  loadMyCourses();
+ } catch(err) {
+  showMsg('error', 'Could not withdraw: ' + err.message);
  }
 }
 
@@ -664,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
  applyApprovalUI(isApproved);
 
  // Sync with server, picks up admin approval without requiring re-login
- fetch('api/user.php', { credentials: 'include' })
+ authFetch('api/user.php')
  .then(function(r) { return r.json(); })
  .then(function(data) {
  if (data.user && data.user.role === 'tutor') {
