@@ -443,7 +443,7 @@ function issueCertificate() {
  if (!((enrol && enrol.quizPassed) || _hasCert || !!_certified)) { window.location.href = QUIZ_URL; return; }
  if (!user.certificates) user.certificates = [];
  let cert = user.certificates.find(c => c.id === COURSE_ID);
- if (!cert) { cert = { id: COURSE_ID, title: 'English Language & Communication', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() }; user.certificates.push(cert); saveUser(user); authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); }); }
+ if (!cert) { cert = { id: COURSE_ID, title: 'English Language & Communication', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() }; user.certificates.push(cert); saveUser(user); authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); }); }
  const m = document.getElementById('certModal'); if (m) { m.classList.add('open'); document.getElementById('certName').textContent = user.firstName + ' ' + (user.lastName || ''); document.getElementById('certDate').textContent = cert.date; }
 }
 let _toastTimer = null;

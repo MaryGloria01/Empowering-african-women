@@ -566,8 +566,34 @@ function renderPlatformCourses() {
  </div>`).join('');
 }
 
+// ── MY COURSES — load from server ──
+async function loadMyCourses() {
+ const el = document.getElementById('myCoursesContainer');
+ try {
+  const res = await authFetch('api/tutor-courses.php');
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Failed to load');
+  const subs = data.submissions || [];
+  document.getElementById('tStatCourses').textContent = subs.length;
+  if (!subs.length) {
+   el.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><h3>No courses submitted yet</h3><p>Click the button above to submit your first course for admin review.</p></div>';
+   return;
+  }
+  const statusColor = { pending: 'var(--gold)', approved: 'var(--green)', rejected: 'var(--red)' };
+  el.innerHTML = subs.map(s => `
+   <div class="course-editor-card"><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+   <div style="flex:1;min-width:0;"><div style="font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;">${esc(s.title)}</div>
+   <div style="font-size:13px;color:var(--text-light);">${esc(s.category||'')}</div></div>
+   <span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:${statusColor[s.status]||'#ccc'};color:#fff;">${esc(s.status)}</span>
+   <div style="font-size:12px;color:var(--text-light);">${new Date(s.submitted_at).toLocaleDateString('en-NG')}</div>
+   </div></div>`).join('');
+ } catch(err) {
+  el.innerHTML = '<div class="empty-state"><div class="empty-icon">!</div><h3>Could not load courses</h3><p>' + esc(err.message) + '</p></div>';
+ }
+}
+
 // ── SUBMIT ──
-function submitNewCourse() {
+async function submitNewCourse() {
  const title = document.getElementById('newCourseTitle').value.trim();
  const catSel = document.getElementById('newCourseCat').value;
  const desc = document.getElementById('newCourseDesc').value.trim();
@@ -582,17 +608,22 @@ function submitNewCourse() {
  modules.push({ num: i, title: (document.getElementById('mod'+i+'Title')||{}).value||'', content: (document.getElementById('mod'+i+'Content')||{}).value||'' });
  }
 
- showMsg('success', `✓ Course submitted! "<em>${title}</em>" sent to admin for review.`);
+ const pricing = document.getElementById('newCoursePrice').value;
 
- const user = JSON.parse(localStorage.getItem('eaw_user') || '{}');
- if (!user.submittedCourses) user.submittedCourses = [];
- user.submittedCourses.push({ title, category: finalCat, description: desc, pricing: document.getElementById('newCoursePrice').value, modules: modules.length, status: 'pending', submittedAt: new Date().toISOString() });
- localStorage.setItem('eaw_user', JSON.stringify(user));
-
- // Push to admin queue
- const ad = JSON.parse(localStorage.getItem('eaw_admin_data') || '{"tutorApplications":[],"courseSubmissions":[],"payments":[],"students":[]}');
- ad.courseSubmissions.push({ id:'cs-'+Date.now(), tutorName: user.firstName+' '+(user.lastName||''), tutorEmail: user.email, title, category: finalCat, pricing: document.getElementById('newCoursePrice').value, description: desc, modules: modules.length, status: 'pending', submittedAt: new Date().toISOString() });
- localStorage.setItem('eaw_admin_data', JSON.stringify(ad));
+ try {
+  const res = await authFetch('api/tutor-courses.php', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ title, category: finalCat, description: desc, pricing, modules_count: modules.length })
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Submission failed');
+  showMsg('success', `✓ Course submitted! "<em>${title}</em>" sent to admin for review.`);
+  loadMyCourses();
+ } catch(err) {
+  showMsg('error', 'Failed to submit course: ' + err.message);
+  return;
+ }
 
  // Reset
  document.getElementById('newCourseTitle').value = ''; document.getElementById('newCourseDesc').value = '';
@@ -645,7 +676,7 @@ document.addEventListener('DOMContentLoaded', () => {
  }
  })
  .catch(function() {});
- document.getElementById('tStatCourses').textContent = (user.submittedCourses || []).length;
+ loadMyCourses();
  document.getElementById('profileDetails').innerHTML = `
  <div style="display:flex;gap:12px;margin-bottom:10px;"><span style="font-size:11px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Name</span><span>${esc(fullName)}</span></div>
  <div style="display:flex;gap:12px;margin-bottom:10px;"><span style="font-size:11px;font-weight:700;color:var(--gray-500);width:80px;text-transform:uppercase;flex-shrink:0;">Email</span><span>${esc(user.email)||'N/A'}</span></div>

@@ -728,7 +728,7 @@ function issueCertificate() {
  if (!user.certificates.find(c => c.id === COURSE_ID)) {
  user.certificates.push({ id: COURSE_ID, title: 'Social & Business Etiquette for Professionals', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() });
  saveUser(user);
- authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: COURSE_ID, title: 'Social & Business Etiquette for Professionals', score: '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); });
+ authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: COURSE_ID, title: 'Social & Business Etiquette for Professionals', score: (user.certificates.find(c => c.id === COURSE_ID) || {}).score || '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); });
  }
  const m = document.getElementById('certModal');
  if (m) {

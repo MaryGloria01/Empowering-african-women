@@ -89,7 +89,7 @@ start_session();
 session_regenerate_id(true);
 $_SESSION['user_id'] = $userId;
 
-json_out(['success' => true, 'user' => [
+json_out(['success' => true, 'sid' => session_id(), 'user' => [
     'id'        => (int)$userId,
     'firstName' => $firstName,
     'lastName'  => $lastName,

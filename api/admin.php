@@ -66,6 +66,14 @@ if ($method === 'GET') {
             }
             json_out(['success' => true, 'applications' => $stmt->fetchAll()]);
 
+        case 'course-submissions':
+            try {
+                $stmt = $pdo->query('SELECT id, tutor_id, tutor_name, title, category, description, pricing, modules_count, status, submitted_at FROM course_submissions ORDER BY submitted_at DESC');
+                json_out(['success' => true, 'submissions' => $stmt->fetchAll()]);
+            } catch (PDOException $e) {
+                json_out(['success' => true, 'submissions' => []]);
+            }
+
         default:
             json_out(['error' => 'Unknown action'], 400);
     }
@@ -143,6 +151,19 @@ if ($method === 'POST') {
                 json_out(['error' => 'Failed to delete user. Please try again.'], 500);
             }
             audit_log($pdo, 'delete-user', "id={$id}");
+            json_out(['success' => true]);
+
+        case 'update-submission-status':
+            $id     = (int)($data['id'] ?? 0);
+            $status = valid_status($data['status'] ?? '');
+            if (!$id || !$status) json_out(['error' => 'ID and valid status required.'], 400);
+            try {
+                $stmt = $pdo->prepare('UPDATE course_submissions SET status = ? WHERE id = ?');
+                $stmt->execute([$status, $id]);
+            } catch (PDOException $e) {
+                json_out(['error' => 'Could not update submission status.'], 500);
+            }
+            audit_log($pdo, 'update-submission-status', "id={$id} status={$status}");
             json_out(['success' => true]);
 
         case 'change-admin-password':

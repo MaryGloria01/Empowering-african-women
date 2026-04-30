@@ -677,7 +677,7 @@ function issueCertificate() {
  cert = { id: COURSE_ID, title: 'Baking & Cooking Essentials', date: new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' }), issuedAt: new Date().toISOString() };
  user.certificates.push(cert);
  saveUser(user);
- authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); });
+ authFetch('api/certificate.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ course: cert.id, title: cert.title, score: cert.score || '' }) }).catch(()=>{ if(typeof _eawToastError==='function') _eawToastError('Certificate not saved. Please check your connection.'); });
  }
  const m = document.getElementById('certModal');
  if (m) {

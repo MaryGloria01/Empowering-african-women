@@ -437,28 +437,36 @@ async function rejectTutor(id) {
  } catch (e) { showToast('✗ Error: ' + e.message); }
 }
 
-function approveCourse(id) {
- const d = getAdminData();
- const cs = d.courseSubmissions.find(c => c.id === id);
- if (!cs) return;
- cs.status = 'approved';
- cs.reviewedAt = new Date().toISOString();
- saveAdminData(d);
- renderSection('courses', 'pending');
+async function approveCourse(id) {
+ try {
+ const res = await fetch('api/admin.php?action=update-submission-status', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrfToken },
+  credentials: 'include',
+  body: JSON.stringify({ id, status: 'approved' })
+ });
+ const data = await res.json();
+ if (!data.success) throw new Error(data.error);
+ showToast('✓ Course approved!');
+ renderCourses('pending');
  refreshBadges();
- showToast('✓ Course "' + cs.title + '" approved and is now live!');
+ } catch (e) { showToast('✗ Error: ' + e.message); }
 }
 
-function rejectCourse(id) {
- const d = getAdminData();
- const cs = d.courseSubmissions.find(c => c.id === id);
- if (!cs) return;
- cs.status = 'rejected';
- cs.reviewedAt = new Date().toISOString();
- saveAdminData(d);
- renderSection('courses', 'pending');
+async function rejectCourse(id) {
+ try {
+ const res = await fetch('api/admin.php?action=update-submission-status', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrfToken },
+  credentials: 'include',
+  body: JSON.stringify({ id, status: 'rejected' })
+ });
+ const data = await res.json();
+ if (!data.success) throw new Error(data.error);
+ showToast('✗ Course rejected.');
+ renderCourses('pending');
  refreshBadges();
- showToast('✗ Course "' + cs.title + '" rejected.');
+ } catch (e) { showToast('✗ Error: ' + e.message); }
 }
 
 function confirmPayment(id) {
@@ -623,23 +631,30 @@ async function renderTutors(filter) {
  }
 }
 
-function renderCourses(filter) {
- const d = getAdminData();
- let cs = d.courseSubmissions;
- if (filter !== 'all') cs = cs.filter(c => c.status === filter);
+async function renderCourses(filter) {
  const el = document.getElementById('coursesContainer');
+ el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-light);">Loading…</div>';
+ try {
+ const res = await fetch('api/admin.php?action=course-submissions', { credentials: 'include' });
+ const data = await res.json();
+ if (!data.success) throw new Error(data.error);
+ let cs = data.submissions || [];
+ if (filter !== 'all') cs = cs.filter(c => c.status === filter);
  if (!cs.length) { el.innerHTML = `<div class="empty-admin"><div class="empty-icon"></div><p>No ${filter} course submissions</p></div>`; return; }
  el.innerHTML = cs.map(c => `
  <div class="approval-card ${esc(c.status)}"><div style="width:48px;height:48px;border-radius:var(--r-md);background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;"></div>
  <div class="av-info"><div class="av-name">${esc(c.title)} <span class="status-badge status-${esc(c.status)}">${esc(c.status)}</span></div>
- <div class="av-meta">${esc(c.tutorName)} · ${esc(c.tutorEmail)} · ${fmtDate(c.submittedAt)}</div>
- <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px;"><strong>Category:</strong> ${esc(c.category)} · <strong>Pricing:</strong> ${esc(c.pricing)} · <strong>Modules:</strong> ${esc(c.modules)}</div>
- <div class="av-desc">${esc(c.description)}</div>
- ${c.status === 'pending' ? `<div class="av-actions"><button class="btn-approve" onclick="approveCourse('${esc(c.id)}')">✓ Approve & Publish</button>
- <button class="btn-reject" onclick="rejectCourse('${esc(c.id)}')">✗ Reject</button>
- </div>` : `<div style="margin-top:10px;font-size:12px;color:var(--text-light);">Reviewed: ${fmtDate(c.reviewedAt)}</div>`}
+ <div class="av-meta">${esc(c.tutor_name||'')} · ${fmtDate(c.submitted_at)}</div>
+ <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px;"><strong>Category:</strong> ${esc(c.category||'')} · <strong>Pricing:</strong> ${esc(c.pricing||'')} · <strong>Modules:</strong> ${esc(String(c.modules_count||0))}</div>
+ <div class="av-desc">${esc(c.description||'')}</div>
+ ${c.status === 'pending' ? `<div class="av-actions"><button class="btn-approve" onclick="approveCourse(${Number(c.id)})">✓ Approve & Publish</button>
+ <button class="btn-reject" onclick="rejectCourse(${Number(c.id)})">✗ Reject</button>
+ </div>` : `<div style="margin-top:10px;font-size:12px;color:var(--text-light);">Status: ${esc(c.status)}</div>`}
  </div>
  </div>`).join('');
+ } catch (e) {
+ el.innerHTML = `<div class="empty-admin"><div class="empty-icon">!</div><p>Could not load submissions: ${e.message}</p></div>`;
+ }
 }
 
 function renderPayments(filter) {
@@ -690,16 +705,25 @@ async function renderStudents() {
 
 async function renderOverview() {
  const d = getAdminData();
- const pendingCourses = d.courseSubmissions.filter(c => c.status === 'pending').length;
  const pendingPayments = d.payments.filter(p => p.status === 'pending').length;
  const confirmedPayments = d.payments.filter(p => p.status === 'confirmed').length;
 
- // Fetch live stats from DB
+ // Fetch live stats and course submissions from DB
  let dbStats = { students: '…', tutors: '…', pending: '…' };
+ let courseSubmissions = [];
+ let pendingCourses = 0;
  try {
- const r = await fetch('api/admin.php?action=stats', { credentials: 'include' });
- const sd = await r.json();
+ const [statsRes, subRes] = await Promise.all([
+  fetch('api/admin.php?action=stats', { credentials: 'include' }),
+  fetch('api/admin.php?action=course-submissions', { credentials: 'include' })
+ ]);
+ const sd = await statsRes.json();
  if (sd.success) dbStats = sd.stats;
+ const cs = await subRes.json();
+ if (cs.success) {
+  courseSubmissions = cs.submissions || [];
+  pendingCourses = courseSubmissions.filter(c => c.status === 'pending').length;
+ }
  } catch(e) {}
 
  document.getElementById('overviewStats').innerHTML = `
@@ -712,7 +736,7 @@ async function renderOverview() {
  `;
 
  const pending = [
- ...d.courseSubmissions.filter(c => c.status === 'pending').map(c => ({ type: 'course', label: `Course submission: &quot;${esc(c.title)}&quot; by ${esc(c.tutorName)}`, date: c.submittedAt, section: 'courses' })),
+ ...courseSubmissions.filter(c => c.status === 'pending').map(c => ({ type: 'course', label: `Course submission: &quot;${esc(c.title)}&quot; by ${esc(c.tutor_name||'')}`, date: c.submitted_at, section: 'courses' })),
  ...d.payments.filter(p => p.status === 'pending').map(p => ({ type: 'payment', label: `Payment from ${esc(p.studentName)} for ${esc(p.courseTitle)}`, date: p.submittedAt, section: 'payments' })),
  ].sort((a,b) => new Date(b.date) - new Date(a.date));
 
@@ -740,10 +764,15 @@ async function renderOverview() {
  </div>`).join('');
 }
 
-function refreshBadges() {
+async function refreshBadges() {
  const d = getAdminData();
  document.getElementById('tutorBadge').textContent = d.tutorApplications.filter(a => a.status === 'pending').length;
- document.getElementById('courseBadge').textContent = d.courseSubmissions.filter(c => c.status === 'pending').length;
+ try {
+ const res = await fetch('api/admin.php?action=course-submissions', { credentials: 'include' });
+ const data = await res.json();
+ const pending = (data.submissions || []).filter(c => c.status === 'pending').length;
+ document.getElementById('courseBadge').textContent = pending;
+ } catch(e) {}
 }
 
 function showToast(msg) {

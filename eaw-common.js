@@ -335,7 +335,7 @@ function _eawUpdateAuthNav() {
  }
 
  // Logged in — show dashboard + sign-out
- signInLink.href = 'student-dashboard';
+ signInLink.href = (user.role === 'tutor' || user.role === 'tutor-pending') ? 'tutor-dashboard' : 'student-dashboard';
  signInLink.textContent = 'My Dashboard';
  signInLink.className = 'btn btn-ghost btn-sm';
 
