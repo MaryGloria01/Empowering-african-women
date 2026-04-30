@@ -938,16 +938,16 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
   .course-hero { padding: 76px 16px 48px; }
   .accordion-header { font-size: 14px; padding: 13px 14px; }
   .accordion-body { padding: 14px; }
-  .cert-modal-overlay { padding: 12px; }
-  .cert-modal { padding: 16px 12px; max-height: calc(100vh - 24px); overflow-y: auto; }
-  .cert-frame { padding: 14px 10px; margin-bottom: 10px; }
-  .cert-title { font-size: 9px; letter-spacing: 1.5px; margin-bottom: 6px; }
-  .cert-of { font-size: 16px; margin-bottom: 2px; }
-  .cert-awarded { font-size: 11px; margin-bottom: 6px; }
-  .cert-student-name { font-size: 22px; padding-bottom: 5px; margin-bottom: 6px; }
-  .cert-course-name { font-size: 13px; margin-bottom: 2px; }
-  .cert-sigs { margin-top: 10px; gap: 6px; justify-content: space-around; flex-wrap: nowrap; }
-  .cert-sig-line { min-width: 0; font-size: 10px; padding-top: 5px; }
+  .cert-modal-overlay { padding: 8px; }
+  .cert-modal { padding: 12px 8px; max-height: calc(100vh - 16px); overflow-y: auto; }
+  .cert-frame { padding: 12px 10px; margin-bottom: 8px; border-width: 4px; }
+  .cert-title { font-size: 8px; letter-spacing: 1px; margin-bottom: 4px; }
+  .cert-of { font-size: 13px; margin-bottom: 2px; }
+  .cert-awarded { font-size: 10px; margin-bottom: 4px; }
+  .cert-student-name { font-size: clamp(13px, 4.5vw, 18px); padding-bottom: 4px; margin-bottom: 4px; }
+  .cert-course-name { font-size: 12px; margin-bottom: 2px; }
+  .cert-sigs { margin-top: 8px; gap: 6px; justify-content: space-around; flex-wrap: nowrap; }
+  .cert-sig-line { min-width: 0; font-size: 9px; padding-top: 4px; }
 }
 
 /* ===== 5 — SMALL PHONE (max-width: 360px) ===== */
@@ -1001,11 +1001,11 @@ footer { background: var(--navy); color: #fff; padding: 72px clamp(16px, 4vw, 48
   /* ── COURSE PAGES ── */
   .accordion-header { font-size: 13px; padding: 12px; }
   .accordion-body { padding: 12px; }
-  .cert-modal { padding: 12px 8px; }
-  .cert-frame { padding: 14px 10px; }
-  .cert-of { font-size: 16px; }
-  .cert-student-name { font-size: 15px; }
-  .cert-course-name { font-size: 13px; }
+  .cert-modal { padding: 10px 6px; }
+  .cert-frame { padding: 10px 8px; border-width: 3px; }
+  .cert-of { font-size: 12px; }
+  .cert-student-name { font-size: clamp(11px, 3.5vw, 13px); }
+  .cert-course-name { font-size: 11px; }
 }
 
 /* ===== SUBTLE CSS-ONLY ANIMATIONS ===== */
